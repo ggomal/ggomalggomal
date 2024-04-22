@@ -5,6 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 
 import java.time.Duration;
 
@@ -18,5 +20,20 @@ public class ExampleController {
         log.info("flux test /example - 1초마다 반환합니다.");
         return Flux.just("Data 1", "Data 2", "Data 3")
                    .delayElements(Duration.ofSeconds(1)); // 1초 간격으로 데이터를 발생시킴
+    }
+
+    @GetMapping("/test")
+    public void test(){
+        Mono.just("Hello Reactor")
+                .subscribe(m -> System.out.println(m));
+    }
+
+    @GetMapping("/test2")
+    public void test2(){
+        //퍼블리셔가 데이터 생성, 생성된 데이터 오퍼레이터로 가공, 서브스트라이터 전송
+        Flux<String> seq = Flux.just("Hello", "Reactor");
+        seq
+                .map(data -> data.toLowerCase())
+                .subscribe(data -> System.out.println(data));
     }
 }

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:animated_background/animated_background.dart';
 
+// 메인
 void main() {
   runApp(
     MaterialApp(home: MainScreen()),
   );
 }
 
-
+  
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
-
   @override
   State<MainScreen> createState() => _MainScreen();
 }

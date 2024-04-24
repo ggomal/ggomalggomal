@@ -8,6 +8,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double dynamicWidth = MediaQuery.of(context).size.width * 0.23;
+
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -23,13 +25,13 @@ class MainScreen extends StatelessWidget {
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.fromLTRB(100, 30, 100, 0),
+                  padding: EdgeInsets.fromLTRB(dynamicWidth*0.3, 30, dynamicWidth*0.3, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
                         child: Image.asset('assets/images/chick_house.png'),
-                        width: 350,
+                        width: dynamicWidth,
                       ),
                       InkWell(
                         onTap: () {
@@ -40,7 +42,7 @@ class MainScreen extends StatelessWidget {
                         },
                         child: SizedBox(
                           child: Image.asset('assets/images/bear_house.png'),
-                          width: 350,
+                          width: dynamicWidth,
                         ),
                       ),
                     ],
@@ -52,11 +54,11 @@ class MainScreen extends StatelessWidget {
                     children: [
                       SizedBox(
                         child: Image.asset('assets/images/frog_house.png'),
-                        width: 350,
+                        width: dynamicWidth,
                       ),
                       SizedBox(
                         child: Image.asset('assets/images/whale_house.png'),
-                        width: 350,
+                        width: dynamicWidth,
                       ),
                     ],
                   ),
@@ -64,7 +66,7 @@ class MainScreen extends StatelessWidget {
               ],
             ),
             Center(
-              child: SizedBox(child:Image.asset('assets/images/girl.png'), width: 200,),
+              child: SizedBox(child:Image.asset('assets/images/girl.png'), width: dynamicWidth*0.8,),
             ),
           ],
         ),

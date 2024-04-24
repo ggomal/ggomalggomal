@@ -1,18 +1,24 @@
 package com.ssafy.ggomalbe.member.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
-
+import java.io.IOException;
 import java.time.Duration;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class ExampleController {
+
+    private final Sinks.Many<String> sink;
 
     @GetMapping(value = "/example", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getExampleData() {
@@ -35,5 +41,10 @@ public class ExampleController {
         seq
                 .map(data -> data.toLowerCase())
                 .subscribe(data -> System.out.println(data));
+    }
+
+    @PostMapping("/demo")
+    public void demo(){
+        sink.emitNext("hello", Sinks.EmitFailureHandler.FAIL_FAST);
     }
 }

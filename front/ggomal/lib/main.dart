@@ -25,17 +25,51 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFEEF8FF),
       body: Stack(
         children: [
           ...particleOptionsList
               .map((data) => buildAnimatedBackground(data.particleOptions))
               .toList(),
-          Container(
-            child: Center(
-              child: Image.asset(
-                'assets/images/logo.png',
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 300,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(),
+                Image.asset(
+                  'assets/images/logo.png',
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 100,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text("아이디"),
+                          Expanded(
+                            child: TextField(),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text("비밀번호"),
+                          Expanded(
+                            child: TextField(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],

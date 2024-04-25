@@ -1,16 +1,26 @@
 package com.ssafy.ggomalbe.common.config;
 
-import com.ssafy.ggomalbe.bear.handlers.GroupSocketHandler;
+import com.ssafy.ggomalbe.bear.handlers.KidSocketHandler;
+import com.ssafy.ggomalbe.bear.handlers.RoomSocketHandler;
+import com.ssafy.ggomalbe.bear.handlers.TeacherSocketHandler;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import reactor.core.publisher.Sinks;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@AllArgsConstructor
 public class WebsocketConfig {
+
+    private RoomSocketHandler roomSocketHandler;
+    private KidSocketHandler kidSocketHandler;
+    private TeacherSocketHandler teacherSocketHandler;
 
     /**
      * WebSocket 요청을 처리하기 위한 URL 매핑
@@ -18,8 +28,16 @@ public class WebsocketConfig {
      * /ws-bingo 경로에 대한 WebSocketHandler를 등록
      */
     @Bean
-    public SimpleUrlHandlerMapping handlerMapping(GroupSocketHandler wsh) {
-        return new SimpleUrlHandlerMapping(Map.of("/ws-bingo", wsh), 1);
+    public SimpleUrlHandlerMapping handlerMapping() {
+        Map<String, WebSocketHandler> map = new HashMap<>();
+        map.put("/api/v1/room", roomSocketHandler);
+        map.put("/api/v1/kid", kidSocketHandler);
+        map.put("/api/v1/teacher", teacherSocketHandler);
+
+        SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
+        mapping.setOrder(1);
+        mapping.setUrlMap(map);
+        return mapping;
     }
 
     /**

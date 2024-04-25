@@ -2,36 +2,38 @@ package com.ssafy.ggomalbe.handlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.ggomalbe.config.WebsocketConfig;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
-import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Slf4j
+@AllArgsConstructor
+@Getter
 public class GroupSocketHandler implements WebSocketHandler {
 
+
     //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
-    private final Map<String, Room> rooms = new HashMap<>();
+    //ConcurrentHashMap은 스프링 빈이 아니라서 따로 관리해주어야한다. 근데 내부적으로 동기화를 진행한다는데 flux로 했을때 효율적인지
+    // gpt :  여러 스레드가 동시에 ConcurrentHashMap에 접근하면 잠금 충돌이 더 자주 발생할 수 있습니다. 이는 동시성을 높이고 병렬 처리를 통해 처리량을 향상시키는 Flux의 장점과 상충될 수 있습니다.
+    private final ConcurrentHashMap<String, Room> rooms;
 
     //JSON파일 파싱
     private final ObjectMapper objectMapper;
 
-    public GroupSocketHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
     @Override
     public Mono<Void> handle(WebSocketSession session) {
+        log.info("sessionId {}", session.getId());
         return session.receive()                            // WebSocket 세션을 통해 클라이언트로부터 메시지를 수신
                 .map(WebSocketMessage::getPayloadAsText)    //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                       //비동기 처리를 위한 flatMap
@@ -59,7 +61,7 @@ public class GroupSocketHandler implements WebSocketHandler {
                     // WebSocket 연결이 종료될 때 (finally) 해당 세션을 방에서 제거
                     rooms.values().forEach(room -> room.removeParticipant(session));
                 })
-                .then();
+                .then();    //모든 처리가 완료된 후에 Mono<Void>를 반환
     }
 
     private Mono<Void> joinRoom(JsonNode jsonNode, WebSocketSession session) {
@@ -104,32 +106,5 @@ public class GroupSocketHandler implements WebSocketHandler {
         String roomId = jsonNode.get("roomId").asText();
         rooms.remove(roomId);
         return Mono.empty();
-    }
-}
-
-//임시테스트용 룸 클래스
-class Room {
-
-    private final String roomId;
-    private final Map<String, WebSocketSession> participants = new HashMap<>();
-
-    public Room(String roomId) {
-        this.roomId = roomId;
-    }
-
-    public void addParticipant(WebSocketSession session) {
-        participants.put(session.getId(), session);
-    }
-
-    public void removeParticipant(WebSocketSession session) {
-        participants.remove(session.getId());
-    }
-
-    public Mono<Void> broadcast(String message) {
-        // Flux.fromIterable(participants.values())를 통해 participants 맵의 모든 값을 Flux로 변환
-        // WebSocket 세션에 대한 스트림입니다.
-        return Flux.fromIterable(participants.values())
-                .flatMap(session -> session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환
-                .then();    // then()을 사용하여 모든 세션에게 메시지를 보낸 후에 Mono<Void>를 반환합니다
     }
 }

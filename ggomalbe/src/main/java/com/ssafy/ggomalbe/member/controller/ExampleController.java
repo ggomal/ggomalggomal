@@ -1,5 +1,8 @@
 package com.ssafy.ggomalbe.member.controller;
 
+import ch.qos.logback.classic.model.RootLoggerModel;
+import com.ssafy.ggomalbe.handlers.GroupSocketHandler;
+import com.ssafy.ggomalbe.handlers.Room;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -12,7 +15,15 @@ import reactor.core.publisher.Sinks;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * web flux 나의 이해..!
+ * 반환타입이 Mono나 Flux인건 값이 return 될때까지 기다리는게 아니라 비동기적으로 다른일도 처리한다.
+ * 그중 produces = MediaType.TEXT_EVENT_STREAM_VALUE가 옵션으로 붙은거는 sse를통해 클라이언트 에게 실시간으로 데이터를 보낼수 있다
+ * Flux의 값이 대량으로 많아서 스트림으로 내보내는 것이다.(연속적 흐름데이터 -> 스트리밍이나 대량의 파일)
+ * 하지만! 우리는 스트림보다 데이터베이스작업을 비동기로 처리하는 관점에서 보면 충분이 webflux를 사용할 가치가 있다!
+ */
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -20,10 +31,15 @@ public class ExampleController {
 
     private final Sinks.Many<String> sink;
 
+    //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
+    private final GroupSocketHandler groupSocketHandler;
+
+
+
     @GetMapping(value = "/example", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getExampleData() {
         // 예시로 간단한 스트림을 생성하여 반환
-        log.info("flux test /example - 1초마다 반환합니다.");
+        log.info("flux test /example - 1초마다 반환합니다. 엑.");
         return Flux.just("Data 1", "Data 2", "Data 3")
                    .delayElements(Duration.ofSeconds(1)); // 1초 간격으로 데이터를 발생시킴
     }
@@ -46,5 +62,13 @@ public class ExampleController {
     @PostMapping("/demo")
     public void demo(){
         sink.emitNext("hello", Sinks.EmitFailureHandler.FAIL_FAST);
+    }
+
+    @GetMapping("/all-socket")
+    public void allSocket(){
+        System.out.println("all-socket"+" "+  groupSocketHandler.getRooms().size());
+        for (Room value : groupSocketHandler.getRooms().values()) {
+            log.info("room val {}",value);
+        }
     }
 }

@@ -16,7 +16,7 @@ class _WhaleScreenState extends State<WhaleScreen> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("assets/images/whale_bg.png"),
+          image: AssetImage("assets/images/whale/whale_bg.png"),
           fit: BoxFit.cover,
         ),
       ),

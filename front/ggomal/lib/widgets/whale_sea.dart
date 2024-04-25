@@ -35,14 +35,14 @@ class _WhaleSeaState extends State<WhaleSea> {
         child: Stack(
           children: [
             Image.asset(
-              'assets/images/whale_sea.png',
+              'assets/images/whale/whale_sea.png',
             ),
             AnimatedContainer(
               duration: Duration(milliseconds: 200),
               curve: Curves.easeInOut,
               alignment: _alignment,
               child: Image.asset(
-                'assets/images/whale_character.png',
+                'assets/images/whale/whale_character.png',
                 width: 200.0,
               ),
             ),

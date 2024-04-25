@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: ggomal
+-- Host: 127.0.0.1    Database: ggomal
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `bear_record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bear_record` (
-  `bear_record_id` bigint NOT NULL,
+  `bear_record_id` bigint NOT NULL AUTO_INCREMENT,
   `member_id` bigint NOT NULL COMMENT '아이 관리번호',
   `word_id` bigint NOT NULL COMMENT '아이가 발음한 단어',
   `game_num` bigint NOT NULL COMMENT '게임 번호',
@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `character`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `character` (
-  `character_id` bigint NOT NULL,
+  `character_id` bigint NOT NULL AUTO_INCREMENT,
   `character_name` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -79,7 +79,7 @@ DROP TABLE IF EXISTS `chick_record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `chick_record` (
-  `chick_record_id` bigint NOT NULL,
+  `chick_record_id` bigint NOT NULL AUTO_INCREMENT,
   `member_id` bigint NOT NULL,
   `game_num` bigint NOT NULL,
   `pronunciation` varchar(255) DEFAULT NULL,
@@ -108,7 +108,7 @@ DROP TABLE IF EXISTS `frog_record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `frog_record` (
-  `frog_record_id` bigint NOT NULL,
+  `frog_record_id` bigint NOT NULL AUTO_INCREMENT,
   `member_id` bigint NOT NULL,
   `duration_sec` float NOT NULL,
   `length` float NOT NULL,
@@ -136,8 +136,8 @@ DROP TABLE IF EXISTS `game_num`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `game_num` (
-  `game_num_id` bigint NOT NULL COMMENT '곰, 병아리게임 시퀀스',
-  `game_type` enum('bear','chick') NOT NULL,
+  `game_num_id` bigint NOT NULL AUTO_INCREMENT COMMENT '곰, 병아리게임 시퀀스',
+  `game_type` enum('BEAR','CHICK') NOT NULL,
   `number` bigint NOT NULL,
   PRIMARY KEY (`game_num_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -160,7 +160,7 @@ DROP TABLE IF EXISTS `homework`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `homework` (
-  `homework_id` bigint NOT NULL,
+  `homework_id` bigint NOT NULL AUTO_INCREMENT,
   `notice_id` bigint NOT NULL,
   `homework_contents` varchar(255) DEFAULT NULL,
   `is_done` tinyint(1) NOT NULL DEFAULT '0',
@@ -188,7 +188,7 @@ DROP TABLE IF EXISTS `kid`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kid` (
-  `member_id` bigint NOT NULL,
+  `member_id` bigint NOT NULL AUTO_INCREMENT,
   `kid_img_url` varchar(255) NOT NULL,
   `kid_birth_DT` date NOT NULL,
   `kid_note` varchar(255) DEFAULT NULL,
@@ -218,7 +218,7 @@ DROP TABLE IF EXISTS `kid_character`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kid_character` (
-  `kid_character_id` bigint NOT NULL,
+  `kid_character_id` bigint NOT NULL AUTO_INCREMENT,
   `member_id` bigint NOT NULL,
   `character_id` bigint NOT NULL,
   `exp` bigint NOT NULL,
@@ -246,18 +246,18 @@ DROP TABLE IF EXISTS `member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member` (
-  `member_id` bigint NOT NULL,
+  `member_id` bigint NOT NULL AUTO_INCREMENT,
   `center_id` bigint DEFAULT NULL,
   `user` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `name` varchar(10) NOT NULL,
   `phone` varchar(15) NOT NULL,
-  `role` enum('center','teacher','kid') NOT NULL,
+  `role` enum('CENTER','TEACHER','KID') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `is_delete` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,6 +266,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES (1,NULL,'admin1','aksmfaksmf','마늘센터','010-0000-1234','CENTER','2024-04-25 06:17:29','2024-04-25 06:17:29',0);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -277,7 +278,7 @@ DROP TABLE IF EXISTS `notice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notice` (
-  `notice_id` bigint NOT NULL,
+  `notice_id` bigint NOT NULL AUTO_INCREMENT,
   `kid_id` bigint NOT NULL,
   `notice_contents` varchar(255) NOT NULL,
   `teacher_name` varchar(255) NOT NULL,
@@ -305,7 +306,7 @@ DROP TABLE IF EXISTS `schedule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `schedule` (
-  `schedule_id` bigint NOT NULL,
+  `schedule_id` bigint NOT NULL AUTO_INCREMENT,
   `teacher_kid_id` bigint NOT NULL,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` enum('to do','progressing','done') NOT NULL,
@@ -333,7 +334,7 @@ DROP TABLE IF EXISTS `situation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `situation` (
-  `situation_id` bigint NOT NULL,
+  `situation_id` bigint NOT NULL AUTO_INCREMENT,
   `situation_title` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -359,7 +360,7 @@ DROP TABLE IF EXISTS `situation_kid`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `situation_kid` (
-  `situation_kid_id` bigint NOT NULL,
+  `situation_kid_id` bigint NOT NULL AUTO_INCREMENT,
   `member_id` bigint NOT NULL,
   `situation_id` bigint NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -386,7 +387,7 @@ DROP TABLE IF EXISTS `teacher_kid`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `teacher_kid` (
-  `teacher_kid_id` bigint NOT NULL,
+  `teacher_kid_id` bigint NOT NULL AUTO_INCREMENT,
   `teacher_id` bigint NOT NULL,
   `kid_id` bigint NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -413,7 +414,7 @@ DROP TABLE IF EXISTS `word`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `word` (
-  `word_id` bigint NOT NULL,
+  `word_id` bigint NOT NULL AUTO_INCREMENT,
   `letter` varchar(255) NOT NULL,
   `letter_img_url` varchar(255) NOT NULL,
   `sound_url` varchar(255) NOT NULL,
@@ -445,4 +446,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-23 11:35:00
+-- Dump completed on 2024-04-25 16:17:10

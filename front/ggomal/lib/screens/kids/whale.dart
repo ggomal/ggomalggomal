@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
+import 'package:ggomal/widgets/whale_sea.dart';
 
-class WhaleScreen extends StatelessWidget {
+
+class WhaleScreen extends StatefulWidget {
   const WhaleScreen({super.key});
 
+  @override
+  State<WhaleScreen> createState() => _WhaleScreenState();
+}
+
+class _WhaleScreenState extends State<WhaleScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,14 +23,7 @@ class WhaleScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: NavBar(),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 150,
-          ),
-          child: Image.asset(
-            'assets/images/whale_sea.png',
-          ),
-        ),
+        body: WhaleSea(),
       ),
     );
   }

@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ggomal/utils/navbar.dart';
-import 'package:ggomal/screens/kids/bear.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -18,27 +17,30 @@ class MainScreen extends StatelessWidget {
         ),
       ),
       child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: NavBar(),
+        backgroundColor: Colors.transparent,
+        appBar: NavBar(),
         body: Stack(
           children: [
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.fromLTRB(dynamicWidth*0.3, 30, dynamicWidth*0.3, 0),
+                  padding: EdgeInsets.fromLTRB(
+                      dynamicWidth * 0.3, 30, dynamicWidth * 0.3, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        child: Image.asset('assets/images/chick_house.png'),
-                        width: dynamicWidth,
+                      InkWell(
+                        onTap: () {
+                          context.go('/kids/chick');
+                        },
+                        child: SizedBox(
+                          child: Image.asset('assets/images/chick_house.png'),
+                          width: dynamicWidth,
+                        ),
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const BearScreen()),
-                          );
+                          context.go('/kids/bear');
                         },
                         child: SizedBox(
                           child: Image.asset('assets/images/bear_house.png'),
@@ -56,9 +58,14 @@ class MainScreen extends StatelessWidget {
                         child: Image.asset('assets/images/frog_house.png'),
                         width: dynamicWidth,
                       ),
-                      SizedBox(
-                        child: Image.asset('assets/images/whale_house.png'),
-                        width: dynamicWidth,
+                      InkWell(
+                        onTap: () {
+                          context.go('/kids/whale');
+                        },
+                        child: SizedBox(
+                          child: Image.asset('assets/images/whale_house.png'),
+                          width: dynamicWidth,
+                        ),
                       ),
                     ],
                   ),
@@ -66,7 +73,10 @@ class MainScreen extends StatelessWidget {
               ],
             ),
             Center(
-              child: SizedBox(child:Image.asset('assets/images/girl.png'), width: dynamicWidth*0.8,),
+              child: SizedBox(
+                child: Image.asset('assets/images/girl.png'),
+                width: dynamicWidth * 0.8,
+              ),
             ),
           ],
         ),
@@ -88,4 +98,3 @@ class _NavigationBarState extends State<NavigationBar> {
     return const Placeholder();
   }
 }
-

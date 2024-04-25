@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_background/animated_background.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -62,6 +63,9 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
+                OutlinedButton(onPressed: (){
+                  context.go('/kids/main');
+                }, child: Text("로그인"))
               ],
             ),
           ),

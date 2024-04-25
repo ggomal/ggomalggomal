@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:ggomal/screens/kids/whale.dart';
-import 'package:ggomal/screens/login.dart';
-import 'package:ggomal/screens/kids/main.dart';
-import 'package:ggomal/screens/kids/bear.dart';
+import 'package:ggomal/router.dart';
 
 // 메인
 void main() {
-  runApp(
-    MaterialApp(home: BearScreen()),
-  );
+  runApp(const _App());
+}
+
+class _App extends StatelessWidget {
+  const _App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return
+      MaterialApp.router(
+      routerConfig: router,
+    );
+  }
 }

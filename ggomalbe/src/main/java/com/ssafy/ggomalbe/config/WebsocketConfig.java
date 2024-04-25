@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.config;
 
+import com.ssafy.ggomalbe.handlers.GroupSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
@@ -18,7 +19,7 @@ public class WebsocketConfig {
      * /ws-bingo 경로에 대한 WebSocketHandler를 등록
      */
     @Bean
-    public SimpleUrlHandlerMapping handlerMapping(WebSocketHandler wsh) {
+    public SimpleUrlHandlerMapping handlerMapping(GroupSocketHandler wsh) {
         return new SimpleUrlHandlerMapping(Map.of("/ws-bingo", wsh), 1);
     }
 

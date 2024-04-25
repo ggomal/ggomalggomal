@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 //임시테스트용 룸 클래스
 @Data
 public class Room {
-
     private final String roomId;
     private final ConcurrentHashMap<String, WebSocketSession> participants = new ConcurrentHashMap<>();
 
@@ -28,6 +27,7 @@ public class Room {
 
     public Mono<Void> broadcast(String message) {
         // Flux.fromIterable(participants.values())를 통해 participants 맵의 모든 값을 Flux로 변환
+        //Flux.fromIterable -> 리스트에서 flux생성
         // WebSocket 세션에 대한 스트림입니다.
         return Flux.fromIterable(participants.values())
                 .flatMap(session -> session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환

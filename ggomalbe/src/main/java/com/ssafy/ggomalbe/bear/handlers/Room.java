@@ -1,4 +1,4 @@
-package com.ssafy.ggomalbe.handlers;
+package com.ssafy.ggomalbe.bear.handlers;
 
 import lombok.Data;
 import org.springframework.web.reactive.socket.WebSocketSession;

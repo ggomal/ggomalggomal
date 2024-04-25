@@ -1,6 +1,6 @@
-package com.ssafy.ggomalbe.config;
+package com.ssafy.ggomalbe.common.config;
 
-import com.ssafy.ggomalbe.handlers.Room;
+import com.ssafy.ggomalbe.bear.handlers.Room;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,10 +1,9 @@
-package com.ssafy.ggomalbe.config;
+package com.ssafy.ggomalbe.common.config;
 
-import com.ssafy.ggomalbe.handlers.GroupSocketHandler;
+import com.ssafy.ggomalbe.bear.handlers.GroupSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
-import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import reactor.core.publisher.Sinks;
 

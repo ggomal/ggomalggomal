@@ -1,8 +1,7 @@
 package com.ssafy.ggomalbe.member.controller;
 
-import ch.qos.logback.classic.model.RootLoggerModel;
-import com.ssafy.ggomalbe.handlers.GroupSocketHandler;
-import com.ssafy.ggomalbe.handlers.Room;
+import com.ssafy.ggomalbe.bear.handlers.GroupSocketHandler;
+import com.ssafy.ggomalbe.bear.handlers.Room;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -13,9 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
-import java.io.IOException;
 import java.time.Duration;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * web flux 나의 이해..!

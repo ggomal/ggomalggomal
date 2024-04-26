@@ -1,5 +1,6 @@
 //경로 관련
 import 'package:ggomal/screens/kids/chick_pizza.dart';
+import 'package:ggomal/screens/manager/kids_manage.dart';
 import 'package:ggomal/screens/manager/manager_main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/screens/kids/whale.dart';
@@ -35,6 +36,10 @@ final router = GoRouter(
     GoRoute(
       path: '/manager',
       builder: (context, state) => const ManagerMainScreen(),
+    ),
+    GoRoute(
+      path: '/manager/kids',
+      builder: (context, state) => const KidsManageScreen(),
     ),
   ],
 );

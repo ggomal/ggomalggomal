@@ -14,10 +14,10 @@ class ManagerMainScreen extends StatelessWidget {
             vertical: 10.0,
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Image.asset(
-                width: 200.0,
+                width: 250.0,
                 'assets/images/logo.png',
               ),
               Container(
@@ -57,7 +57,7 @@ class ManagerMainScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    Row(
+                    Wrap(
                       children: ['박수빈', '장지민', '박서현', '최진우', '김창희']
                           .map(
                             (e) => Container(

@@ -65,6 +65,7 @@ flutter:
     - assets/images/
     - assets/images/chick/
     - assets/images/whale/
+    - assets/images/manager/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -81,12 +82,17 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Maplestory
+      fonts:
+        - asset: assets/fonts/Maplestory_bold.ttf
+        - asset: assets/fonts/Maplestory_light.ttf
+    - family: NanumS
+      fonts:
+        - asset: assets/fonts/NanumSquareRoundEB.ttf
+        - asset: assets/fonts/NanumSquareRoundB.ttf
+        - asset: assets/fonts/NanumSquareRoundL.ttf
+        - asset: assets/fonts/NanumSquareRoundR.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

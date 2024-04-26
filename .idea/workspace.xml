@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ec443a4-0590-4ee2-993e-2e2b32be2393" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/ggomal/lib/screens/kids/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front/ggomal/lib/screens/kids/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/ggomal/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front/ggomal/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/ggomal/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/front/ggomal/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/ggomal/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front/ggomal/windows/flutter/generated_plugins.cmake" afterDir="false" />
-    </list>
+    <list default="true" id="3ec443a4-0590-4ee2-993e-2e2b32be2393" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,9 +38,9 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "FE-develop",
+    "git-widget-placeholder": "FE-SB/frog",
     "io.flutter.reload.alreadyRun": "true",
-    "last_opened_file_path": "C:/flutter/bin/cache/dart-sdk",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/gerrit ggomal/S10P31E206/front",
     "settings.editor.selected.configurable": "dart.settings",
     "show.migrate.to.gradle.popup": "false"
   }

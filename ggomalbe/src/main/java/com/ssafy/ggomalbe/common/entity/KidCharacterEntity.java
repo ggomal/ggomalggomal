@@ -20,5 +20,6 @@ public class KidCharacterEntity extends AbstractEntity {
 
     @Column("character_id")
     private final Long characterId;
+
     private final Long exp;
 }

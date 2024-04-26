@@ -20,6 +20,8 @@ public class ChickRecordEntity extends AbstractEntity {
 
     @Column("game_num")
     private final Long gameNum;
+
     private final String pronunciation;
+
     private final Float score;
 }

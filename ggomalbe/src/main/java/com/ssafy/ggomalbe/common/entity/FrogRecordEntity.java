@@ -20,5 +20,6 @@ public class FrogRecordEntity extends AbstractEntity {
 
     @Column("duration_sec")
     private final Float durationSec;
+
     private final Float length;
 }

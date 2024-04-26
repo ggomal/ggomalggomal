@@ -21,9 +21,13 @@ public class BearRecordEntity extends AbstractEntity {
 
     @Column("word_id")
     private final Long wordId;
+
     private final Long gameNum;
+
     private final String pronunciation;
+
     private final Short pronCount;
+
     private final Float score;
 
 }

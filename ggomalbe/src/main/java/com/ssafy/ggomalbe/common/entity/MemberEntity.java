@@ -20,9 +20,13 @@ public class MemberEntity extends AbstractEntity {
     private final Long centerId;
 
     private final String user;
+
     private final String password;
+
     private final String name;
+
     private final String phone;
+
     private final MemberEntity.Role role;
 
     @Getter

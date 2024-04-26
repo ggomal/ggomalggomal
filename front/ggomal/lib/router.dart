@@ -5,6 +5,7 @@ import 'package:ggomal/screens/kids/whale.dart';
 import 'package:ggomal/screens/login.dart';
 import 'package:ggomal/screens/kids/main.dart';
 import 'package:ggomal/screens/kids/bear.dart';
+import 'package:ggomal/screens/kids/frog.dart';
 import 'package:ggomal/screens/kids/chick.dart';
 
 final router = GoRouter(
@@ -29,6 +30,10 @@ final router = GoRouter(
     GoRoute(
       path: '/kids/chick/pizza',
       builder: (context, state) => const ChickPizzaScreen(),
+    ),
+    GoRoute(
+      path: '/kids/frog',
+      builder: (context, state) => const FrogScreen(),
     ),
   ],
 );

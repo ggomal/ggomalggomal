@@ -26,7 +26,7 @@ import java.time.Duration;
 @AllArgsConstructor
 public class ExampleController {
 
-    private final Sinks.Many<String> sink;
+    private final Sinks.Many<String> sink = Sinks.many().multicast().directBestEffort();
 
     //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
     private final RoomSocketHandler groupSocketHandler;

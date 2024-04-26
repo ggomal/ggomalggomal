@@ -2,14 +2,12 @@ package com.ssafy.ggomalbe.bear.handlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import com.ssafy.ggomalbe.bear.entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,15 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @AllArgsConstructor
 @Getter
-public class RoomSocketHandler implements WebSocketHandler {
+public class RoomSocketHandlerV2 implements WebSocketHandler {
 
-    //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
-    //ConcurrentHashMap은 스프링 빈이 아니라서 따로 관리해주어야한다. 근데 내부적으로 동기화를 진행한다는데 flux로 했을때 효율적인지
-    // gpt :  여러 스레드가 동시에 ConcurrentHashMap에 접근하면 잠금 충돌이 더 자주 발생할 수 있습니다. 이는 동시성을 높이고 병렬 처리를 통해 처리량을 향상시키는 Flux의 장점과 상충될 수 있습니다.
-    // create한 room 저장
     private final Map<String, Room> rooms = new ConcurrentHashMap<>();
-
-    //JSON파일 파싱
     private final ObjectMapper objectMapper;
 
     @Override

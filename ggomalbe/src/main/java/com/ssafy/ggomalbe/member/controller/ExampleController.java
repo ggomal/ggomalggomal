@@ -1,7 +1,7 @@
 package com.ssafy.ggomalbe.member.controller;
 
-import com.ssafy.ggomalbe.bear.handlers.GroupSocketHandler;
-import com.ssafy.ggomalbe.bear.handlers.Room;
+import com.ssafy.ggomalbe.bear.handlers.RoomSocketHandler;
+import com.ssafy.ggomalbe.bear.entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -29,7 +29,7 @@ public class ExampleController {
     private final Sinks.Many<String> sink;
 
     //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
-    private final GroupSocketHandler groupSocketHandler;
+    private final RoomSocketHandler groupSocketHandler;
 
 
 

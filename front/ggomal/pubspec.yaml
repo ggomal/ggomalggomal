@@ -64,6 +64,14 @@ flutter:
   assets:
     - assets/images/
     - assets/images/frog/
+
+  fonts:
+    - family: MapleStoryBold
+      fonts:
+        - asset: assets/fonts/Maplestory-OTF-Bold.otf
+    - family: MapleStoryLight
+      fonts:
+        - asset: assets/fonts/Maplestory-OTF-Light.otf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

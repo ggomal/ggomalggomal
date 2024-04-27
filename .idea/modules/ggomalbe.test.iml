@@ -11,6 +11,7 @@
     <orderEntry type="module" module-name="ggomalbe.main" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-r2dbc:3.2.5" level="project" />
     <orderEntry type="library" name="Gradle: io.asyncer:r2dbc-mysql:0.9.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.mysql:mysql-connector-j:8.0.33" level="project" />
     <orderEntry type="library" name="Gradle: io.reactivex.rxjava3:rxjava:3.1.8" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-webflux:3.2.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-test:3.2.5" level="project" />
@@ -106,7 +107,6 @@
     <orderEntry type="library" name="Gradle: io.netty:netty-transport-classes-epoll:4.1.109.Final" level="project" />
     <orderEntry type="library" name="Gradle: io.netty:netty-transport-native-unix-common:4.1.109.Final" level="project" />
     <orderEntry type="library" name="Gradle: io.netty:netty-codec-socks:4.1.109.Final" level="project" />
-    <orderEntry type="library" name="Gradle: mysql:mysql-connector-j:" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: io.projectreactor.netty.incubator:reactor-netty-incubator-quic:0.1.18" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.10.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.objenesis:objenesis:3.3" level="project" />

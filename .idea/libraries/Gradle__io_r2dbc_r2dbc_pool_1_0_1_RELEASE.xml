@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: io.r2dbc:r2dbc-pool:1.0.1.RELEASE" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="io.r2dbc" artifactId="r2dbc-pool" version="1.0.1.RELEASE" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.r2dbc/r2dbc-pool/1.0.1.RELEASE/41ec552a21fc0884dfb85335bd3f4c757a269ab1/r2dbc-pool-1.0.1.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

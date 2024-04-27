@@ -1,0 +1,10 @@
+webflux data stream
+
+mono는 하나 flux는 여러개를 stream으로 다룸
+
+publisher와 subscriber로 구현되어 downstream으로 흘러가며 로직이 실행됨
+
+Mono, Flux에 담겨있어 값이 필요한 순간에 갱신될 수 있게한다.
+- Lazy Evaluate
+reactive하게 데이터를 처리하기 위함.
+

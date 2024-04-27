@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/S10P31E206.iml" filepath="$PROJECT_DIR$/.idea/S10P31E206.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ggomalbe.iml" filepath="$PROJECT_DIR$/.idea/modules/ggomalbe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ggomalbe.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ggomalbe.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ggomalbe.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ggomalbe.test.iml" />
     </modules>
   </component>
 </project>

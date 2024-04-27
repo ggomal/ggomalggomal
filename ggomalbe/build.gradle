@@ -11,6 +11,11 @@ java {
 	sourceCompatibility = '17'
 }
 
+// jar 파일 2개 생기면서 docker image build 오류를 방지
+jar {
+	enabled = false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor

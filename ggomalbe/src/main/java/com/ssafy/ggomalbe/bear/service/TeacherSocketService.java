@@ -1,5 +1,7 @@
 package com.ssafy.ggomalbe.bear.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
 import com.ssafy.ggomalbe.bear.entity.BingoPlayer;
 import com.ssafy.ggomalbe.bear.entity.Room;
@@ -17,7 +19,8 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class TeacherSocketService {
-    private static final Map<String, BingoPlayer> TeacherBingoPlayerMap = new HashMap<>();
+
+    private final ObjectMapper objectMapper;
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;
 
@@ -25,13 +28,12 @@ public class TeacherSocketService {
     //todo -> 단어 칸 누르기, 다시 버튼, 통과버튼
 
     //=====send=====
-    //게임창 만들기 -> 게임판을 만들면 아이에게도 게임판을 주고 게임시작된다
-    //단어 칸 누르기 -> 아이창에 "선생님이 선택한 단어를 찾아봐"
     //다시 버튼 누르기 -> 아이창에 단어카드 모달 띄우기
     //통과버튼 누르기 -> 아이창에 해당 단어 O표시, 발음평가api결과 저장
 
-    //게임창 만들기
-    public Mono<Void> setBingoBoard(WebSocketSession session){
+    //게임창 만들기 -> 게임판을 만들면 아이에게도 게임판을 주고 게임시작된다
+    public Mono<Void> setBingoBoard(WebSocketSession session) throws JsonProcessingException {
+
         //빙고판을 만들고
         BingoCard[][] teacherBingoBoard = bingoSocketService.createBingoBoard();
 
@@ -42,22 +44,26 @@ public class TeacherSocketService {
         String roomId = roomService.memberRoomId(session.getId());
         Room room = roomService.getRoom(roomId);
 
+
         //선생님에게 빙고판을 보낸다
-        room.sendTeacherBingoBoard(teacherBingoBoard).subscribe();
+        room.sendTeacherBingoBoard(objectMapper.writeValueAsString(teacherBingoBoard)).subscribe();
+        BingoPlayer bingoPlayerT = new BingoPlayer(session.getId(),session,teacherBingoBoard, bingoSocketService.createBingoVisitBoard());
+        bingoSocketService.putTeacherBingoPlayer(bingoPlayerT);
 
         //아이에게 빙고판을 보낸다
-        return room.sendKidBingoBoard(kidBingoBoard);
+        WebSocketSession kidSocket = room.getKidSocket();
+        BingoPlayer bingoPlayerK = new BingoPlayer(kidSocket.getId(),kidSocket,kidBingoBoard, bingoSocketService.createBingoVisitBoard());
+        bingoSocketService.putKidBingoPlayerMap(bingoPlayerK);
+        //요 윗부분 다운스트림으로 하기
+        return room.sendKidBingoBoard(objectMapper.writeValueAsString(kidBingoBoard));
 
     }
-//
-//    public Mono<Void> broadcast(String message) {
-//        // Flux.fromIterable(participants.values())를 통해 participants 맵의 모든 값을 Flux로 변환
-//        //Flux.fromIterable -> 리스트에서 flux생성
-//        // WebSocket 세션에 대한 스트림입니다.
-//        return Flux.fromIterable(participants.values())
-//                .flatMap(session ->session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환
-//                .then();    // then()을 사용하여 모든 세션에게 메시지를 보낸 후에 Mono<Void>를 반환
-//    }
+
+    //단어 칸 누르기 -> 아이창에 "선생님이 선택한 단어를 찾아봐"
+    public Mono<Void> choiceBingoCard(WebSocketSession session, String choiceLetter) throws JsonProcessingException {
+        bingoSocketService.choiceBingoCard(session,choiceLetter);
+        return Mono.empty();
+    }
 
     //=====receive=====
     //평가 모달띄우기

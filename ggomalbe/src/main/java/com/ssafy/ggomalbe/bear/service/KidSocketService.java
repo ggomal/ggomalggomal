@@ -14,7 +14,7 @@ import java.util.Map;
 public class KidSocketService {
     //todo -> 단어 칸 누르기,
     private final RoomService roomService;
-    private static final Map<String, BingoPlayer> KidBingoPlayerMap = new HashMap<>();
+
 
 
 

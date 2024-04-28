@@ -8,7 +8,6 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 //임시테스트용 룸 클래스
 @Data
@@ -52,13 +51,13 @@ public class Room {
     }
 
     //아이에게 빙고판 전달
-    public Mono<Void> sendKidBingoBoard(BingoCard[][] board) {
-        return kidSocket.send(Mono.just(kidSocket.textMessage(Arrays.toString(board)))).then();
+    public Mono<Void> sendKidBingoBoard(String board) {
+        return kidSocket.send(Mono.just(kidSocket.textMessage(board))).then();
     }
 
     //선생님에게 빙고판 전달
-    public Mono<Void> sendTeacherBingoBoard(BingoCard[][] board) {
-        return teacherSocket.send(Mono.just(teacherSocket.textMessage(Arrays.toString(board)))).then();
+    public Mono<Void> sendTeacherBingoBoard(String board) {
+        return teacherSocket.send(Mono.just(teacherSocket.textMessage(board))).then();
     }
 
 

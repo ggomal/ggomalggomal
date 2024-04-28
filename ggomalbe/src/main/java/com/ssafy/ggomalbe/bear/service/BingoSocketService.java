@@ -1,18 +1,35 @@
 package com.ssafy.ggomalbe.bear.service;
 
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
+import com.ssafy.ggomalbe.bear.entity.BingoPlayer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.socket.WebSocketSession;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
 public class BingoSocketService {
     private static final int BINGO_LINE = 3;
     private static final int LIMIT = (int)Math.pow(BINGO_LINE,2);
+    private static final Map<String, BingoPlayer> teacherBingoPlayerMap = new HashMap<>();
+    private static final Map<String, BingoPlayer> kidBingoPlayerMap = new HashMap<>();
+
+    public void putTeacherBingoPlayer(BingoPlayer bingoPlayer) {
+        teacherBingoPlayerMap.put(bingoPlayer.getId(), bingoPlayer);
+    }
+    public BingoPlayer getTeacherBingoPlayer(String id) {
+        return teacherBingoPlayerMap.get(id);
+    }
+
+    public void putKidBingoPlayerMap(BingoPlayer bingoPlayer) {
+        kidBingoPlayerMap.put(bingoPlayer.getId(), bingoPlayer);
+    }
+
+    public BingoPlayer getKidBingoPlayer(String id) {
+        return kidBingoPlayerMap.get(id);
+    }
 
     //해당 룸의 선생님 빙고판
 
@@ -52,7 +69,28 @@ public class BingoSocketService {
     }
 
     //빙고카드 선택
-    public boolean selectBingoCard(){
+    public boolean choiceBingoCard(WebSocketSession session,String choiceLetter) {
+        String id =session.getId();
+        BingoPlayer teacherBingoPlayer = teacherBingoPlayerMap.get(id);
+
+        BingoCard[][] board = teacherBingoPlayer.getBoard();
+        boolean[][] v= teacherBingoPlayer.getV();
+
+        for(int i =0; i<LIMIT; i++){
+            for(int j =0; j<LIMIT; j++){
+                String letter = board[i][j].getLetter();
+                if(letter.equals(choiceLetter)){
+                    v[i][j] = true;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    //빙고 유무 판단
+    public boolean isBingo(){
         return true;
     }
 
@@ -64,6 +102,10 @@ public class BingoSocketService {
             }
             System.out.println();
         }
+    }
+
+    public boolean[][] createBingoVisitBoard(){
+        return new boolean[BINGO_LINE][BINGO_LINE];
     }
 
     //플로우 -> 칸을 터치하면 글자를 서버로 전송 -> 글자에 해당하는 곳 체크하고 빙고인지아닌지 판단

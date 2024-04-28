@@ -61,11 +61,5 @@ public class ExampleController {
         sink.emitNext("hello", Sinks.EmitFailureHandler.FAIL_FAST);
     }
 
-    @GetMapping("/all-socket")
-    public void allSocket(){
-        System.out.println("all-socket"+" "+  groupSocketHandler.getRooms().size());
-        for (Room value : groupSocketHandler.getRooms().values()) {
-            log.info("room val {}",value);
-        }
-    }
+
 }

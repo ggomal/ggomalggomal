@@ -1,7 +1,6 @@
 package com.ssafy.ggomalbe.bear.service;
 
-import io.r2dbc.spi.Parameter;
-import lombok.Getter;
+import com.ssafy.ggomalbe.bear.entity.Chat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -32,7 +31,6 @@ public class ChatService {
 //        log.info("iam: {}, chat: {}", iam, chat);
         Sinks.Many<Chat> sink = chatSinkMap.get(iam);
         if (sink == null){
-            log.info("skin null");
             return false;
         }
 

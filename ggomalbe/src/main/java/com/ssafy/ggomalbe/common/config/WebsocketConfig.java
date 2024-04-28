@@ -4,23 +4,18 @@ import com.ssafy.ggomalbe.bear.handlers.ChatWebSocketHandler;
 import com.ssafy.ggomalbe.bear.handlers.KidSocketHandler;
 import com.ssafy.ggomalbe.bear.handlers.RoomSocketHandler;
 import com.ssafy.ggomalbe.bear.handlers.TeacherSocketHandler;
-import com.ssafy.ggomalbe.bear.service.ChatService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
-import reactor.core.publisher.Sinks;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebsocketConfig {
+public class WebsocketConfig{
 
     private final RoomSocketHandler roomSocketHandler;
     private final KidSocketHandler kidSocketHandler;
@@ -36,10 +31,10 @@ public class WebsocketConfig {
     @Bean
     public SimpleUrlHandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
-        map.put("/api/v1/room", roomSocketHandler);
-        map.put("/api/v1/kid", kidSocketHandler);
-        map.put("/api/v1/teacher", teacherSocketHandler);
-        map.put("/api/v1/chat", chatWebSocketHandler);
+        map.put("/room", roomSocketHandler);
+        map.put("/kid", kidSocketHandler);
+        map.put("/teacher", teacherSocketHandler);
+        map.put("/chat", chatWebSocketHandler);
 
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setOrder(1);

@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.bear.handlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.ggomalbe.bear.service.BingoSocketService;
 import com.ssafy.ggomalbe.bear.service.RoomService;
 import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class RoomSocketHandler implements WebSocketHandler {
 
     private final ObjectMapper objectMapper;
     private final RoomService roomService;
+    private final BingoSocketService bingoSocketService;
     private final TeacherSocketService teacherSocketService;
 
     @Override
@@ -44,6 +46,8 @@ public class RoomSocketHandler implements WebSocketHandler {
                             case "deleteRoom" -> roomService.deleteRoom(jsonNode,session);
                             case "leaveRoom" -> roomService.leaveRoom(session);
                             case "setBingoBoard" ->teacherSocketService.setBingoBoard(session);
+                            case "choiceBingo" -> teacherSocketService.choiceBingoCard(session,jsonNode.get("message").asText());
+                            case "printBingoV" -> bingoSocketService.printBingoV(session);
                             default -> Mono.empty();
                         };
                     } catch (IOException e) {

@@ -1,10 +1,12 @@
 package com.ssafy.ggomalbe.bear.entity;
 
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.Data;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.lang.reflect.Member;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +26,11 @@ public class Room {
     private WebSocketSession kidSocket;
     private WebSocketSession teacherSocket;
 
+    //변경필요
     public void addParticipant(WebSocketSession session) {
-        if(kidSocket == null){
+        String name = session.getHandshakeInfo().getHeaders().get("name").get(0);
+        System.out.println(MemberEntity.Role.TEACHER);
+        if(name.equals("kid")){
             kidSocket = session;
         }else{
             teacherSocket = session;
@@ -42,13 +47,23 @@ public class Room {
     }
 
     public Mono<Void> broadcast(String message) {
-        // Flux.fromIterable(participants.values())를 통해 participants 맵의 모든 값을 Flux로 변환
-        //Flux.fromIterable -> 리스트에서 flux생성
-        // WebSocket 세션에 대한 스트림입니다.
         return Flux.fromIterable(participants.values())
                 .flatMap(session ->session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환
                 .then();    // then()을 사용하여 모든 세션에게 메시지를 보낸 후에 Mono<Void>를 반환
     }
+
+    public Mono<Void> broadcastMarkBingo(String message) {
+        return Flux.fromIterable(participants.values())
+                .flatMap(session ->session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환
+                .then();    // then()을 사용하여 모든 세션에게 메시지를 보낸 후에 Mono<Void>를 반환
+    }
+
+    public Mono<Void> broadcastGameOver(String message) {
+        return Flux.fromIterable(participants.values())
+                .flatMap(session ->session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환
+                .then();    // then()을 사용하여 모든 세션에게 메시지를 보낸 후에 Mono<Void>를 반환
+    }
+
 
     //아이에게 빙고판 전달
     public Mono<Void> sendKidBingoBoard(String board) {

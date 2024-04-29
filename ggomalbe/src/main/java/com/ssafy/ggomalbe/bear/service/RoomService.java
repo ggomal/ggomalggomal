@@ -17,10 +17,10 @@ public class RoomService {
     private static final Map<String, Room> rooms = new ConcurrentHashMap<>();
 
     // 해당 아이디인 멤버가 어떤 Room에 있는지(sessionId 를  memberId로 변경해야함)
-    private static final Map<String,String> memberRoom = new ConcurrentHashMap<>();
+    private static final Map<String,Room> memberRoom = new ConcurrentHashMap<>();
 
     // 멤버의 아이디로 차가하고 있는 방의 아이디를 return
-    public String memberRoomId(String id){
+    public Room findRoomByMemberId(String id){
         return memberRoom.get(id);
     }
 
@@ -35,7 +35,7 @@ public class RoomService {
             Room room = new Room(roomId);
             rooms.put(roomId, room);
             room.addParticipant(session);
-            memberRoom.put(session.getId(),roomId);
+            memberRoom.put(session.getId(),room);
 
             return session.send(Mono.just(session.textMessage("Room created: " + roomId)));
         } else {
@@ -49,7 +49,7 @@ public class RoomService {
         Room room = rooms.get(roomId);
         if (room != null) {
             room.addParticipant(session);
-            memberRoom.put(session.getId(),roomId);
+            memberRoom.put(session.getId(),room);
             //WebSocket 세션을 통해 메시지를 클라이언트에게 보내는 작업 수행
             //비동기적으로 실행되며, 클라이언트에게 메시지를 성공적으로 보내면 Mono<Void>를 반환
             return session.send(Mono.just(session.textMessage("Joined room: " + roomId)));
@@ -60,13 +60,12 @@ public class RoomService {
     }
 
     public Mono<Void> sendMessage(JsonNode jsonNode, WebSocketSession session) {
-        String roomId = memberRoom.get(session.getId());
-        if(roomId == null) {return Mono.empty();}
+        Room room = memberRoom.get(session.getId());
+        if(room == null) {return Mono.empty();}
         String message = jsonNode.get("message").asText();
-        Room room = rooms.get(roomId);
 
         //메시지를 보낼때 내가 그 방에 참가 하고 있어야 보낼수 있다.
-        if (room != null && room.containsMember(session)) {
+        if (room.containsMember(session)) {
             //같은 룸에 있는 사용자에게
             return room.broadcast(message);
         } else {
@@ -77,8 +76,8 @@ public class RoomService {
 
     public Mono<Void> deleteRoom(JsonNode jsonNode, WebSocketSession  webSocketSession) {
         return Mono.fromRunnable(() -> {
-            String roomId = memberRoom.get(webSocketSession.getId());
-            rooms.remove(roomId);
+            String id = memberRoom.get(webSocketSession.getId()).getRoomId();
+            rooms.remove(id);
         });
     }
 

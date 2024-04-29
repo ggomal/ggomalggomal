@@ -1,7 +1,9 @@
 package com.ssafy.ggomalbe.bear.entity;
 
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
@@ -11,6 +13,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 public class BingoPlayer {
     private String id;
     private WebSocketSession session;
-    private BingoCard[][] board;
-    private boolean[][] v;
+    private BingoBoard bingoBoard;
+    private MemberEntity.Role role;
+
 }

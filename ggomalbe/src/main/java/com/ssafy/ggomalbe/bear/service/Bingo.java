@@ -1,37 +1,29 @@
-package com.ssafy.ggomalbe.bear.controller;
+package com.ssafy.ggomalbe.bear.service;
+
+import com.ssafy.ggomalbe.bear.entity.BingoBoard;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Algo {
+public class Bingo {
     static int[] dx = {-1,0, 1, 1};
     static int[] dy = {1, 1, 1, 0};
     static int N = 4;
-    static int[][] map = {
-            {1, 0, 0, 1},
-            {0, 0, 1, 0},
-            {1, 1, 0, 1},
-            {1, 0, 0, 1}
-    };
 
-    public static void main(String[] args) {
-        if(isBingo()){
-            System.out.println("빙고입니다.");
-        }else{
-            System.out.println("다음 차례.");
-        }
+    public static boolean isBingo(BingoBoard bingoBoard) {
+        return bingoCheck(bingoBoard.getV());
     }
 
-    public static boolean isBingo() {
+    public static boolean bingoCheck(boolean[][] boardV) {
         for (int i = 0; i <N; i++) {
             for (int j = 0; j < N; j++) {
-                if(map[i][j] >0 && bfs(i,j)) return true;
+                if(boardV[i][j] && bfs(boardV,i,j)) return true;
             }
         }
         return false;
     }
 
-    public static boolean bfs(int x, int y) {
+    public static boolean bfs(boolean[][] boardV, int x, int y) {
         Queue<Node> q = new LinkedList<>();
         boolean[][][] v = new boolean[4][N][N];
 
@@ -49,7 +41,7 @@ public class Algo {
 
             if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
 
-            if (!v[node.dir][nx][ny] && map[nx][ny] > 0) {
+            if (!v[node.dir][nx][ny] && boardV[nx][ny]) {
                 v[node.dir][nx][ny] = true;
                 q.offer(new Node(nx, ny, node.count + 1, node.dir));
             }

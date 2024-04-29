@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.bear.controller;
 
+import com.ssafy.ggomalbe.bear.entity.BingoBoard;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
 import com.ssafy.ggomalbe.bear.service.BingoSocketService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class BingoController {
     private final BingoSocketService bingoSocketService;
 
     @GetMapping("/create")
-    public BingoCard[][] test(){
+    public BingoBoard test(){
         return bingoSocketService.createBingoBoard();
     }
 
@@ -30,8 +31,8 @@ public class BingoController {
 
     @GetMapping("/print")
     public void print(){
-        BingoCard[][] bingoBoard1 = bingoSocketService.createBingoBoard();
-        BingoCard[][] bingoBoard2 = bingoSocketService.createBingoBoard();
+        BingoBoard bingoBoard1 = bingoSocketService.createBingoBoard();
+        BingoBoard bingoBoard2 = bingoSocketService.createBingoBoard();
 
         bingoSocketService.printBingoCard(bingoBoard1);
         System.out.println();

@@ -72,9 +72,8 @@ public class TeacherSocketService {
         room.broadcastMarkBingo(choiceLetter).subscribe();
         
         //빙고인지아닌지 -> 나의 옵션(선생,아이)을 같이보내서 우선순위
-        bingoSocketService.isBingo(room);
+        bingoSocketService.isBingo(room,MemberEntity.Role.TEACHER).subscribe();
 
-        //빙고인지 아닌지 판단한다.
         return Mono.empty();
     }
 

@@ -54,14 +54,14 @@ public class Room {
 
     public Mono<Void> broadcastMarkBingo(String message) {
         return Flux.fromIterable(participants.values())
-                .flatMap(session ->session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환
-                .then();    // then()을 사용하여 모든 세션에게 메시지를 보낸 후에 Mono<Void>를 반환
+                .flatMap(session ->session.send(Mono.just(session.textMessage(message))))
+                .then();
     }
 
     public Mono<Void> broadcastGameOver(String message) {
         return Flux.fromIterable(participants.values())
-                .flatMap(session ->session.send(Mono.just(session.textMessage(message)))) // flatMap을 사용하여 각 WebSocket 세션에 대해 비동기 작업을 수행하고 Mono로 반환
-                .then();    // then()을 사용하여 모든 세션에게 메시지를 보낸 후에 Mono<Void>를 반환
+                .flatMap(session ->session.send(Mono.just(session.textMessage(message))))
+                .then();
     }
 
 

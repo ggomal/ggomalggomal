@@ -8,13 +8,15 @@ import java.util.Queue;
 public class Bingo {
     static int[] dx = {-1,0, 1, 1};
     static int[] dy = {1, 1, 1, 0};
-    static int N = 4;
+    static int N;
 
     public static boolean isBingo(BingoBoard bingoBoard) {
+        boolean[][] v = bingoBoard.getV();
+        N = v.length;
         return bingoCheck(bingoBoard.getV());
     }
 
-    public static boolean bingoCheck(boolean[][] boardV) {
+    private static boolean bingoCheck(boolean[][] boardV) {
         for (int i = 0; i <N; i++) {
             for (int j = 0; j < N; j++) {
                 if(boardV[i][j] && bfs(boardV,i,j)) return true;
@@ -23,7 +25,7 @@ public class Bingo {
         return false;
     }
 
-    public static boolean bfs(boolean[][] boardV, int x, int y) {
+    private static boolean bfs(boolean[][] boardV, int x, int y) {
         Queue<Node> q = new LinkedList<>();
         boolean[][][] v = new boolean[4][N][N];
 

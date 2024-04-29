@@ -6,6 +6,7 @@ import com.ssafy.ggomalbe.bear.entity.BingoBoard;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
 import com.ssafy.ggomalbe.bear.entity.BingoPlayer;
 import com.ssafy.ggomalbe.bear.entity.Room;
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -116,7 +117,8 @@ public class BingoSocketService {
     }
 
     //빙고 유무 판단
-    public boolean isBingo(Room room){
+    public Mono<Void> isBingo(Room room, MemberEntity.Role role){
+        log.info("is Bingo room {}", room);
         WebSocketSession kidSocket = room.getTeacherSocket();
         WebSocketSession teacherSocket = room.getTeacherSocket();
 
@@ -125,21 +127,25 @@ public class BingoSocketService {
 
         boolean isBingoT = Bingo.isBingo(bingoPlayerT.getBingoBoard());
         boolean isBingoK = Bingo.isBingo(bingoPlayerK.getBingoBoard());
-//
-//        if(isBingoT)
-//            return true;
-        return true;
+
+        if(isBingoT && isBingoK){
+            return gameOver(room, role);
+        }
+
+        if(role==MemberEntity.Role.TEACHER && isBingoT) return gameOver(room, MemberEntity.Role.TEACHER);
+        if(role==MemberEntity.Role.KID && isBingoK) return gameOver(room, MemberEntity.Role.KID);
+
+        return Mono.empty();
     }
 
-//    public Mono<Void> gameOver(We){
-//
-//    }
-
-
+    public Mono<Void> gameOver(Room room, MemberEntity.Role role){
+        return room.broadcastGameOver(role.toString());
+    }
 
     public BingoCard[][] loadMyBingoBoard(){
         return null;
     }
+
     // print
     public void printBingoCard(BingoBoard bingoBoard){
         BingoCard[][] bingo = bingoBoard.getBoard();

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/widgets/create_bingo.dart';
 
 class KidInfo extends StatelessWidget {
   const KidInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     final Map<String, dynamic> kid = {
       "kid_id": 2,
       "name": "춘식이",
@@ -100,7 +102,10 @@ class KidInfo extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () => showDialog(
+              context: context,
+              builder: (BuildContext context) => CreateBingoModal(),
+            ),
             child: Text("아이와 게임하기"),
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFFFAA8D),

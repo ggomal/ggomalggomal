@@ -26,7 +26,7 @@ class _BearScreenState extends State<BearScreen> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/bear/bear_bg.png'),
+          image: AssetImage('assets/images/bear/bear_ bg.png'),
           fit: BoxFit.cover,
         ),
       ),

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 class KidCard extends StatelessWidget {
   final Map<String, dynamic> kidData;
 
-  const KidCard(this.kidData);
+  const KidCard(this.kidData, {super.key});
 
   Widget textLine(Map<String, dynamic> text) {
     return Padding(

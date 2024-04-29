@@ -24,8 +24,9 @@ repositories {
 dependencies {
 	// r2dbc mysql
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
-	implementation 'io.asyncer:r2dbc-mysql:0.9.2'
-	// https://mvnrepository.com/artifact/io.reactivex.rxjava3/rxjava
+	implementation 'io.asyncer:r2dbc-mysql:1.0.4'
+	testRuntimeOnly 'com.h2database:h2'
+	testImplementation 'io.r2dbc:r2dbc-h2'
 	// mysql
 	testImplementation 'mysql:mysql-connector-java'
 	implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
@@ -35,6 +36,7 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.security:spring-security-test'

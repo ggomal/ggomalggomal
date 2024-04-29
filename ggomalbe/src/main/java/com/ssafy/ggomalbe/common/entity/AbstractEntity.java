@@ -1,21 +1,27 @@
 package com.ssafy.ggomalbe.common.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.repository.core.EntityInformation;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
-public class AbstractEntity {
+@Getter
+@ToString
+public abstract class AbstractEntity {
     @CreatedDate
-    @Column("created_at")
-    private ZonedDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column("modified_at")
-    private ZonedDateTime modifiedAt;
+    private LocalDateTime modifiedAt;
 
     @Column("deleted_at")
-    private ZonedDateTime deletedAt;
+    private LocalDateTime deletedAt;
+
 }

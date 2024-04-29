@@ -138,8 +138,6 @@ DROP TABLE IF EXISTS `game_num`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `game_num` (
   `game_num_id` bigint NOT NULL AUTO_INCREMENT COMMENT '곰, 병아리게임 시퀀스',
-  `game_type` enum('BEAR','CHICK') NOT NULL,
-  `number` bigint NOT NULL,
   PRIMARY KEY (`game_num_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -258,7 +256,7 @@ CREATE TABLE `member` (
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`member_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -267,6 +265,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES (2,NULL,'admin1','aksmfaksmf','마늘센터','010-0000-1234','CENTER','2024-04-26 01:28:25','2024-04-26 01:28:25',NULL),(3,2,'teacher1','aksmfaksmf','마늘선생','010-0000-1234','TEACHER','2024-04-26 01:29:22','2024-04-26 01:29:32',NULL);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -309,7 +308,7 @@ CREATE TABLE `schedule` (
   `schedule_id` bigint NOT NULL AUTO_INCREMENT,
   `teacher_kid_id` bigint NOT NULL,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('to do','progressing','done') NOT NULL,
+  `status` enum('TODO','PROGRESSING','DONE') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -446,4 +445,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-25 16:58:01
+-- Dump completed on 2024-04-26 10:46:50

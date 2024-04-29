@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class KidCard extends StatelessWidget {
   final Map<String, dynamic> kidData;
@@ -33,51 +34,41 @@ class KidCard extends StatelessWidget {
         ],
       ),
     );
-
-    //   RichText(
-    //   text: TextSpan(
-    //     text: "${text['field']}  :  ",
-
-    //     children: [
-    //       TextSpan(
-    //         text: "${text['data']}",
-    //         style: TextStyle(
-    //           fontWeight: FontWeight.w800,
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 300.0,
-      height: 160.0,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.7),
-            blurRadius: 5.0,
-            offset: Offset(3, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 20.0,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          {"field": "이름", "data": kidData["name"]},
-          {"field": "나이", "data": kidData["age"]},
-          {"field": "아이디", "data": kidData["id"]},
-          {"field": "비밀번호", "data": kidData["password"]},
-        ].map((e) => textLine(e)).toList(),
+    return GestureDetector(
+      onTap: () {
+        context.go('/manager/kids/${kidData['id']}');
+      },
+      child: Container(
+        width: 300.0,
+        height: 160.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.7),
+              blurRadius: 5.0,
+              offset: Offset(3, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20.0,
+          vertical: 20.0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            {"field": "이름", "data": kidData["name"]},
+            {"field": "나이", "data": kidData["age"]},
+            {"field": "아이디", "data": kidData["id"]},
+            {"field": "비밀번호", "data": kidData["password"]},
+          ].map((e) => textLine(e)).toList(),
+        ),
       ),
     );
   }

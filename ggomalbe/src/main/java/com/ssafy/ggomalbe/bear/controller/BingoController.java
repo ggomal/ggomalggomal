@@ -20,6 +20,11 @@ import java.time.Instant;
 public class BingoController {
     private final BingoSocketService bingoSocketService;
 
+    @GetMapping("/test")
+    public String testString(){
+        return "test success";
+    }
+
     @GetMapping("/create")
     public BingoBoard test(){
         return bingoSocketService.createBingoBoard();

@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.bear.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ssafy.ggomalbe.bear.entity.Room;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
@@ -12,6 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@Slf4j
 public class RoomService {
     // roomId와 Room mapping
     private static final Map<String, Room> rooms = new ConcurrentHashMap<>();
@@ -30,6 +32,7 @@ public class RoomService {
     }
 
     public Mono<Void> createRoom(JsonNode jsonNode, WebSocketSession session) {
+        log.info("createRoom");
         String roomId = createRoomNumber();
         if (!rooms.containsKey(roomId)) {
             Room room = new Room(roomId);

@@ -64,7 +64,6 @@ public class Room {
                 .then();
     }
 
-
     //아이에게 빙고판 전달
     public Mono<Void> sendKidBingoBoard(String board) {
         return kidSocket.send(Mono.just(kidSocket.textMessage(board))).then();

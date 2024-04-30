@@ -34,6 +34,7 @@ public class RoomSocketHandler implements WebSocketHandler {
                 .map(message ->message.getPayloadAsText())      //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                           //비동기 처리를 위한 flatMap, 처리하고 Mono로 반환하여 새로운 Publisher생성
                     try {
+                        log.info("socket message parsing start");
                         JsonNode jsonNode = objectMapper.readTree(message);
                         if(jsonNode.get("type") == null) return Mono.empty();
                         String messageType = jsonNode.get("type").asText();
@@ -46,7 +47,7 @@ public class RoomSocketHandler implements WebSocketHandler {
                             case "deleteRoom" -> roomService.deleteRoom(jsonNode,session);
                             case "leaveRoom" -> roomService.leaveRoom(session);
                             case "setBingoBoard" ->teacherSocketService.setBingoBoard(session);
-                            case "choiceBingo" -> teacherSocketService.choiceBingoCard(session,jsonNode.get("message").asText());
+                            case "markingBingoCard" -> teacherSocketService.markingBingoCard(session,jsonNode.get("message").asText());
                             case "printBingoV" -> bingoSocketService.printBingoV(session);
                             default -> Mono.empty();
                         };
@@ -58,6 +59,7 @@ public class RoomSocketHandler implements WebSocketHandler {
                     //then은 비동기 작업을 순차적으로 실행하고 싶을 때 사용(이전 작업이 완료(empty여도 상관없음)되어야 실행)
                     // WebSocket 연결이 종료될 때 해당 세션을 방에서 제거
 //                    roomService.rooms.values().forEach(room -> room.removeParticipant(session));
+                    log.info("socket doFinally");
                     roomService.leaveRoom(session).subscribe();
                 })
                 .then();    //모든 처리가 완료된 후에 Mono<Void>를 반환

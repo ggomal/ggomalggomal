@@ -58,9 +58,14 @@ public class TeacherSocketService {
         return room.sendKidBingoBoard(objectMapper.writeValueAsString(bingoBoardK));
     }
 
-    //단어 칸 누르기 -> 아이창에 "선생님이 선택한 단어를 찾아봐"
-    //선생님과 아이가 칸을 눌렀을때 반응이 다르므로 따로 처리
-    public Mono<Void> choiceBingoCard(WebSocketSession session, String choiceLetter) throws JsonProcessingException {
+    //선생님이 빙고카드를 선택하면 선생님창에는 평가모달, 아이 창에는 단어모달을 띄운다
+    public Mono<Void> choiceBingoCard(String choiceLetter){
+
+        return Mono.empty();
+    }
+
+    // 아이가 말한 단어를 통과했을때 빙고보드에 표시하고 빙고인지 판단하고 true이면 게임을끝낸다.
+    public Mono<Void> markingBingoCard(WebSocketSession session, String choiceLetter) throws JsonProcessingException {
         log.info("choiceBingoCard");
         Room room = roomService.findRoomByMemberId(session.getId());
 

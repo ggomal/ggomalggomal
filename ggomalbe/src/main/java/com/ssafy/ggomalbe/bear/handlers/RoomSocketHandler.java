@@ -36,7 +36,11 @@ public class RoomSocketHandler implements WebSocketHandler {
                     try {
                         log.info("socket message parsing start");
                         JsonNode jsonNode = objectMapper.readTree(message);
-                        if(jsonNode.get("type") == null) return Mono.empty();
+                        if(jsonNode.get("type") == null){
+                            log.info("type null");
+                            return Mono.empty();
+                        }
+                        log.info("jsonNode.get(type) {}", jsonNode.get("type"));
                         String messageType = jsonNode.get("type").asText();
                         log.info("message type {}", messageType);
                         return switch (messageType) {

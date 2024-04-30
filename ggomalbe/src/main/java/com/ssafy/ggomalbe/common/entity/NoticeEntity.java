@@ -1,16 +1,12 @@
 package com.ssafy.ggomalbe.common.entity;
 
-import com.ssafy.ggomalbe.common.repository.HomeworkRepository;
 import com.ssafy.ggomalbe.notice.dto.NoticeUpdateRequest;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Table("notice")
 @Builder
@@ -29,9 +25,6 @@ public class NoticeEntity extends AbstractEntity {
 
     @Column("teacher_name")
     private String teacherName;
-
-    @Transient
-    private List<HomeworkEntity> homeworks;
 
     public void update(NoticeUpdateRequest request){
         this.noticeId = request.getNoticeId();

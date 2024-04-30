@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +19,11 @@ public class NoticeResponse {
     private Long noticeId;
     private String teacherName;
     private String content;
-
+    private LocalDateTime date;
     private List<HomeworkResponse> homeworks = new ArrayList<>();
 
-    public NoticeEntity toEntity(){
-        return NoticeEntity.builder()
-                .noticeId(noticeId)
-                .teacherName(teacherName)
-                .noticeContents(content)
-                .build();
+    public NoticeResponse setHomeworks(List<HomeworkResponse> homeworks){
+        this.homeworks = homeworks;
+        return this;
     }
 }

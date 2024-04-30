@@ -4,8 +4,12 @@ import com.ssafy.ggomalbe.common.entity.HomeworkEntity;
 import com.ssafy.ggomalbe.common.entity.NoticeEntity;
 import com.ssafy.ggomalbe.common.repository.HomeworkRepository;
 import com.ssafy.ggomalbe.common.repository.NoticeRepository;
+import com.ssafy.ggomalbe.homework.HomeworkMapper;
 import com.ssafy.ggomalbe.homework.dto.HomeworkResponse;
-import com.ssafy.ggomalbe.notice.dto.*;
+import com.ssafy.ggomalbe.notice.dto.NoticeAddRequest;
+import com.ssafy.ggomalbe.notice.dto.NoticeAddResponse;
+import com.ssafy.ggomalbe.notice.dto.NoticeResponse;
+import com.ssafy.ggomalbe.notice.dto.NoticeUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,18 +24,19 @@ public class NoticeServiceImpl implements NoticeService {
     private final HomeworkRepository homeworkRepository;
 
     @Override
-    public Flux<NoticeListResponse> getAllNotice(Long kidId) {
-        return noticeRepository.findByKidId(kidId)
-                .map(notice ->
-                        NoticeListResponse.builder()
-                                .noticeId(notice.getNoticeId())
-                                .date(notice.getCreatedAt())
-                                .build());
+    public Flux<NoticeResponse> getAllNotice(Long kidId) {
+        return noticeRepository.findAllByKidId(kidId)
+                .map(NoticeMapper::toNoticeResponse)
+                .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
+                        .map(HomeworkMapper::toHomeworkResponse)
+                        .buffer()
+                        .map(notice::setHomeworks));
     }
 
     @Override
     public Mono<NoticeResponse> getNotice(Long noticeId) {
-        return noticeRepository.findByNoticeId(noticeId);
+        return noticeRepository.findByNoticeId(noticeId)
+                .map(NoticeMapper::toNoticeResponse);
     }
 
     @Override
@@ -43,7 +48,7 @@ public class NoticeServiceImpl implements NoticeService {
                                 .teacherName(request.getTeacherName())
                                 .build())
                 .flatMap(notice ->
-                        Mono.just(new NoticeAddResponse(notice, request.getHomework())))
+                        Mono.just(new NoticeAddResponse(notice, request.getHomeworks())))
                 .doOnNext(this::addHomeworks);
     }
 
@@ -52,17 +57,28 @@ public class NoticeServiceImpl implements NoticeService {
         return noticeRepository.findById(request.getNoticeId())
                 .doOnNext(notice -> notice.update(request))
                 .doOnNext(this::deleteHomeworks)
-                .doOnNext(entity -> addHomeworks(entity.getNoticeId(), request.getHomework()))
+                .doOnNext(entity -> addHomeworks(entity.getNoticeId(), request.getHomeworks()))
                 .flatMap(noticeRepository::save)
-                .doOnNext(System.out::println)
-                .flatMap(entity -> noticeRepository.findByNoticeId(entity.getNoticeId()));
+                .map(NoticeMapper::toNoticeResponse)
+                .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
+                        .map(HomeworkMapper::toHomeworkResponse)
+                        .collectList()
+                        .map(notice::setHomeworks));
     }
 
+    public void findHomeworkResponse(NoticeResponse noticeResponse) {
+        homeworkRepository.findAllByNoticeId(noticeResponse.getNoticeId())
+                .map(HomeworkMapper::toHomeworkResponse)
+                .doOnNext(response -> noticeResponse.getHomeworks().add(response))
+                .doOnNext(System.out::println)
+                .subscribe();
+    }
 
     public void deleteHomeworks(Long noticeId) {
         homeworkRepository.deleteAllByNoticeId(noticeId).subscribe();
     }
-    public void deleteHomeworks(NoticeEntity notice){
+
+    public void deleteHomeworks(NoticeEntity notice) {
         deleteHomeworks(notice.getNoticeId());
     }
 

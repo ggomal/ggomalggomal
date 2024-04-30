@@ -10,5 +10,5 @@ public class NoticeUpdateRequest {
     private Long kidId;
     private String contents;
     private String teacherName;
-    private String[] homework;
+    private String[] homeworks;
 }

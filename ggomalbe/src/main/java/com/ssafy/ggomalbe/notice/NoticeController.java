@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 public class NoticeController {
     private final NoticeService noticeService;
     @GetMapping()
-    public Flux<NoticeListResponse> getAllNotice(){
+    public Flux<NoticeResponse> getAllNotice(){
         // jwt -> kidId
         return noticeService.getAllNotice(3L);
     }

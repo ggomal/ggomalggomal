@@ -9,5 +9,5 @@ public class NoticeAddRequest {
     private Long kidId;
     private String contents;
     private String teacherName;
-    private String[] homework;
+    private String[] homeworks;
 }

@@ -26,7 +26,7 @@ import java.time.Duration;
 @AllArgsConstructor
 public class ExampleController {
 
-    private final Sinks.Many<String> sink;
+    private final Sinks.Many<String> sink = Sinks.many().multicast().directBestEffort();
 
     //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
     private final RoomSocketHandler groupSocketHandler;
@@ -61,11 +61,5 @@ public class ExampleController {
         sink.emitNext("hello", Sinks.EmitFailureHandler.FAIL_FAST);
     }
 
-    @GetMapping("/all-socket")
-    public void allSocket(){
-        System.out.println("all-socket"+" "+  groupSocketHandler.getRooms().size());
-        for (Room value : groupSocketHandler.getRooms().values()) {
-            log.info("room val {}",value);
-        }
-    }
+
 }

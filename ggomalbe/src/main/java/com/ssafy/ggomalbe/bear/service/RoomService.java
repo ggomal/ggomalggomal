@@ -35,8 +35,11 @@ public class RoomService {
         log.info("createRoom");
         String roomId = createRoomNumber();
         if (!rooms.containsKey(roomId)) {
+            log.info("createRoom ing {}", roomId);
             Room room = new Room(roomId);
             rooms.put(roomId, room);
+
+            log.info("addParticipant");
             room.addParticipant(session);
             memberRoom.put(session.getId(),room);
 

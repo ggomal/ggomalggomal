@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 import java.lang.reflect.Member;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //임시테스트용 룸 클래스
@@ -28,7 +29,18 @@ public class Room {
 
     //변경필요
     public void addParticipant(WebSocketSession session) {
-        String name = session.getHandshakeInfo().getHeaders().get("name").get(0);
+        System.out.println("addParticipant");
+        List<String> nameHeader = session.getHandshakeInfo().getHeaders().get("name");
+        String name = null;
+
+        if (nameHeader != null && !nameHeader.isEmpty()) {
+            name = nameHeader.get(0);
+            System.out.println("find member "+name);
+        }else{
+            System.out.println("not find member");
+            return;
+        }
+
         System.out.println(MemberEntity.Role.TEACHER);
         if(name.equals("kid")){
             kidSocket = session;

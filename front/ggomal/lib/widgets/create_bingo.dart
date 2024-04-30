@@ -178,6 +178,9 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                           _selectedWords = newValue;
                         });
                       },
+                      itemHeight: null,
+                      dropdownColor: Colors.white,
+                      menuMaxHeight: 160,
                     ),
                   )),
               Padding(
@@ -191,50 +194,51 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
+                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: DropdownButton<String>(
+                    value: _selectedInitials,
+                    isExpanded: true,
+                    style: TextStyle(
+                      fontFamily: 'NanumS',
+                      fontSize: 20,
+                      color: Color(0xFF767676),
                     ),
-                    child: DropdownButton<String>(
-                      value: _selectedInitials,
-                      isExpanded: true,
-                      style: TextStyle(
-                        fontFamily: 'NanumS',
-                        fontSize: 20,
-                        color: Color(0xFF767676),
-                      ),
-                      underline: SizedBox.shrink(),
-                      icon: Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.arrow_drop_down,
-                            size: 40, color: Colors.grey),
-                      ),
-                      items: initials.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 30),
-                              child: Text(
-                                value,
-                                style: TextStyle(
-                                  color: value == _selectedInitials ? Colors.black : null, fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                    underline: SizedBox.shrink(),
+                    icon: Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(Icons.arrow_drop_down, size: 40, color: Colors.grey),
+                    ),
+                    items: initials.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 30),
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              color: value == _selectedInitials ? Colors.black : null,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedInitials = newValue;
-                        });
-                      },
-                    ),
-                  )),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedInitials = newValue;
+                      });
+                    },
+                    itemHeight: null,
+                    dropdownColor: Colors.white,
+                    menuMaxHeight: 160,
+                  ),
+                ),
+              ),
               Padding(
                   padding: EdgeInsets.fromLTRB(0, 30, 0, 20),
                   child: ElevatedButton(

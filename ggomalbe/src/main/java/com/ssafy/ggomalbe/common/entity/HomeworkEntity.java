@@ -2,12 +2,16 @@ package com.ssafy.ggomalbe.common.entity;
 
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("homework")
 @Builder
+@ToString
+@Data
 public class HomeworkEntity extends AbstractEntity {
     @Id
     @Column("homework_id")

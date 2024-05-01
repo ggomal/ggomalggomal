@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class bingoMarking {
-    private SocketAction socketAction = SocketAction.MARKING;
-    private String letter;
+public class SocketResponse{
+    private SocketAction socketAction;
+    private String message;
 }

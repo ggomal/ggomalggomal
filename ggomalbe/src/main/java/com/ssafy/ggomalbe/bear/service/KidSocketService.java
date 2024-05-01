@@ -16,7 +16,7 @@ public class KidSocketService {
     private final RoomService roomService;
 
 
-
+    //선생님이
 
     //=====send=====
     //단어 칸 누르기 -> 선생님창에 평가모달띄우기

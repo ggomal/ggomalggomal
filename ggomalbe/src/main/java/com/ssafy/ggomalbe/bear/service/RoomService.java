@@ -21,7 +21,7 @@ public class RoomService {
     // 해당 아이디인 멤버가 어떤 Room에 있는지(sessionId 를  memberId로 변경해야함)
     private static final Map<String,Room> memberRoom = new ConcurrentHashMap<>();
 
-    // 멤버의 아이디로 차가하고 있는 방의 아이디를 return
+    // 멤버의 아이디로 멤버가 참하고 있는 방을 return
     public Room findRoomByMemberId(String id){
         return memberRoom.get(id);
     }

@@ -2,6 +2,8 @@ package com.ssafy.ggomalbe.member.controller;
 
 import com.ssafy.ggomalbe.bear.handlers.RoomSocketHandler;
 import com.ssafy.ggomalbe.bear.entity.Room;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -24,6 +26,7 @@ import java.time.Duration;
 @Slf4j
 @RestController
 @AllArgsConstructor
+@Tag(name = "ExampleController", description = "ExampleController")
 public class ExampleController {
 
     private final Sinks.Many<String> sink = Sinks.many().multicast().directBestEffort();
@@ -32,7 +35,7 @@ public class ExampleController {
     private final RoomSocketHandler groupSocketHandler;
 
 
-
+    @Operation(summary = "getExampleData", description = "getExampleData...")
     @GetMapping(value = "/example", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getExampleData() {
         // 예시로 간단한 스트림을 생성하여 반환

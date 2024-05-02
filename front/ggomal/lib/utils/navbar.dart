@@ -10,6 +10,16 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    TextStyle baseText(double size, FontWeight weight) {
+      return TextStyle(
+        fontFamily: 'Maplestory',
+        fontWeight: weight,
+        fontSize: size,
+        color: Colors.black,
+      );
+    }
+
     return AppBar(
       backgroundColor: Color(0xffFFFEF1),
       toolbarHeight: preferredSize.height,
@@ -19,7 +29,8 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         onTap: () {
           context.go('/kids');
         },
-        child: Container(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
           child: Image.asset('assets/images/home_button.png', fit: BoxFit.contain),
         ),
       ),
@@ -32,7 +43,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Image.asset('assets/images/reward.png'),
-        Text('개수')
+        Text('x 3', style: baseText(30.0, FontWeight.w800),)
       ],
     );
   }

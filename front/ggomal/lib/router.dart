@@ -1,21 +1,25 @@
 //경로 관련
 import 'package:ggomal/screens/kids/chick_clean.dart';
 import 'package:ggomal/screens/kids/chick_pizza.dart';
+import 'package:ggomal/screens/manager/kid_detail.dart';
 import 'package:ggomal/screens/manager/kids_manage.dart';
 import 'package:ggomal/screens/manager/manager_main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/screens/kids/whale.dart';
 import 'package:ggomal/screens/login.dart';
+import 'package:ggomal/screens/start.dart';
 import 'package:ggomal/screens/kids/main.dart';
 import 'package:ggomal/screens/kids/bear.dart';
 import 'package:ggomal/screens/kids/frog.dart';
 import 'package:ggomal/screens/kids/chick.dart';
 import 'package:ggomal/screens/kids/home.dart';
 import 'package:ggomal/screens/kids/bingo.dart';
+import 'package:ggomal/widgets/kid_report.dart';
 
 final router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+    GoRoute(path: '/start', builder: (context, state) => const StartScreen()),
     GoRoute(
       path: '/kids',
       builder: (context, state) => const MainScreen(),
@@ -35,6 +39,10 @@ final router = GoRouter(
     GoRoute(
       path: '/kids/chick/pizza',
       builder: (context, state) => const ChickPizzaScreen(),
+    ),
+    GoRoute(
+      path: '/kids/frog',
+      builder: (context, state) => const FrogScreen(),
     ),
     GoRoute(
       path: '/kids/home',
@@ -58,8 +66,15 @@ final router = GoRouter(
       builder: (context, state) => const KidsManageScreen(),
     ),
     GoRoute(
-      path: '/kids/frog',
-      builder: (context, state) => const FrogScreen(),
+      path: '/manager/kids/:id',
+      builder: (context, state) {
+        return KidDetail(state.pathParameters['id']);
+        // return KidDetail();
+      },
+    ),
+    GoRoute(
+      path: '/kids/report',
+      builder: (context, state) => const KidReport(),
     ),
   ],
 );

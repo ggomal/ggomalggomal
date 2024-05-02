@@ -68,7 +68,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        context.go('/kids');
+                        context.go('/start');
                       },
                       child: Text("로그인"),
                     ),

@@ -28,7 +28,7 @@ class MainScreen extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.fromLTRB(
-                      dynamicWidth * 0.3, 30, dynamicWidth * 0.3, 0),
+                      dynamicWidth * 0.3, dynamicWidth*0.3, dynamicWidth * 0.3, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -88,11 +88,16 @@ class MainScreen extends StatelessWidget {
               ],
             ),
             Center(
-              child: SizedBox(
-                child: Image.asset('assets/images/girl.png'),
-                width: dynamicWidth * 0.8,
+              child: InkWell(
+                onTap: () {
+                  context.go('/kids/home');
+                },
+                child: SizedBox(
+                  width: dynamicWidth * 0.8,
+                  child: Image.asset('assets/images/girl.png'),
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),

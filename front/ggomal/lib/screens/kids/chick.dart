@@ -32,7 +32,7 @@ class ChickScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [['chick_pizza', '/pizza'], ['egg', ''], ['egg', ''], ['egg', '']]
+                  children: [['chick_pizza', '/pizza'], ['chick_clean', '/clean'], ['egg', ''], ['egg', '']]
                       .map(
                         (e) =>
                             InkWell(

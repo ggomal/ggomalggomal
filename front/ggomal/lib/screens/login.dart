@@ -63,9 +63,23 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                OutlinedButton(onPressed: (){
-                  context.go('/kids');
-                }, child: Text("로그인"))
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        context.go('/kids');
+                      },
+                      child: Text("로그인"),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        context.go('/manager');
+                      },
+                      child: Text("관리자"),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -92,15 +106,15 @@ class ParticleOptionsData {
   const ParticleOptionsData({required this.baseColor});
 
   ParticleOptions get particleOptions => ParticleOptions(
-    baseColor: baseColor,
-    spawnOpacity: 0.0,
-    opacityChangeRate: 0.25,
-    minOpacity: 0.1,
-    maxOpacity: 0.4,
-    particleCount: 10,
-    spawnMaxRadius: 25.0,
-    spawnMaxSpeed: 30.0,
-    spawnMinSpeed: 10,
-    spawnMinRadius: 10.0,
-  );
+        baseColor: baseColor,
+        spawnOpacity: 0.0,
+        opacityChangeRate: 0.25,
+        minOpacity: 0.1,
+        maxOpacity: 0.4,
+        particleCount: 10,
+        spawnMaxRadius: 25.0,
+        spawnMaxSpeed: 30.0,
+        spawnMinSpeed: 10,
+        spawnMinRadius: 10.0,
+      );
 }

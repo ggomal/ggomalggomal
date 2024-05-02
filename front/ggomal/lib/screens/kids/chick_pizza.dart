@@ -16,49 +16,84 @@ class ChickPizzaScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: NavBar(),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  height: 500.0,
-                  'assets/images/chick/pizza_dough.png',
-                ),
-                Stack(
-                  children: [
-                    Image.asset(
+        body: Padding(
+          padding: const EdgeInsets.only(bottom: 30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Flexible(
+                    flex: 5,
+                    child: Image.asset(
                       height: 500.0,
-                      'assets/images/chick/pizza_plate.png',
+                      'assets/images/chick/pizza_dough.png',
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 40.0,
-                        horizontal: 30.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [['ham', 'paprika'], ['meat', 'mushroom'], ['tomato', 'olive']]
-                            .map(
-                              (e) => Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: e.map((img) => Image.asset(
-                                  height: 140,
-                                  width: 140,
-                                  'assets/images/chick/$img.png',
-                                ),).toList(),
-                              )
-
-                            )
-                            .toList(),
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ],
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          height: 500.0,
+                          'assets/images/chick/pizza_plate.png',
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 40.0,
+                            horizontal: 30.0,
+                          ),
+                          child: Wrap(
+                            children: [
+                              {'img': 'ham', 'name': '햄'},
+                              {'img': 'paprika', 'name': '피망'},
+                              {'img': 'meat', 'name': '고기'},
+                              {'img': 'mushroom', 'name': '버섯'},
+                              {'img': 'tomato', 'name': '토마토'},
+                              {'img': 'olive', 'name': '올리브'},
+                            ]
+                                .map(
+                                  (e) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 25.0,
+                                      vertical: 3.0,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Image.asset(
+                                          height: 90,
+                                          width: 90,
+                                          'assets/images/chick/${e['img']}.png',
+                                        ),
+                                        Text(
+                                          '${e['name']}',
+                                          style: TextStyle(
+                                            fontFamily: 'Maplestory',
+                                            fontSize: 28.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: Image.asset(
+                      'assets/images/chick/pizza_character.png',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

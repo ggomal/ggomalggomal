@@ -67,6 +67,7 @@ public class TeacherSocketService {
     }
 
     //선생님이 선택한 카드를 아이가 선택하면 아이와 선생님에게 평가 모달을 띄운다
+    //변경 -> 소켓말고 controller로 평가진행
     public Mono<Void> evaluation(WebSocketSession session, String choiceLetter) throws JsonProcessingException {
         Room room = roomService.findRoomByMemberId(session.getId());
 

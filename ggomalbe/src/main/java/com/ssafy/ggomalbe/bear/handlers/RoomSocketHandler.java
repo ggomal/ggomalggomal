@@ -3,6 +3,7 @@ package com.ssafy.ggomalbe.bear.handlers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ggomalbe.bear.service.BingoSocketService;
+import com.ssafy.ggomalbe.bear.service.NaverCloudClient;
 import com.ssafy.ggomalbe.bear.service.RoomService;
 import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
 import lombok.Getter;
@@ -25,13 +26,14 @@ public class RoomSocketHandler implements WebSocketHandler {
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;
     private final TeacherSocketService teacherSocketService;
+    private final NaverCloudClient naverCloudClient;
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
         log.info("room-socket sessionId {}", session.getId());
 
         return session.receive()                                // WebSocket 세션을 통해 클라이언트로부터 메시지를 수신
-                .map(message ->message.getPayloadAsText())      //수신된 각 메시지 텍스트 형식으로 변환
+                .map(message -> message.getPayloadAsText())      //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                           //비동기 처리를 위한 flatMap, 처리하고 Mono로 반환하여 새로운 Publisher생성
                     try {
                         log.info("socket message parsing start");

@@ -13,11 +13,11 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class NaverController {
+public class EvaluationController {
     private final NaverCloudClient naverCloudClient;
 
-    @PostMapping("/sound-to-text")
-    public Mono<String> readBytes(@RequestPart("files") FilePart filePart) {
+    @PostMapping("/bear/evaluation")
+    public Mono<String> stt(@RequestPart("files") FilePart filePart) {
         filePart
                 .content()
                 .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
@@ -26,7 +26,7 @@ public class NaverController {
                     return b1;
                 })
                 .flatMap(buffer -> naverCloudClient.soundToText(buffer))
-                .doOnNext((n)-> System.out.println(n))
+                .doOnNext((result) -> log.info(result))
                 .subscribe();
         return Mono.just("안기다려");
     }

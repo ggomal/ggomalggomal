@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.nio.ByteBuffer;
+import java.util.Base64;
 
 @Component
 @Slf4j
@@ -49,6 +50,25 @@ public class NaverCloudClient {
                             .map(this::getTextFromResponse);
                 });
     }
+
+//    public Mono<String> soundToTextSocket(String audioData ) {
+//        byte[] decodedBytes = Base64.getDecoder().decode(audioData);
+//        return Mono.fromCallable(() -> decodedBytes)
+//                .flatMap(fileContent -> {
+//                    String language = "Kor";
+//                    return webClient.post()
+//                            .uri(uriBuilder -> uriBuilder.path("/recog/v1/stt")
+//                                    .queryParam("lang", language)
+//                                    .build())
+//                            .header("X-NCP-APIGW-API-KEY-ID", CLIENT_ID)
+//                            .header("X-NCP-APIGW-API-KEY", CLIENT_SECRET)
+//                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                            .bodyValue(fileContent)
+//                            .retrieve()
+//                            .bodyToMono(String.class)
+//                            .map(this::getTextFromResponse);
+//                });
+//    }
 
     private String getTextFromResponse(String responseStr) {
         try {

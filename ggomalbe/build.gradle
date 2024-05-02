@@ -47,6 +47,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 //	implementation 'org.springframework:spring-messaging'
+	implementation 'com.google.code.gson:gson:2.8.6'
 }
 
 tasks.named('test') {

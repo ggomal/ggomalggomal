@@ -34,6 +34,7 @@ dependencies:
   web_socket_channel: ^2.4.5
   jwt_decode: ^0.3.1
   fl_chart: ^0.67.0
+  permission_handler: ^11.3.1
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -5,6 +5,7 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BingoScreen extends StatefulWidget {
   const BingoScreen({super.key});
@@ -14,6 +15,17 @@ class BingoScreen extends StatefulWidget {
 }
 
 class _BingoScreenState extends State<BingoScreen> {
+
+  getPermission() async {
+    var status = await Permission.speech.status;
+    if (status.isGranted) {
+      print('녹음 허락됨');
+    } else if (status.isDenied) {
+      print('녹음 거절됨');
+      Permission.speech.request();
+    }
+  }
+
   late final WebSocketChannel channel;
   bool isConnected = false;
   String? roomId;
@@ -22,6 +34,7 @@ class _BingoScreenState extends State<BingoScreen> {
   void initState() {
     super.initState();
     connectToWebSocket();
+    getPermission();
   }
 
   void connectToWebSocket() {
@@ -172,6 +185,16 @@ class _BingoScreenState extends State<BingoScreen> {
                 'assets/images/bear/teacher.png',
                 width: 250,
                 height: 250,
+              ),
+            ),
+            
+            // 녹음하는 버튼 
+            Positioned(
+              right: 0,
+              top : 100,
+              child: ElevatedButton(
+                onPressed: (){},
+                child: Text('녹음 버튼'),
               ),
             ),
           ]),

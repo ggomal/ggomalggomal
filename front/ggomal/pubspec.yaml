@@ -71,6 +71,8 @@ flutter:
     - assets/images/bear/
     - assets/images/bear/audio/
     - assets/images/manager/
+    - assets/images/home/
+    - assets/images/home/audio/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

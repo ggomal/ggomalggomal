@@ -41,6 +41,7 @@ dependencies:
   animated_background: ^2.0.0
   go_router: ^14.0.0
   percent_indicator: ^4.0.1
+  camera: ^0.10.5+9
 
 dev_dependencies:
   flutter_test:

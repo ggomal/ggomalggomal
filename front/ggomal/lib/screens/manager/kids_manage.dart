@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ggomal/widgets/enroll_kid.dart';
 import 'package:ggomal/widgets/kid_card.dart';
 
 class KidsManageScreen extends StatelessWidget {
@@ -32,31 +34,37 @@ class KidsManageScreen extends StatelessWidget {
                     runSpacing: 20,
                     alignment: WrapAlignment.start,
                     children: [
-                      Container(
-                        width: 300.0,
-                        height: 160.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.7),
-                              blurRadius: 5.0,
-                              offset:
-                                  Offset(3, 3), // changes position of shadow
+                      GestureDetector(
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => EnrollKidModal(),
+                        ),
+                        child: Container(
+                          width: 300.0,
+                          height: 160.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.7),
+                                blurRadius: 5.0,
+                                offset:
+                                    Offset(3, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                            vertical: 20.0,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(25.0),
+                            child: Image.asset(
+
+                              'assets/images/manager/enroll_button.png',
+
                             ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                          vertical: 20.0,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(25.0),
-                          child: Image.asset(
-
-                            'assets/images/manager/enroll_button.png',
-
                           ),
                         ),
                       ),

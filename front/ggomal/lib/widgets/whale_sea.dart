@@ -19,16 +19,16 @@ class _WhaleSeaState extends State<WhaleSea> {
   late int _fishCount = 0;
 
   final List<Map<String, dynamic>> _fishLocation = [
-    {"x": -0.1, "y" : 0.6, "isVisible": true},
+    {"x": -0.7, "y" : 0.7, "isVisible": true},
+    {"x": -0.4, "y" : -0.2, "isVisible": true},
     {"x": -0.3, "y" : 0.2, "isVisible": true},
-    {"x": 0.5, "y" : 0.25, "isVisible": true},
-    {"x": -0.7, "y" : 0.4, "isVisible": true},
+    {"x": -0.2, "y" : -0.7, "isVisible": true},
+    {"x": -0.1, "y" : 0.6, "isVisible": true},
+    {"x": 0.1, "y" : -0.6, "isVisible": true},
+    {"x": 0.4, "y" : 0.2, "isVisible": true},
+    {"x": 0.5, "y" : 0.8, "isVisible": true},
+    {"x": 0.6, "y" : 0.5, "isVisible": true},
     {"x": 0.7, "y" : -0.5, "isVisible": true},
-    {"x": -0.46, "y" : -0.2, "isVisible": true},
-    {"x": 0.12, "y" : -0.6, "isVisible": true},
-    {"x": 0.6, "y" : -0.4, "isVisible": true},
-    {"x": -0.22, "y" : 0.28, "isVisible": true},
-    {"x": 0.4, "y" : 0.22, "isVisible": true},
   ];
 
 
@@ -40,7 +40,7 @@ class _WhaleSeaState extends State<WhaleSea> {
           double y = _alignment.y + direction[1];
           if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
             _alignment += Alignment(direction[0], direction[1]);
-            int fishIndex = _fishLocation.indexWhere((location) => x + 0.12 > location["x"]! && x - 0.12 < location["x"]! && y + 0.12 > location["y"]! && y - 0.12 < location["y"]!);
+            int fishIndex = _fishLocation.indexWhere((location) => x + 0.06 > location["x"]! && x - 0.16 < location["x"]! && y + 0.21 > location["y"]! && y - 0.21 < location["y"]!);
 
             if (fishIndex != -1 && _fishLocation[fishIndex]['isVisible']){
               _eatFish(fishIndex);
@@ -88,7 +88,7 @@ class _WhaleSeaState extends State<WhaleSea> {
               "assets/images/whale/fish_pink.png",
               width: 50,
             ),
-          ) : Text("먹었다!"),
+          ) : Text(""),
           ).toList(),
           ...[
             {
@@ -103,12 +103,12 @@ class _WhaleSeaState extends State<WhaleSea> {
             },
             {
               "direct": "left",
-              "coord": [-0.1, 0.0],
+              "coord": [-0.07, 0.0],
               "location": Alignment.centerLeft,
             },
             {
               "direct": "right",
-              "coord": [0.1, 0.0],
+              "coord": [0.07, 0.0],
               "location": Alignment.centerRight,
             },
           ]

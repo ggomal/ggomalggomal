@@ -104,10 +104,7 @@ class _BearScreenState extends State<BearScreen> {
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/table.mp3'));
                 },
-                child: SizedBox(
-                  width: 530,
-                  child: Image.asset('assets/images/bear/table.png'),
-                ),
+                  child: Image.asset('assets/images/bear/table.png', width: 530),
               ),
             ),
             Positioned(

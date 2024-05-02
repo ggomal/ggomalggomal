@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ggomal/widgets/create_notice.dart';
 import 'package:ggomal/widgets/notice.dart';
 
 class KidNote extends StatelessWidget {
@@ -69,9 +71,15 @@ class KidNote extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Image.asset(
-                    "assets/images/manager/add_button.png",
-                    width: 40,
+                  GestureDetector(
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) => CreateNoticeModal(),
+                    ),
+                    child: Image.asset(
+                      "assets/images/manager/add_button.png",
+                      width: 40,
+                    ),
                   )
                 ]
               ),

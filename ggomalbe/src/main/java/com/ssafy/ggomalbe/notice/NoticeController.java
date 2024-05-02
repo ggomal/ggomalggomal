@@ -15,33 +15,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeController {
     private final NoticeService noticeService;
+
     @GetMapping
-    public Mono<List<NoticeResponse>> getAllNotice(){
+    public Mono<List<NoticeResponse>> getAllNotice() {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
-                        securityContext.getAuthentication().getPrincipal())
-                .flatMap(principal ->{
-                    // kidId 임시로 넣기, principal 에서 받아와야함
-                        return noticeService.getAllNotice(3L)
-                                .collectList();
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap( memberId -> {
+                    return noticeService.getAllNotice(memberId)
+                            .collectList();
                 });
     }
 
     @PostMapping
-    public Mono<NoticeAddResponse> addNotice(@RequestBody NoticeAddRequest request){
+    public Mono<NoticeAddResponse> addNotice(@RequestBody NoticeAddRequest request) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
-                        securityContext.getAuthentication().getPrincipal())
-                .flatMap(principal ->
-                        noticeService.addNotice(request));
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap(kidId ->
+                        noticeService.addNotice(kidId, request));
     }
 
     @PutMapping
-    public Mono<NoticeResponse> updateNotice(@RequestBody NoticeUpdateRequest request){
+    public Mono<NoticeResponse> updateNotice(@RequestBody NoticeUpdateRequest request) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
-                        securityContext.getAuthentication().getPrincipal())
-                .flatMap(principal ->
-                        noticeService.updateNotice(request));
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap(kidId ->
+                        noticeService.updateNotice(kidId, request));
     }
 }

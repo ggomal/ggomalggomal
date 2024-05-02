@@ -8,12 +8,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -32,6 +37,26 @@ public class JWTUtil {
         this.key = Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
+    public Authentication getAuthentication(String accessToken){
+
+        // 토근 복호화
+        Claims claims = getAllClaimsFromToken(accessToken);
+        if (claims.get("Member") == null) {
+            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+        }
+
+        // 클레임에서 권한 정보 가져오기
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get("Member").toString().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
+        // UserDetails 객체를 만들어서 Authentication return
+        // UserDetails: interface, User: UserDetails를 구현한 class
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+
+    }
     public Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                         .parseClaimsJws(token).getBody();
@@ -58,26 +83,25 @@ public class JWTUtil {
         return expiration.before(new Date());
     }
 
-    public String generateToken(MemberEntity user) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole());
-        claims.put("memberId",user.getMemberId());
-        return doGenerateToken(claims, user.getName());
-    }
-
-    private String doGenerateToken(Map<String, Object> claims, String username) {
+    public String generateToken(Authentication authentication){
         long expirationTimeLong = Long.parseLong(expirationTime); //in second
         final Date createdDate = new Date();
         final Date expirationDate = new Date(createdDate.getTime() + expirationTimeLong * 1000);
+        // 권한 가져오기
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
+        // Access Token 생성하기
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username)
-                .setIssuedAt(createdDate)
+                .setSubject(authentication.getName())
+                .claim("USER", authorities)
                 .setExpiration(expirationDate)
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
     }
+
 
     public boolean validateToken(String token) {
         try {

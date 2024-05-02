@@ -1,8 +1,6 @@
 package com.ssafy.ggomalbe.common.config.security;
 
-import com.ssafy.ggomalbe.common.repository.MemberRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -29,18 +27,23 @@ public class SecurityConfig {
 //                );
 //        return http.build();
 //    }
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http){
         http
                 .authorizeExchange(exchanges -> exchanges
+                        // 접근 허용 url
+                        .pathMatchers("/**").permitAll()
+                        //swagger 접근 허용
                         .pathMatchers("/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyExchange().authenticated())
-                .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/v1/**"))
+//                .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/v1/**"))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);
         return http.build();
     }
+
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()

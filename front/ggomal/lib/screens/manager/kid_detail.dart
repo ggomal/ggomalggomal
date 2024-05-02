@@ -29,7 +29,8 @@ class _KidDetailState extends State<KidDetail> {
               width: 250.0,
               'assets/images/logo.png',
             ),
-            SizedBox(
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 100),
               height: 50.0,
               child: Row(
                 children: [

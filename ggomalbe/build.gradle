@@ -29,7 +29,8 @@ repositories {
 dependencies {
 	// r2dbc mysql
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
-	implementation 'io.asyncer:r2dbc-mysql:0.9.2'
+//	implementation 'io.asyncer:r2dbc-mysql:0.9.2'
+	implementation 'io.asyncer:r2dbc-mysql:1.1.0'
 
 	// mysql
 	implementation 'com.mysql:mysql-connector-j:8.0.33'
@@ -53,7 +54,6 @@ dependencies {
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
 	testImplementation 'org.springdoc:springdoc-openapi-starter-webflux-api:2.5.0'
-
 
 }
 

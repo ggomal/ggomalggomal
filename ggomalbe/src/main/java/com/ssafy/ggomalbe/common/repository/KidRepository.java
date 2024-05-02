@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface KidRepository extends R2dbcRepository<KidEntity, Long> {
 
+
 }

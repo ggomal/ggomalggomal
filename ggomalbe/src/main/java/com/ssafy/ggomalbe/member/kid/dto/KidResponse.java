@@ -17,7 +17,7 @@ public class KidResponse {
     private String kidNote; // 특이사항
     private String parentName;
 
-    public KidResponse setKid(KidEntity kid){
+    public KidResponse setKidResponse(KidEntity kid){
         this.kidImgUrl = kid.getKidImgUrl();
         this.age = Period.between(kid.getKidBirthDT(), LocalDate.now()).getYears();
         this.kidNote = kid.getKidNote();

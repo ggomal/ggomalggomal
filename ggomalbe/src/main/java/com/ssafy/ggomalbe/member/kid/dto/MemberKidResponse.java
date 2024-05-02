@@ -20,6 +20,6 @@ public class MemberKidResponse {
     private KidResponse kidResponse;
 
     public void setKidResponse(KidEntity kid) {
-        this.kidResponse.setKid(kid);
+        this.kidResponse.setKidResponse(kid);
     }
 }

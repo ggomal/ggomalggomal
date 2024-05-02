@@ -7,6 +7,6 @@ import reactor.core.publisher.Mono;
 public interface NoticeService {
     Flux<NoticeResponse> getAllNotice(Long kidId);
     Mono<NoticeResponse> getNotice(Long noticeId);
-    Mono<NoticeAddResponse> addNotice(NoticeAddRequest request);
-    Mono<NoticeResponse> updateNotice(NoticeUpdateRequest request);
+    Mono<NoticeAddResponse> addNotice(Long kidId, NoticeAddRequest request);
+    Mono<NoticeResponse> updateNotice(Long kidId, NoticeUpdateRequest request);
 }

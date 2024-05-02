@@ -32,7 +32,8 @@ public class MemberCustomRepositoryImpl implements  MemberCustomRepository{
                        k.parent_name as parentName
                   from member m
                   join kid k
-                    on m.member_id = ?;
+                    on m.member_id = ?
+                   and m.role = "KID";
                 """;
 
         return databaseClient.sql(sql)

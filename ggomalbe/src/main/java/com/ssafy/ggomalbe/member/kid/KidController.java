@@ -35,6 +35,6 @@ public class KidController {
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
                 .flatMap(kidId ->
-                        kidService.getKid(kidId));
+                        kidService.getKid(Long.parseLong(String.valueOf(4))));
     }
 }

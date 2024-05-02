@@ -7,6 +7,7 @@ import 'package:ggomal/screens/manager/manager_main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/screens/kids/whale.dart';
 import 'package:ggomal/screens/login.dart';
+import 'package:ggomal/screens/start.dart';
 import 'package:ggomal/screens/kids/main.dart';
 import 'package:ggomal/screens/kids/bear.dart';
 import 'package:ggomal/screens/kids/frog.dart';
@@ -17,6 +18,7 @@ import 'package:ggomal/screens/kids/bingo.dart';
 final router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+    GoRoute(path: '/start', builder: (context, state) => const StartScreen()),
     GoRoute(
       path: '/kids',
       builder: (context, state) => const MainScreen(),

@@ -16,6 +16,7 @@ class _KidDetailState extends State<KidDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFF9F9F9),
       body: Padding(
         padding: const EdgeInsets.symmetric(

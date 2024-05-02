@@ -50,9 +50,9 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
         hintText: text,
         hintStyle: TextStyle(
           fontFamily: 'NanumS',
-          color: Colors.grey.shade400, // 라벨 텍스트 색상
-          fontSize: 14.0, // 라벨 텍스트 크기
-          fontWeight: FontWeight.bold, // 라벨 텍스트 굵기
+          color: Colors.grey.shade400,
+          fontSize: 14.0,
+          fontWeight: FontWeight.bold,
         ),
       );
     }
@@ -85,6 +85,8 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                 "선생님 한마디",
                 Expanded(
                   child: TextField(
+                    style: baseText(14.0, FontWeight.w500),
+                    textAlignVertical: TextAlignVertical.top,
                     keyboardType: TextInputType.multiline,
                     maxLines: 6,
                     decoration: inputStyle("오늘의 알림장을 기록해주세요."),
@@ -110,8 +112,8 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                               ),
                               Expanded(
                                 child: TextField(
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 5,
+                                  style: baseText(14.0, FontWeight.w500),
+                                  textAlignVertical: TextAlignVertical.bottom,
                                   decoration: inputStyle("숙제를 입력하세요."),
                                 ),
                               ),

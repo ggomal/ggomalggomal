@@ -218,7 +218,7 @@ class GameDialogUI extends StatelessWidget {
                                               child: Center(
                                                 child: ElevatedButton(
                                                   onPressed: (){
-
+                                                    context.go('/kids/frog');
                                                   },
                                                   child: Padding(
                                                     padding: EdgeInsets.symmetric(horizontal: 20),

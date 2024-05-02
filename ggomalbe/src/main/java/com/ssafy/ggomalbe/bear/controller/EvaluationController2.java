@@ -47,3 +47,7 @@ public class EvaluationController2 {
         return Mono.just("발음평가진행중");
     }
 }
+
+//3. 평가데이터 저장하기
+//1. 웹소켓테스트 - 아이, 선생님선택했을때 모달이 잘 뜨는지
+//2. api명세 쓰기

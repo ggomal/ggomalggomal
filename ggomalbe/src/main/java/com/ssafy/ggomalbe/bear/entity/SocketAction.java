@@ -7,10 +7,11 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Getter
 public enum SocketAction {
-    MARKING("marking"), EVALUATION_TEACHER("evaluation teacher"),
-    EVALUATION_KID("evaluation kid"), REQ_FIND("kid find bingo card"),
-    GAME_OVER("game over"), REQ_VOICE("request voice")
-    ;
+    MARKING_BINGO("marking"), EVALUATION("evaluation teacher"),
+    SET_BINGO_BOARD("set bingo board"), DETAIL_BINGO_CARD("detail bingo card"),
+    CREATE_ROOM("create room"), JOIN_ROOM("join room"), ERROR("error"),
+    FIND_LETTER("kid find bingo card"),
+    GAME_OVER("game over"), REQ_VOICE("request voice");
 
     private final String description;
 }

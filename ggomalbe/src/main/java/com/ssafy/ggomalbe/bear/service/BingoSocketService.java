@@ -2,10 +2,8 @@ package com.ssafy.ggomalbe.bear.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.ggomalbe.bear.entity.BingoBoard;
-import com.ssafy.ggomalbe.bear.entity.BingoCard;
-import com.ssafy.ggomalbe.bear.entity.BingoPlayer;
-import com.ssafy.ggomalbe.bear.entity.Room;
+import com.ssafy.ggomalbe.bear.dto.GameOverResponse;
+import com.ssafy.ggomalbe.bear.entity.*;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +110,7 @@ public class BingoSocketService {
     }
 
     //빙고 유무 판단
-    public Mono<Void> isBingo(Room room, MemberEntity.Role role){
+    public Mono<Void> isBingo(Room room, MemberEntity.Role role) throws JsonProcessingException {
         log.info("is Bingo room {}", room);
         WebSocketSession kidSocket = room.getKidSocket();
         WebSocketSession teacherSocket = room.getTeacherSocket();
@@ -135,8 +133,10 @@ public class BingoSocketService {
         return Mono.empty();
     }
 
-    public Mono<Void> gameOver(Room room, MemberEntity.Role role){
-        return room.broadcastGameOver(role.toString());
+    public Mono<Void> gameOver(Room room, MemberEntity.Role role) throws JsonProcessingException {
+        GameOverResponse gameOverResponse = new GameOverResponse(SocketAction.GAME_OVER,role);
+        String response = objectMapper.writeValueAsString(gameOverResponse);
+        return room.broadcastGameOver(response);
     }
 
     public BingoCard[][] loadMyBingoBoard(){

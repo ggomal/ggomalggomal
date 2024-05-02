@@ -1,7 +1,13 @@
 package com.ssafy.ggomalbe.bear.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.ggomalbe.bear.dto.CreateRoomResponse;
+import com.ssafy.ggomalbe.bear.dto.ErrorResponse;
 import com.ssafy.ggomalbe.bear.entity.Room;
+import com.ssafy.ggomalbe.bear.entity.SocketAction;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.socket.WebSocketSession;
@@ -14,12 +20,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RoomService {
     // roomId와 Room mapping
     private static final Map<String, Room> rooms = new ConcurrentHashMap<>();
 
     // 해당 아이디인 멤버가 어떤 Room에 있는지(sessionId 를  memberId로 변경해야함)
     private static final Map<String,Room> memberRoom = new ConcurrentHashMap<>();
+
+    private final ObjectMapper objectMapper;
 
     // 멤버의 아이디로 멤버가 참하고 있는 방을 return
     public Room findRoomByMemberId(String id){
@@ -31,7 +40,7 @@ public class RoomService {
 
     }
 
-    public Mono<Void> createRoom(JsonNode jsonNode, WebSocketSession session) {
+    public Mono<Void> createRoom(JsonNode jsonNode, WebSocketSession session) throws JsonProcessingException {
         log.info("createRoom");
         String roomId = createRoomNumber();
         if (!rooms.containsKey(roomId)) {
@@ -43,14 +52,18 @@ public class RoomService {
             room.addParticipant(session);
             memberRoom.put(session.getId(),room);
 
-            return session.send(Mono.just(session.textMessage("Room created: " + roomId)));
+            CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.CREATE_ROOM,roomId);
+            String response = objectMapper.writeValueAsString(createRoomResponse);
+            return session.send(Mono.just(session.textMessage(response)));
         } else {
-            return session.send(Mono.just(session.textMessage("Room already exists: " + roomId)));
+            ErrorResponse errorResponse = new ErrorResponse(SocketAction.ERROR,"이미 존재하는 방입니다.");
+            String response = objectMapper.writeValueAsString(errorResponse);
+            return session.send(Mono.just(session.textMessage(response)));
         }
     }
 
     //동기적인 절차를 따라야하지 않는가
-    public Mono<Void> joinRoom(JsonNode jsonNode, WebSocketSession session) {
+    public Mono<Void> joinRoom(JsonNode jsonNode, WebSocketSession session) throws JsonProcessingException {
         String roomId = jsonNode.get("roomId").asText();
         Room room = rooms.get(roomId);
         if (room != null) {
@@ -58,10 +71,15 @@ public class RoomService {
             memberRoom.put(session.getId(),room);
             //WebSocket 세션을 통해 메시지를 클라이언트에게 보내는 작업 수행
             //비동기적으로 실행되며, 클라이언트에게 메시지를 성공적으로 보내면 Mono<Void>를 반환
-            return session.send(Mono.just(session.textMessage("Joined room: " + roomId)));
+
+            CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.JOIN_ROOM,roomId);
+            String response = objectMapper.writeValueAsString(createRoomResponse);
+
+            return session.send(Mono.just(session.textMessage(response)));
         } else {
-//            return Mono.error(new IllegalArgumentException("Room not found: " + roomId));
-            return Mono.empty();
+            ErrorResponse errorResponse = new ErrorResponse(SocketAction.ERROR,"방이 존재하지 않습니다.");
+            String response = objectMapper.writeValueAsString(errorResponse);
+            return session.send(Mono.just(session.textMessage(response)));
         }
     }
 

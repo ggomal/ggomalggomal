@@ -8,7 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SocketLetterResponse {
-    private SocketAction socketAction;
-    private String letter;
+public class ErrorResponse {
+    private SocketAction action;
+    private String message;
 }
+

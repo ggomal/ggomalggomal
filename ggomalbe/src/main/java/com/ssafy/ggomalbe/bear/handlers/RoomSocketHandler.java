@@ -53,8 +53,18 @@ public class RoomSocketHandler implements WebSocketHandler {
                             case "deleteRoom" -> roomService.deleteRoom(jsonNode,session);
                             case "leaveRoom" -> roomService.leaveRoom(session);
                             case "setBingoBoard" ->teacherSocketService.setBingoBoard(session);
-                            case "markingBingoCard" -> teacherSocketService.markingBingoCard(session,jsonNode.get("message").asText());
                             case "printBingoV" -> bingoSocketService.printBingoV(session);
+                            //선생님이 통과를 누르면 아이는 음성데이터를 보내고, 빙고보드에 O친다
+//                            case "markingBingoCard" -> teacherSocketService.markingBingoCard(session,jsonNode);
+
+                            // 번갈아가며 선택
+                            case "play" -> teacherSocketService.play(session,jsonNode);
+
+                            //선생님 차례일때, 아이가 같은 카드를 선택하면 평가모드
+                            case "evaluation"-> teacherSocketService.evaluation(session,jsonNode);
+
+                            //선생님이 통과를 선택했을때 아이가 가지고 있는 음성데이터를 보내라고 한다
+                            case "requestVoice" -> teacherSocketService.requestVoice(session,jsonNode);
                             default -> Mono.empty();
                         };
                     } catch (IOException e) {

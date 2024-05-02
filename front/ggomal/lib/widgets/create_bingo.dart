@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateBingoModal extends StatefulWidget {
   const CreateBingoModal({super.key});
@@ -251,7 +252,9 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                         ),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.go('/kids/bear/bingo');
+                    },
                     child: Text(
                       '시작하기',
                       style: baseText(20, FontWeight.bold),

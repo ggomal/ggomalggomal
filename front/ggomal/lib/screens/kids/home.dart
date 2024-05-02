@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ggomal/utils/navbar.dart';
-import 'package:ggomal/utils/navbar.dart';
+import 'package:ggomal/widgets/navbar_home.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: NavBar(),
+          appBar: NavBarHome(),
           body: Stack(
             children: [Row(
               children: [

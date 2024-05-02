@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
 
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:jwt_decode/jwt_decode.dart';
 
 class BingoScreen extends StatefulWidget {
   const BingoScreen({super.key});
@@ -14,6 +16,7 @@ class BingoScreen extends StatefulWidget {
 class _BingoScreenState extends State<BingoScreen> {
   late final WebSocketChannel channel;
   bool isConnected = false;
+  String? roomId;
 
   @override
   void initState() {
@@ -23,15 +26,27 @@ class _BingoScreenState extends State<BingoScreen> {
 
   void connectToWebSocket() {
     if (!isConnected) {
-      channel = WebSocketChannel.connect(Uri.parse('ws://k10e206.p.ssafy.io/api/v1/room'));
+      channel = IOWebSocketChannel.connect(
+          Uri.parse('ws://k10e206.p.ssafy.io/api/v1/room'),
+          headers: {
+            'name': 'kids',
+          });
       channel.stream.listen((message) {
-        print("소켓 통신 성공~~~!: $message");
+        print("메시지 수신 : $message");
+        if (message.startsWith('Room created:')) {
+          roomId = message.split('Room created: ')[1].trim();
+          print("저장된 룸 아이디: $roomId");
+        }
       }, onDone: () {
-        print('소켓 통신 하는중인듯?? ');
+        print('연결 종료 ');
       }, onError: (error) {
-        print('소켓 통신에 실패했습니다.');
+        print('소켓 통신에 실패했습니다. $error');
       });
-      print('WebSocket connection established.');
+
+      channel.sink.add(
+          '{"type": "createRoom"}'
+      );
+      print('소켓 연결이 처음 성공 시 출력 ');
       isConnected = true;
     }
   }

@@ -14,6 +14,7 @@ import 'package:ggomal/screens/kids/frog.dart';
 import 'package:ggomal/screens/kids/chick.dart';
 import 'package:ggomal/screens/kids/home.dart';
 import 'package:ggomal/screens/kids/bingo.dart';
+import 'package:ggomal/widgets/kid_report.dart';
 
 final router = GoRouter(
   routes: [
@@ -70,6 +71,10 @@ final router = GoRouter(
         return KidDetail(state.pathParameters['id']);
         // return KidDetail();
       },
+    ),
+    GoRoute(
+      path: '/kids/report',
+      builder: (context, state) => const KidReport(),
     ),
   ],
 );

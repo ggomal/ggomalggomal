@@ -136,61 +136,51 @@ class GameDialogUI extends StatelessWidget {
           children: [
             Flexible(
                 flex: 9,
-                child: Stack(
+                child: Row(
                   children: [
-                    Expanded( child: LayoutBuilder(
-                        builder: (context, constraints) {
+                    Flexible(flex: 2, child: Container()),
+                    Flexible(flex: 8, child: Container(
+                      child: LayoutBuilder(builder: (context, constraints){
                         return Container(
-                        alignment: Alignment.center,
-                        child: Container(
-                            height: height * 0.15,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: constraints.maxHeight * 0.4,
-                            ),
+                          margin: EdgeInsets.symmetric(
+                            horizontal: constraints.maxWidth * 0.2,
+                            vertical: constraints.maxHeight * 0.2
+                          ),
+                          child: Container(
                             decoration: BoxDecoration(
                               color: Color(0xFFFAE0CA),
                               borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  spreadRadius: 2,
-                                  blurRadius: 2,
-                                  offset: Offset(
-                                      0, 3), // changes position of shadow
-                                )
-                              ],
+                              boxShadow: [BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 2,
+                                blurRadius: 2,
+                                offset: Offset(0,3)
+                              )]
                             ),
-                            child: FittedBox(
-                              fit: BoxFit.fill,
-                              child: Text(
-                                "개구리 게임",
-                                style: TextStyle(fontFamily: 'MapleStoryBold'),
-                              ),
-                            )),
-                      );}),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(right: height * 0.1),
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        // margin: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                            color: Color(0xFF39855E), shape: BoxShape.circle),
-                        child: IconButton(
-                          iconSize: height * 0.1,
-                          icon: Icon(Icons.close, color: Colors.white),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                    ),
+                            child: Center(
+                              child: Text("개구리 게임", style: TextStyle(
+                                fontFamily: 'MapleStoryBold',
+                                fontSize: height * 0.08
+                              ),),
+                            ),
+                          ),
+                        );
+                      }))),
+                    Flexible(flex: 2, child: Container(decoration: BoxDecoration(color: Color(0xFF39855E), shape: BoxShape.circle),child: Container(
+                      child: IconButton(
+                        iconSize: height * 0.1,
+                        icon: Icon(Icons.close, color: Colors.white),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ),)),
                   ],
-                )),
+                )
+            ),
             Flexible(
                 flex: 20,
                 child: Container(
-                  color: Colors.transparent,
                   child: Row(
                     children: [
                       Flexible(flex: 1, child: Container()),
@@ -198,19 +188,26 @@ class GameDialogUI extends StatelessWidget {
                         LayoutBuilder(
                           builder: (context, constraints) {
                             return Container(
-                              color: Colors.transparent,
                               margin: EdgeInsets.symmetric(
-                                horizontal: constraints.maxWidth * 0.1,
                                 vertical: constraints.maxHeight * 0.1
                               ),
-                              child: Container(color: Colors.yellow, child: Row(
+                              child: Container(child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Flexible(flex : 5, child : Container(child : Image.asset("assets/images/frog/mini_frog.png"))),
                                   Flexible(flex : 5, child : Container( child: Column(
                                     children: [
-                                      Expanded(flex: 7, child: Container(color: Colors.orange,)),
-                                      Expanded(flex: 3, child: Container(
+                                      Flexible(flex: 7, child: LayoutBuilder(builder: (context, constraints){
+                                        return Container(child: Container(
+                                          alignment: Alignment.center,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: constraints.maxHeight * 0.1
+                                          ),
+                                          child: Text("혀를 길게 내밀면 개구리가 간식을 먹어요! 개구리가 배부를 수 있도록 모든 간식을 먹어봅시다!",
+                                              style: TextStyle(fontFamily: "MapleStoryBold",fontSize: constraints.maxHeight * 0.12)),
+                                        ));
+                                      })),
+                                      Flexible(flex: 3, child: Container(
                                         child: LayoutBuilder(
                                           builder: (context, constraints){
                                             double buttonPading = constraints.maxWidth * 0.05;
@@ -225,7 +222,7 @@ class GameDialogUI extends StatelessWidget {
                                                     child: Text(
                                                       "시작하기",
                                                       style: TextStyle(
-                                                        fontSize: constraints.maxWidth * 0.05, fontFamily: 'MapleStoryBold', color: Color(0xFF003D06)
+                                                        fontSize: constraints.maxWidth * 0.08, fontFamily: 'MapleStoryBold', color: Color(0xFF003D06)
                                                       ),
                                                     ),
                                                   ),
@@ -249,7 +246,7 @@ class GameDialogUI extends StatelessWidget {
                             );
                           },
                         ),)),
-                      Flexible(flex: 1, child: Container(color: Colors.red,)),
+                      Flexible(flex: 1, child: Container()),
                     ],
                   ),
                 )),

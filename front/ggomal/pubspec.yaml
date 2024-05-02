@@ -63,6 +63,8 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/chick/
+    - assets/images/whale/
     - assets/images/frog/
 
   fonts:

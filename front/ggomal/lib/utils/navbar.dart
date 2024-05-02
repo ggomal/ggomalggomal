@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ggomal/screens/kids/main.dart';
 
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
@@ -16,10 +17,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-          );
+          context.go('/kids');
         },
         child: Container(
           child: Image.asset('assets/images/home_button.png', fit: BoxFit.contain),

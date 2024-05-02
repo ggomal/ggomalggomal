@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.member.kid.dto;
 
+import com.ssafy.ggomalbe.common.entity.KidEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +17,9 @@ public class MemberKidResponse {
     private String name;
     private String parentPhone; // phone(연락처)
 
-    private KidResponse kid;
-    public void setKid(KidResponse kid) {
-        this.kid = kid;
+    private KidResponse kidResponse;
+
+    public void setKidResponse(KidEntity kid) {
+        this.kidResponse.setKid(kid);
     }
 }

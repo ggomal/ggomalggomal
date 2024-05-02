@@ -11,13 +11,15 @@ import java.time.Period;
 public class KidMapper {
 
     public static MemberKidResponse toMemberKidResponse(MemberEntity member, KidEntity kid){
-        return MemberKidResponse.builder()
+        MemberKidResponse response = MemberKidResponse.builder()
                 .memberId(member.getMemberId())
                 .id(member.getUser())
                 .password(member.getPassword())
                 .name(member.getName())
                 .parentPhone(member.getPhone())
-                .kid()
                 .build();
+        response.setKidResponse(kid);
+
+        return response;
     }
 }

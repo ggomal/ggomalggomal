@@ -1,7 +1,9 @@
 package com.ssafy.ggomalbe.member.kid;
 
+import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +25,16 @@ public class KidController {
     }
 
     @GetMapping
-    public Flux<String> getKid(){
+    public Flux<String> getKids(){
         return Flux.fromArray(new String[] {"1","2","3","4","5"});
+    }
+
+    @GetMapping("/details")
+    public Mono<MemberKidResponse> getKid() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext ->
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap(kidId ->
+                        kidService.getKid(kidId));
     }
 }

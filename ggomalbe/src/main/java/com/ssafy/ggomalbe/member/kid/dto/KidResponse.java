@@ -1,8 +1,12 @@
 package com.ssafy.ggomalbe.member.kid.dto;
 
+import com.ssafy.ggomalbe.common.entity.KidEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 @Getter
 @Setter
@@ -13,4 +17,11 @@ public class KidResponse {
     private String kidNote; // 특이사항
     private String parentName;
 
+    public KidResponse setKid(KidEntity kid){
+        this.kidImgUrl = kid.getKidImgUrl();
+        this.age = Period.between(kid.getKidBirthDT(), LocalDate.now()).getYears();
+        this.kidNote = kid.getKidNote();
+        this.parentName = kid.getParentName();
+        return this;
+    }
 }

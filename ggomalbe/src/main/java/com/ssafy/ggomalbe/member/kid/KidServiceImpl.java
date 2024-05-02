@@ -26,7 +26,7 @@ public class KidServiceImpl implements KidService{
         Mono<MemberEntity> findMember = memberRepository.findById(memberId);
         Mono<KidEntity> findKid = kidRepository.findById(memberId);
 
-        // join이 왜 안되는걸까요
+
 
     }
 }

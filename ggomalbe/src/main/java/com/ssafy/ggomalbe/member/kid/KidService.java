@@ -10,4 +10,5 @@ public interface KidService {
     Mono<MemberEntity> insertKid();
 
     Mono<MemberKidResponse> getKid(Long memberId);
+
 }

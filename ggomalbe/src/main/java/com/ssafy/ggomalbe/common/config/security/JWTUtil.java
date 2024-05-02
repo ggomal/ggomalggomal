@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.*;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@Service
 public class JWTUtil {
 
     @Value("${jjwt.secret}")
@@ -31,13 +33,15 @@ public class JWTUtil {
     private String expirationTime;
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTUtil.class);
     private Key key;
+    private JwtParser parser;
 
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(SECRET.getBytes());
+        this.parser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
-    public Authentication getAuthentication(String accessToken){
+    public Authentication getAuthentication(String accessToken) {
 
         // 토근 복호화
         Claims claims = getAllClaimsFromToken(accessToken);
@@ -48,8 +52,8 @@ public class JWTUtil {
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get("Member").toString().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication return
         // UserDetails: interface, User: UserDetails를 구현한 class
@@ -57,16 +61,17 @@ public class JWTUtil {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
 
     }
+
     public Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
-                        .parseClaimsJws(token).getBody();
+        return parser.parseClaimsJws(token)
+                .getBody();
     }
 
-    public Long getMemberIdFromToken(String token){
-        return (Long) getAllClaimsFromToken(token).get("memberId");
+    public Long getMemberIdFromToken(String token) {
+        return Long.valueOf((Integer)getAllClaimsFromToken(token).get("memberId"));
     }
 
-    public MemberEntity.Role getRoleFromToken(String token){
+    public MemberEntity.Role getRoleFromToken(String token) {
         return (MemberEntity.Role) getAllClaimsFromToken(token).get("role");
     }
 
@@ -83,21 +88,21 @@ public class JWTUtil {
         return expiration.before(new Date());
     }
 
-    public String generateToken(Authentication authentication){
+    public String generateToken(CustomUserDetails user) {
         long expirationTimeLong = Long.parseLong(expirationTime); //in second
         final Date createdDate = new Date();
         final Date expirationDate = new Date(createdDate.getTime() + expirationTimeLong * 1000);
-        // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
 
+        Map<String, Object> jwtClaims = new HashMap<>();
+        jwtClaims.put("memberId",user.getMemberId());
+        jwtClaims.put("role",user.getRole());
         // Access Token 생성하기
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("USER", authorities)
+                .setClaims(jwtClaims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key)
                 .compact();
 
     }
@@ -105,7 +110,8 @@ public class JWTUtil {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+            System.out.println("jwt validated");
             return true;
         } catch (ExpiredJwtException ex) {
             LOGGER.error("JWT expired", ex.getMessage());

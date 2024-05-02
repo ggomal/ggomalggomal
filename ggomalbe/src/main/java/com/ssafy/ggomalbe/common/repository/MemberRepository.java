@@ -9,5 +9,4 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface MemberRepository extends R2dbcRepository<MemberEntity, Long> {
     Mono<MemberEntity> findByUser(String user);
-
 }

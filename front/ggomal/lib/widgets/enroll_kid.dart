@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
+import 'package:ggomal/widgets/kid_image.dart';
 
 class EnrollKidModal extends StatefulWidget {
   const EnrollKidModal({super.key});
@@ -54,9 +54,9 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
         hintText: text,
         hintStyle: TextStyle(
           fontFamily: 'NanumS',
-          color: Colors.grey.shade400, // 라벨 텍스트 색상
-          fontSize: 14.0, // 라벨 텍스트 크기
-          fontWeight: FontWeight.bold, // 라벨 텍스트 굵기
+          color: Colors.grey.shade400,
+          fontSize: 14.0,
+          fontWeight: FontWeight.bold,
         ),
       );
     }
@@ -138,13 +138,14 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
               ),
             ),
             lineBox(
-                150,
-                "사진",
-                Container(
-                    width: 120,
-                    height: 150,
-                    color: Color(0xFFF5F5F5),
-                    child: Center(child: Text("사진 찍기")))),
+              150,
+              "사진",
+              Container(
+
+                height: 150,
+                child: KidImage(),
+              ),
+            ),
             lineBox(
                 50,
                 "특이사항",
@@ -207,7 +208,9 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {Navigator.pop(context);},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFAA8D),
                     foregroundColor: Colors.white,
@@ -216,7 +219,9 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {Navigator.pop(context);},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFAA8D),
                     foregroundColor: Colors.white,

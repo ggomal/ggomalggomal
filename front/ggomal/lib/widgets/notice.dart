@@ -53,7 +53,7 @@ class Notice extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("${notice['teacherName']} 선생님의 한마디", style: baseText(18, FontWeight.bold)),
+                Text("${notice['teacherName']} 선생님이 남긴 말", style: baseText(16, FontWeight.w900)),
                 Text("${notice['content']}", style: baseText(14, FontWeight.normal)),
               ],
             ),
@@ -64,7 +64,7 @@ class Notice extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("숙제", style: baseText(18, FontWeight.bold)),
+                Text("숙제", style: baseText(16, FontWeight.w900)),
                 ...notice['homeworks']
                     .map(
                       (e) => Text("${e['homeworkContent']}", style: baseText(14, FontWeight.normal)),

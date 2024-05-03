@@ -32,8 +32,8 @@ class KidInfo extends StatelessWidget {
     Widget textLine(Map<String, String> text) {
       return Flexible(
         flex: 1,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 6),
+        child: SizedBox(
+          height: 25,
           child: Row(
             children: [
               SizedBox(
@@ -54,7 +54,10 @@ class KidInfo extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(
+        vertical: 5,
+        horizontal: 20,
+      ),
       width: 250,
       height: 400,
       decoration: BoxDecoration(
@@ -74,8 +77,8 @@ class KidInfo extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
               kid['kid_img_url'],
-              width: 150.0,
-              height: 150.0,
+              width: 120.0,
+              height: 120.0,
               fit: BoxFit.cover,
             ),
           ),
@@ -96,8 +99,11 @@ class KidInfo extends StatelessWidget {
           ),
           SizedBox(
             width: double.infinity,
+            height: 50,
             child: Text(
               "${kid['kid_note']}",
+              maxLines:3,
+              overflow: TextOverflow.ellipsis,
               style: baseText(12.0, FontWeight.w500),
             ),
           ),

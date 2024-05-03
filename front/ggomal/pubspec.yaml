@@ -33,8 +33,11 @@ dependencies:
   audioplayers: ^6.0.0
   web_socket_channel: ^2.4.5
   jwt_decode: ^0.3.1
-  fl_chart: ^0.67.0
   permission_handler: ^11.3.1
+  flutter_sound: ^9.2.13
+  path_provider: ^2.1.3
+  http: ^1.2.1
+  speech_to_text: ^6.6.1
 
 
   # The following adds the Cupertino Icons font to your application.

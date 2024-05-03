@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/home.png'),
-            fit: BoxFit.cover, // 화면에 꽉 차게
+            fit: BoxFit.cover,
           ),
         ),
         child: Scaffold(

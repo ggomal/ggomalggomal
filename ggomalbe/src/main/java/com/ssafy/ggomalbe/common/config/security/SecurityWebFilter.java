@@ -32,10 +32,10 @@ public class SecurityWebFilter implements WebFilter {
             return chain.filter(exchange);
         }
         if (jwtUtil.validateToken(token)) {
-            jwtUtil.getUsernameFromToken(token);
             Authentication authentication = CustomAuthentication.builder()
                     .memberId(jwtUtil.getMemberIdFromToken(token))
-                    .name(jwtUtil.getUsernameFromToken(token))
+                    .name(jwtUtil.getMemberNameFromToken(token))
+                    .centerId(jwtUtil.getCenterIdFromToken(token))
                     .build();
             return chain.filter(exchange)
                     .contextWrite(context ->

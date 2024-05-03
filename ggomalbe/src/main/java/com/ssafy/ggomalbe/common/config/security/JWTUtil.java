@@ -78,7 +78,8 @@ public class JWTUtil {
     public String getUsernameFromToken(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
-
+    public Long getCenterIdFromToken(String token) {return Long.valueOf((Integer)getAllClaimsFromToken(token).get("centerId"));}
+    public String getMemberNameFromToken(String token){ return String.valueOf(getAllClaimsFromToken(token).get("memberName"));}
     public Date getExpirationDateFromToken(String token) {
         return getAllClaimsFromToken(token).getExpiration();
     }
@@ -95,7 +96,9 @@ public class JWTUtil {
 
         Map<String, Object> jwtClaims = new HashMap<>();
         jwtClaims.put("memberId",user.getMemberId());
+        jwtClaims.put("memberName",user.getMemberName());
         jwtClaims.put("role",user.getRole());
+        jwtClaims.put("centerId",user.getCenterId());
         // Access Token 생성하기
         return Jwts.builder()
                 .setClaims(jwtClaims)

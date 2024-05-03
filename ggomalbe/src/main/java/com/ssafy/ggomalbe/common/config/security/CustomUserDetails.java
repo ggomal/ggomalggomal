@@ -4,7 +4,6 @@ import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +48,11 @@ public class CustomUserDetails implements UserDetails {
     public MemberEntity.Role getRole() {
         return user.getRole();
     }
+
+    public String getMemberName() {
+        return user.getName();
+    }
+    public Long getCenterId() {return user.getCenterId(); }
 
     @Override
     public boolean isAccountNonExpired() {

@@ -3,6 +3,7 @@ package com.ssafy.ggomalbe.member.controller;
 import com.ssafy.ggomalbe.common.config.security.CustomUserDetails;
 import com.ssafy.ggomalbe.common.config.security.JWTUtil;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.member.dto.KidSignUpRequest;
 import com.ssafy.ggomalbe.member.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Mono<ResponseEntity<String>> login(@RequestBody LoginRequest user) {
-        return users.findByUsername(user.getUser())
+        return users.findByUsername(user.getId())
                 .defaultIfEmpty(new CustomUserDetails(null))
                 .map(u -> {
                     if (u != null) {
@@ -39,8 +40,13 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signup")
-    public Mono<MemberEntity> signup() {
+    @PostMapping("/kid")
+    public Mono<MemberEntity> kidSignUp(@RequestBody KidSignUpRequest request) {
+        return null;
+    }
+
+    @PostMapping("/teacher")
+    public Mono<MemberEntity> teacherSignUp(){
         return null;
     }
 }

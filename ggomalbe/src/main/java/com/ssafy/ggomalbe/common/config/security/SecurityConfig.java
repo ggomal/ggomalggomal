@@ -1,6 +1,5 @@
 package com.ssafy.ggomalbe.common.config.security;
 
-import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.common.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,13 +8,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
-import reactor.core.publisher.Mono;
 
 
 @AllArgsConstructor
@@ -23,17 +18,6 @@ import reactor.core.publisher.Mono;
 @EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
 public class SecurityConfig {
-    private final MemberRepository memberRepository;
-    //    @Order(Ordered.HIGHEST_PRECEDENCE)
-//    @Bean
-//    SecurityWebFilterChain apiHttpSecurity(ServerHttpSecurity http) {
-//        http
-//                .authorizeExchange((exchanges) -> exchanges
-//                        .anyExchange().authenticated()
-//                );
-//        return http.build();
-//    }
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, AuthConverter jwtAuthConverter, AuthManager jwtAuthManager) {
         AuthenticationWebFilter jwtFilter = new AuthenticationWebFilter(jwtAuthManager);
@@ -42,6 +26,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         // 접근 허용 url
                         .pathMatchers("/login", "/signup").permitAll()
+                        .pathMatchers("/kid").permitAll()
                         //swagger 접근 허용
                         .pathMatchers("/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyExchange().authenticated())

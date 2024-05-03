@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 public class KidEntity extends AbstractEntity {
     @Id
     @Column("member_id")
-    private final String memberId;
+    private final Long memberId;
 
     @Column("kid_img_url")
     private final String kidImgUrl;

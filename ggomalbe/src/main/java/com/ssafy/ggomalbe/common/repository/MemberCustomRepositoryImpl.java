@@ -36,22 +36,23 @@ public class MemberCustomRepositoryImpl implements  MemberCustomRepository{
                    and m.role = "KID";
                 """;
 
-        return databaseClient.sql(sql)
-                .bind(0, memberId)
-                .map((row, rowMetadata) -> {
-                    return MemberKidResponse.builder()
-                            .memberId(row.get("memberId", Long.class))
-                            .id(row.get("user", String.class))
-                            .password(row.get("password", String.class))
-                            .name(row.get("name", String.class))
-                            .parentPhone(row.get("phone", String.class))
-                            .kidResponse(KidResponse.builder()
-                                    .kidImgUrl(row.get("kidImgUrl", String.class))
-                                    .age(Period.between(row.get("kidBirthDT", LocalDate.class), LocalDate.now()).getYears())
-                                    .kidNote(row.get("kidNote", String.class))
-                                    .parentName(row.get("parentName", String.class))
-                                    .build())
-                            .build();
-                }).one();
+//        return databaseClient.sql(sql)
+//                .bind(0, memberId)
+//                .map((row, rowMetadata) -> {
+//                    return MemberKidResponse.builder()
+//                            .memberId(row.get("memberId", Long.class))
+//                            .id(row.get("user", String.class))
+//                            .password(row.get("password", String.class))
+//                            .name(row.get("name", String.class))
+//                            .parentPhone(row.get("phone", String.class))
+//                            .kidResponse(KidResponse.builder()
+//                                    .kidImgUrl(row.get("kidImgUrl", String.class))
+//                                    .age(Period.between(row.get("kidBirthDT", LocalDate.class), LocalDate.now()).getYears())
+//                                    .kidNote(row.get("kidNote", String.class))
+//                                    .parentName(row.get("parentName", String.class))
+//                                    .build())
+//                            .build();
+//                }).one();
+        return null;
     }
 }

@@ -26,6 +26,6 @@ public class KidServiceImpl implements KidService{
 
     @Override
     public Mono<MemberKidResponse> getKid(Long memberId) {
-        return memberCustomRepository.getMemberKid(memberId);
+        return memberRepository.getMemberKid(memberId);
     }
 }

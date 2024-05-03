@@ -28,8 +28,8 @@ import java.time.Duration;
 @AllArgsConstructor
 @Tag(name = "ExampleController", description = "ExampleController")
 public class ExampleController {
-
     private final Sinks.Many<String> sink = Sinks.many().multicast().directBestEffort();
+
 
     //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
     private final RoomSocketHandler groupSocketHandler;
@@ -39,9 +39,15 @@ public class ExampleController {
     @GetMapping(value = "/example", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getExampleData() {
         // 예시로 간단한 스트림을 생성하여 반환
-        log.info("flux test /example - 1초마다 반환합니다. 엑.");
+        log.info("flux test /example - 1초마다 반환합니다.");
         return Flux.just("Data 1", "Data 2", "Data 3")
                    .delayElements(Duration.ofSeconds(1)); // 1초 간격으로 데이터를 발생시킴
+    }
+
+    @GetMapping(value = "/sink", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> getSink() {
+        // 예시로 간단한 스트림을 생성하여 반환
+        return sink.asFlux();
     }
 
     @GetMapping("/test")

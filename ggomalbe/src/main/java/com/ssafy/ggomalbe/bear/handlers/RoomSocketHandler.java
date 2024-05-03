@@ -3,6 +3,7 @@ package com.ssafy.ggomalbe.bear.handlers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ggomalbe.bear.service.BingoSocketService;
+import com.ssafy.ggomalbe.bear.service.NaverCloudClient;
 import com.ssafy.ggomalbe.bear.service.RoomService;
 import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
 import lombok.Getter;
@@ -25,13 +26,14 @@ public class RoomSocketHandler implements WebSocketHandler {
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;
     private final TeacherSocketService teacherSocketService;
+    private final NaverCloudClient naverCloudClient;
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
         log.info("room-socket sessionId {}", session.getId());
 
         return session.receive()                                // WebSocket 세션을 통해 클라이언트로부터 메시지를 수신
-                .map(message ->message.getPayloadAsText())      //수신된 각 메시지 텍스트 형식으로 변환
+                .map(message -> message.getPayloadAsText())      //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                           //비동기 처리를 위한 flatMap, 처리하고 Mono로 반환하여 새로운 Publisher생성
                     try {
                         log.info("socket message parsing start");
@@ -40,7 +42,7 @@ public class RoomSocketHandler implements WebSocketHandler {
                             log.info("type null");
                             return Mono.empty();
                         }
-                        log.info("jsonNode.get(type) {}", jsonNode.get("type"));
+
                         String messageType = jsonNode.get("type").asText();
                         log.info("message type {}", messageType);
                         return switch (messageType) {
@@ -51,8 +53,18 @@ public class RoomSocketHandler implements WebSocketHandler {
                             case "deleteRoom" -> roomService.deleteRoom(jsonNode,session);
                             case "leaveRoom" -> roomService.leaveRoom(session);
                             case "setBingoBoard" ->teacherSocketService.setBingoBoard(session);
-                            case "markingBingoCard" -> teacherSocketService.markingBingoCard(session,jsonNode.get("message").asText());
                             case "printBingoV" -> bingoSocketService.printBingoV(session);
+                            //선생님이 통과를 누르면 아이는 음성데이터를 보내고, 빙고보드에 O친다
+//                            case "markingBingoCard" -> teacherSocketService.markingBingoCard(session,jsonNode);
+
+                            // 번갈아가며 선택
+                            case "play" -> teacherSocketService.play(session,jsonNode);
+
+                            //선생님 차례일때, 아이가 같은 카드를 선택하면 평가모드
+                            case "evaluation"-> teacherSocketService.evaluation(session,jsonNode);
+
+                            //선생님이 통과를 선택했을때 아이가 가지고 있는 음성데이터를 보내라고 한다
+                            case "requestVoice" -> teacherSocketService.requestVoice(session,jsonNode);
                             default -> Mono.empty();
                         };
                     } catch (IOException e) {

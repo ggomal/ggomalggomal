@@ -2,10 +2,8 @@ package com.ssafy.ggomalbe.bear.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.ggomalbe.bear.entity.BingoBoard;
-import com.ssafy.ggomalbe.bear.entity.BingoCard;
-import com.ssafy.ggomalbe.bear.entity.BingoPlayer;
-import com.ssafy.ggomalbe.bear.entity.Room;
+import com.ssafy.ggomalbe.bear.dto.GameOverResponse;
+import com.ssafy.ggomalbe.bear.entity.*;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +76,6 @@ public class BingoSocketService {
         BingoPlayer bingoPlayerT = bingoPlayerMap.get(room.getTeacherSocket().getId());
         BingoPlayer bingoPlayerK = bingoPlayerMap.get(room.getKidSocket().getId());
 
-        log.info("");
         boolean result1= markBingoBoard(bingoPlayerT, choiceLetter);
         boolean result2= markBingoBoard(bingoPlayerK, choiceLetter);
 
@@ -95,18 +92,14 @@ public class BingoSocketService {
         BingoBoard bingoBoard = bingoPlayer.getBingoBoard();
         BingoCard[][] board = bingoBoard.getBoard();
 
-        log.info("bingoBoard {}", bingoBoard);
-        log.info("board {}", (Object) board);
-
         boolean[][] v= bingoBoard.getV();
 
         for(int i =0; i<BINGO_LINE; i++){
             for(int j =0; j<BINGO_LINE; j++){
-                log.info("{} {} {}",i,j,board[i][j]);
-
                 String letter = board[i][j].getLetter();
                 if(letter.equals(choiceLetter)){
                     v[i][j] = true;
+                    log.info("marking {} {} {}",i,j,board[i][j]);
                     return true;
                 }
             }
@@ -117,29 +110,33 @@ public class BingoSocketService {
     }
 
     //빙고 유무 판단
-    public Mono<Void> isBingo(Room room, MemberEntity.Role role){
+    public Mono<Void> isBingo(Room room, MemberEntity.Role role) throws JsonProcessingException {
         log.info("is Bingo room {}", room);
-        WebSocketSession kidSocket = room.getTeacherSocket();
+        WebSocketSession kidSocket = room.getKidSocket();
         WebSocketSession teacherSocket = room.getTeacherSocket();
 
-        BingoPlayer bingoPlayerT = bingoPlayerMap.get(kidSocket.getId());
-        BingoPlayer bingoPlayerK = bingoPlayerMap.get(teacherSocket.getId());
+        BingoPlayer bingoPlayerT = bingoPlayerMap.get(teacherSocket.getId());
+        BingoPlayer bingoPlayerK = bingoPlayerMap.get(kidSocket.getId());
 
         boolean isBingoT = Bingo.isBingo(bingoPlayerT.getBingoBoard());
         boolean isBingoK = Bingo.isBingo(bingoPlayerK.getBingoBoard());
-
+        log.info("now {} {}", role, role==MemberEntity.Role.TEACHER);
+        log.info("isBingoT {} === isBingoK {} ",isBingoT,isBingoK);
         if(isBingoT && isBingoK){
+            log.info("both win");
             return gameOver(room, role);
         }
 
-        if(role==MemberEntity.Role.TEACHER && isBingoT) return gameOver(room, MemberEntity.Role.TEACHER);
-        if(role==MemberEntity.Role.KID && isBingoK) return gameOver(room, MemberEntity.Role.KID);
+        if(isBingoT) return gameOver(room, MemberEntity.Role.TEACHER);
+        if(isBingoK) return gameOver(room, MemberEntity.Role.KID);
 
         return Mono.empty();
     }
 
-    public Mono<Void> gameOver(Room room, MemberEntity.Role role){
-        return room.broadcastGameOver(role.toString());
+    public Mono<Void> gameOver(Room room, MemberEntity.Role role) throws JsonProcessingException {
+        GameOverResponse gameOverResponse = new GameOverResponse(SocketAction.GAME_OVER,role);
+        String response = objectMapper.writeValueAsString(gameOverResponse);
+        return room.broadcastGameOver(response);
     }
 
     public BingoCard[][] loadMyBingoBoard(){

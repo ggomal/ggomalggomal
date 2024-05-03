@@ -1,11 +1,7 @@
 package com.ssafy.ggomalbe.common.config;
 
-import com.ssafy.ggomalbe.bear.handlers.ChatWebSocketHandler;
-import com.ssafy.ggomalbe.bear.handlers.KidSocketHandler;
 import com.ssafy.ggomalbe.bear.handlers.RoomSocketHandler;
-import com.ssafy.ggomalbe.bear.handlers.TeacherSocketHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketMessagingAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.WebFluxConfigurer;

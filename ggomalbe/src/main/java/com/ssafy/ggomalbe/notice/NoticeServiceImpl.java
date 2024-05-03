@@ -77,14 +77,6 @@ public class NoticeServiceImpl implements NoticeService {
                         .map(notice::setHomeworks));
     }
 
-    public void findHomeworkResponse(NoticeResponse noticeResponse) {
-        homeworkRepository.findAllByNoticeId(noticeResponse.getNoticeId())
-                .map(HomeworkMapper::toHomeworkResponse)
-                .doOnNext(response -> noticeResponse.getHomeworks().add(response))
-                .doOnNext(System.out::println)
-                .subscribe();
-    }
-
     public void deleteHomeworks(Long noticeId) {
         homeworkRepository.deleteAllByNoticeId(noticeId).subscribe();
     }

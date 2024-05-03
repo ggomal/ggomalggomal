@@ -1,4 +1,4 @@
-package com.ssafy.ggomalbe.member.dto;
+package com.ssafy.ggomalbe.member.login.dto;
 
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.Builder;

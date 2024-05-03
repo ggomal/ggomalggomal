@@ -1,16 +1,13 @@
-package com.ssafy.ggomalbe.member.controller;
+package com.ssafy.ggomalbe.member.login.controller;
 
 import com.ssafy.ggomalbe.common.config.security.CustomUserDetails;
 import com.ssafy.ggomalbe.common.config.security.JWTUtil;
-import com.ssafy.ggomalbe.common.entity.MemberEntity;
-import com.ssafy.ggomalbe.member.dto.KidSignUpRequest;
-import com.ssafy.ggomalbe.member.dto.LoginRequest;
-import com.ssafy.ggomalbe.member.dto.LoginResponse;
+import com.ssafy.ggomalbe.member.login.dto.LoginRequest;
+import com.ssafy.ggomalbe.member.login.dto.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

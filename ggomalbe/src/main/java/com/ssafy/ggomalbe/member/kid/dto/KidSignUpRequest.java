@@ -1,4 +1,4 @@
-package com.ssafy.ggomalbe.member.dto;
+package com.ssafy.ggomalbe.member.kid.dto;
 
 import com.ssafy.ggomalbe.common.entity.KidEntity;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
@@ -31,9 +31,10 @@ public class KidSignUpRequest {
     private String kidImgUrl;
     public MemberEntity toMemberEntity(){
         return MemberEntity.builder()
+                .name(name)
                 .centerId(centerId)
                 .user(centerId.toString() + TokenGenerator.randomCharacterWithPrefix("stu"))
-                .password(kidBirthDT.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .password(kidBirthDT.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .phone(phone)
                 .role(MemberEntity.Role.KID)
                 .build();
@@ -42,9 +43,10 @@ public class KidSignUpRequest {
     public KidEntity toKidEntity(){
         return KidEntity.builder()
                 .memberId(memberId)
-                .kidImgUrl(kidImgUrl)
+                .kidImgUrl(kidImgUrl==null? "noImg":kidImgUrl)
                 .kidBirthDT(kidBirthDT)
                 .kidNote(kidNote)
+                .parentName(parentName)
                 .build();
     }
 

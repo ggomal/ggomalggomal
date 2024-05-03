@@ -13,6 +13,7 @@ import java.util.Collection;
 public class CustomAuthentication implements Authentication {
     private final Long memberId;
     private final String name;
+    private final Long centerId;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -28,6 +29,8 @@ public class CustomAuthentication implements Authentication {
     public Long getDetails() {
         return memberId;
     }
+
+    public Long getCenterId() {return centerId;}
 
     /** return name */
     @Override

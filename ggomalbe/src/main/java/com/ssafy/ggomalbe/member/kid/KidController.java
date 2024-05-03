@@ -1,13 +1,11 @@
 package com.ssafy.ggomalbe.member.kid;
 
+import com.mysql.cj.log.Log;
 import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,12 +27,14 @@ public class KidController {
         return Flux.fromArray(new String[] {"1","2","3","4","5"});
     }
 
-    @GetMapping("/details")
-    public Mono<MemberKidResponse> getKid() {
-        return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext ->
-                        (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(kidId ->
-                        kidService.getKid(Long.parseLong(String.valueOf(4))));
+    @GetMapping("/{memberId}")
+    public Mono<MemberKidResponse> getKid(@PathVariable Long memberId) {
+//        return ReactiveSecurityContextHolder.getContext()
+//                .map(securityContext ->
+//                        (Long) securityContext.getAuthentication().getDetails())
+//                .flatMap(kidId ->
+//                        kidService.getKid(Long.parseLong(String.valueOf(4))));
+        return kidService.getKid(memberId);
+
     }
 }

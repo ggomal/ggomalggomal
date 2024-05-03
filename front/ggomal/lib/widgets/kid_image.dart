@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ggomal/constants.dart';
 
 class KidImage extends StatefulWidget {
   const KidImage({super.key});
@@ -34,14 +34,11 @@ class _KidImageState extends State<KidImage> {
         : Container(
             padding: const EdgeInsets.all(10),
             child: Center(
-              child: Text("사진을 촬영하거나\n등록해 주세요.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'NanumS',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                    color: Colors.grey.shade400,
-                  )),
+              child: Text(
+                "사진을 촬영하거나\n등록해 주세요.",
+                textAlign: TextAlign.center,
+                style: nanumText(12.0, FontWeight.w700, Colors.grey.shade400),
+              ),
             ),
           );
   }

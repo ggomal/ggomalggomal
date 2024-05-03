@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/widgets/create_bingo.dart';
+import 'package:ggomal/constants.dart';
 
 class KidInfo extends StatelessWidget {
   const KidInfo({super.key});
@@ -20,14 +21,7 @@ class KidInfo extends StatelessWidget {
       "kid_img_url": "assets/images/manager/chunsik.jpg"
     };
 
-    TextStyle baseText(double size, FontWeight weight) {
-      return TextStyle(
-        fontFamily: 'NanumS',
-        fontWeight: weight,
-        fontSize: size,
-        color: Colors.black,
-      );
-    }
+
 
     Widget textLine(Map<String, String> text) {
       return Flexible(
@@ -40,12 +34,12 @@ class KidInfo extends StatelessWidget {
                 width: 80,
                 child: Text(
                   "${text['field']}",
-                  style: baseText(12.0, FontWeight.w800),
+                  style: nanumText(12.0, FontWeight.w800, Colors.black),
                 ),
               ),
               Text(
                 "${text['data']}",
-                style: baseText(12.0, FontWeight.w500),
+                style: nanumText(12.0, FontWeight.w500, Colors.black),
               ),
             ],
           ),
@@ -94,7 +88,7 @@ class KidInfo extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 6),
             child: Text(
               "아이 특이사항",
-              style: baseText(12.0, FontWeight.w800),
+              style: nanumText(12.0, FontWeight.w800, Colors.black),
             ),
           ),
           SizedBox(
@@ -104,7 +98,7 @@ class KidInfo extends StatelessWidget {
               "${kid['kid_note']}",
               maxLines:3,
               overflow: TextOverflow.ellipsis,
-              style: baseText(12.0, FontWeight.w500),
+              style: nanumText(12.0, FontWeight.w500, Colors.black),
             ),
           ),
           ElevatedButton(

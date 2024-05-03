@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ggomal/widgets/kid_content.dart';
 import 'package:ggomal/widgets/kid_info.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ggomal/constants.dart';
 
 class KidDetail extends StatefulWidget {
   const KidDetail(this.id, {super.key});
@@ -41,11 +42,7 @@ class _KidDetailState extends State<KidDetail> {
                     },
                     child: Text(
                       "< 아이 목록",
-                      style: TextStyle(
-                        fontFamily: "NanumS",
-                        fontWeight: FontWeight.w800,
-                        fontSize: 30,
-                      ),
+                      style: nanumText(30.0, FontWeight.w700, Colors.black),
                     ),
                   ),
                 ],
@@ -69,7 +66,9 @@ class _KidDetailState extends State<KidDetail> {
                 ),
                 child: Row(children: [
                   KidInfo(),
-                  SizedBox(width: 20,),
+                  SizedBox(
+                    width: 20,
+                  ),
                   KidContent(),
                 ]),
               ),

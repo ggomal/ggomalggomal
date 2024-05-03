@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ggomal/constants.dart';
 
 class ManagerMainScreen extends StatelessWidget {
   const ManagerMainScreen({super.key});
@@ -38,24 +39,15 @@ class ManagerMainScreen extends StatelessWidget {
                   children: [
                     Text(
                       "위재원 선생님 안녕하세요!",
-                      style: TextStyle(
-                        fontSize: 36.0,
-                        fontFamily: 'NanumS',
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
+                      style: nanumText(36.0, FontWeight.w900, Colors.white),
                     ),
                     SizedBox(
                       height: 20.0,
                     ),
                     Text(
                       "담당 학생 목록이에요.",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'NanumS',
-                        color: Colors.white,
-                      ),
+                      style: nanumText(20.0, FontWeight.w700, Colors.white),
+
                     ),
                     Wrap(
                       children: ['박수빈', '장지민', '박서현', '최진우', '김창희']
@@ -73,11 +65,7 @@ class ManagerMainScreen extends StatelessWidget {
                               margin: EdgeInsets.only(top: 5, right: 20),
                               child: Text(
                                 e,
-                                style: TextStyle(
-                                  fontFamily: 'NanumS',
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 18.0,
-                                ),
+                                style: nanumText(18.0, FontWeight.w800, Colors.black),
                               ),
                             ),
                           )

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/widgets/kid_image.dart';
+import 'package:ggomal/constants.dart';
 
 class EnrollKidModal extends StatefulWidget {
   const EnrollKidModal({super.key});
@@ -14,15 +15,6 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle baseText(double size, FontWeight weight) {
-      return TextStyle(
-        fontFamily: 'NanumS',
-        fontWeight: weight,
-        fontSize: size,
-        color: Colors.black,
-      );
-    }
-
     Container lineBox(double heghtSize, String text, Widget lineWidget) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -31,7 +23,8 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
           children: [
             SizedBox(
                 width: 80,
-                child: Text(text, style: baseText(16.0, FontWeight.w900))),
+                child: Text(text,
+                    style: nanumText(16.0, FontWeight.w900, Colors.black))),
             lineWidget,
           ],
         ),
@@ -40,25 +33,19 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
 
     InputDecoration inputStyle(String text) {
       return InputDecoration(
-        filled: true,
-        fillColor: Color(0xFFF5F5F5),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        border: InputBorder.none,
-        hintText: text,
-        hintStyle: TextStyle(
-          fontFamily: 'NanumS',
-          color: Colors.grey.shade400,
-          fontSize: 14.0,
-          fontWeight: FontWeight.bold,
-        ),
-      );
+          filled: true,
+          fillColor: Color(0xFFF5F5F5),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          border: InputBorder.none,
+          hintText: text,
+          hintStyle: nanumText(14.0, FontWeight.bold, Colors.grey.shade400));
     }
 
     return Dialog(
@@ -84,7 +71,7 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                 "이름",
                 Expanded(
                   child: TextField(
-                    style: baseText(14.0, FontWeight.w500),
+                    style: nanumText(14.0, FontWeight.w500, Colors.black),
                     textAlignVertical: TextAlignVertical.bottom,
                     decoration: inputStyle("이름을 입력해 주세요."),
                   ),
@@ -128,7 +115,7 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                           _gender = value;
                         });
                       },
-                      style: baseText(14, FontWeight.w500),
+                      style: nanumText(14, FontWeight.w500, Colors.black),
                       dropdownColor: Color(0xFFF5F5F5),
                       underline: Container(),
                       isExpanded: true,
@@ -141,7 +128,6 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
               150,
               "사진",
               Container(
-
                 height: 150,
                 child: KidImage(),
               ),
@@ -151,7 +137,7 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                 "특이사항",
                 Expanded(
                     child: TextField(
-                  style: baseText(14.0, FontWeight.w500),
+                  style: nanumText(14.0, FontWeight.w500, Colors.black),
                   textAlignVertical: TextAlignVertical.bottom,
                   decoration: inputStyle("특이사항을 입력해 주세요."),
                 ))),
@@ -170,11 +156,13 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                             SizedBox(
                               width: 50,
                               child: Text("관계",
-                                  style: baseText(16, FontWeight.w900)),
+                                  style: nanumText(
+                                      16, FontWeight.w900, Colors.black)),
                             ),
                             Expanded(
                                 child: TextField(
-                              style: baseText(14.0, FontWeight.w500),
+                              style: nanumText(
+                                  14.0, FontWeight.w500, Colors.black),
                               textAlignVertical: TextAlignVertical.bottom,
                               decoration: inputStyle("관계를 입력해 주세요."),
                             ))
@@ -189,11 +177,13 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                             SizedBox(
                               width: 50,
                               child: Text("연락처",
-                                  style: baseText(16, FontWeight.w900)),
+                                  style: nanumText(
+                                      16, FontWeight.w900, Colors.black)),
                             ),
                             Expanded(
                                 child: TextField(
-                              style: baseText(14.0, FontWeight.w500),
+                              style: nanumText(
+                                  14.0, FontWeight.w500, Colors.black),
                               textAlignVertical: TextAlignVertical.bottom,
                               decoration: inputStyle("연락처를 입력해 주세요."),
                             ))

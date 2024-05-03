@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ggomal/constants.dart';
 
 class ChickGameModal extends StatefulWidget {
   final Map<String, dynamic> modalData;
@@ -18,15 +19,6 @@ class _ChickGameModalState extends State<ChickGameModal> {
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
 
-    TextStyle baseText(double size, FontWeight weight) {
-      return TextStyle(
-        fontFamily: 'Maplestory',
-        fontWeight: weight,
-        fontSize: size,
-        color: Colors.black,
-      );
-    }
-
     return Dialog(
       child: Stack(
         children: [
@@ -39,9 +31,9 @@ class _ChickGameModalState extends State<ChickGameModal> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(modalData['title'], style: baseText(50, FontWeight.w700)),
+                Text(modalData['title'], style: mapleText(50, FontWeight.w700, Colors.black)),
                 Text(modalData['content'],
-                    style: baseText(28, FontWeight.w500)),
+                    style: mapleText(28, FontWeight.w500, Colors.black)),
                 Image.asset(
                   "assets/images/chick/modal_${modalData['game']}.png",
                   height: 200,
@@ -52,7 +44,7 @@ class _ChickGameModalState extends State<ChickGameModal> {
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
                   ),
-                  child: Text("시작", style: baseText(20, FontWeight.w700)),
+                  child: Text("시작", style: mapleText(20, FontWeight.w700, Colors.black)),
                 )
               ],
             ),

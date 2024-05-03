@@ -5,16 +5,6 @@ class Notice extends StatelessWidget {
 
   const Notice(this.notice, {super.key});
 
-  // {
-  // "noticeId": 2,
-  // "date": "2024-04-20",
-  // "teacherName": "박서현",
-  // "content": "오늘 몹시 즐거워하여 노래를 불렀습니다.",
-  // "homeworks": [
-  // {"homeworkContent": "개구리 게임 1회", "isDone": false},
-  // ]
-  // }
-
   @override
   Widget build(BuildContext context) {
     TextStyle baseText(double size, FontWeight weight) {

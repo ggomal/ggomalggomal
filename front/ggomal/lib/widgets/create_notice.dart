@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/constants.dart';
 
 class CreateNoticeModal extends StatefulWidget {
   const CreateNoticeModal({super.key});
@@ -10,14 +11,6 @@ class CreateNoticeModal extends StatefulWidget {
 class _CreateNoticeModalState extends State<CreateNoticeModal> {
   @override
   Widget build(BuildContext context) {
-    TextStyle baseText(double size, FontWeight weight) {
-      return TextStyle(
-        fontFamily: 'NanumS',
-        fontWeight: weight,
-        fontSize: size,
-        color: Colors.black,
-      );
-    }
 
     Container lineBox(double heghtSize, String text, Widget lineWidget) {
       return Container(
@@ -27,7 +20,7 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
           children: [
             SizedBox(
                 width: 150,
-                child: Text(text, style: baseText(16.0, FontWeight.w900))),
+                child: Text(text, style: nanumText(16.0, FontWeight.w900, Colors.black))),
             lineWidget,
           ],
         ),
@@ -78,14 +71,14 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
             children: [
               Text(
                 DateTime.now().toString().split(" ")[0],
-                style: baseText(20, FontWeight.w900),
+                style: nanumText(20, FontWeight.w900, Colors.black),
               ),
               lineBox(
                 240,
                 "선생님 한마디",
                 Expanded(
                   child: TextField(
-                    style: baseText(14.0, FontWeight.w500),
+                    style: nanumText(14.0, FontWeight.w500, Colors.black),
                     textAlignVertical: TextAlignVertical.top,
                     keyboardType: TextInputType.multiline,
                     maxLines: 6,
@@ -112,7 +105,7 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                               ),
                               Expanded(
                                 child: TextField(
-                                  style: baseText(14.0, FontWeight.w500),
+                                  style: nanumText(14.0, FontWeight.w500, Colors.black),
                                   textAlignVertical: TextAlignVertical.bottom,
                                   decoration: inputStyle("숙제를 입력하세요."),
                                 ),

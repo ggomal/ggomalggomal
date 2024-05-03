@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:ggomal/constants.dart';
 
 class PercentBar extends StatefulWidget {
 
@@ -28,11 +29,7 @@ class _PercentBarState extends State<PercentBar> {
           animateFromLastPercent: true,
           center: Text(
             "${widget.percentData['count'] < 10 ? widget.percentData['count']: 10 } / 10",
-            style: TextStyle(
-              fontFamily: 'Maplestory',
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
+            style: mapleText(24.0, FontWeight.w700, Colors.black),
           ),
           barRadius: const Radius.circular(16),
           progressColor: widget.percentData['barColor'],

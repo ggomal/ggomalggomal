@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ggomal/constants.dart';
 
 class KidCard extends StatelessWidget {
   final Map<String, dynamic> kidData;
@@ -15,21 +16,12 @@ class KidCard extends StatelessWidget {
             width: 80,
             child: Text(
               "${text['field']}",
-              style: TextStyle(
-                fontFamily: 'NanumS',
-                fontWeight: FontWeight.w500,
-                fontSize: 14.0,
-                color: Colors.black,
-              ),
+              style: nanumText(14.0, FontWeight.w500, Colors.black),
             ),
           ),
           Text(
-            "${text['data']}", style: TextStyle(
-            fontFamily: 'NanumS',
-            fontWeight: FontWeight.w800,
-            fontSize: 14.0,
-            color: Colors.black,
-          ),
+            "${text['data']}",
+            style: nanumText(14.0, FontWeight.w700, Colors.black),
           ),
         ],
       ),

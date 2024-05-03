@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/widgets/kid_note.dart';
 import 'package:ggomal/widgets/kid_report.dart';
+import 'package:ggomal/constants.dart';
 
 class KidContent extends StatefulWidget {
   const KidContent({super.key});
@@ -32,11 +33,7 @@ class _KidContentState extends State<KidContent> with SingleTickerProviderStateM
         flex: 3,
         child: Column(
             children: [TabBar(
-              labelStyle: TextStyle(
-                fontFamily: 'NanumS',
-                fontWeight: FontWeight.w700,
-                color: Color(0xFFFF6A35),
-              ),
+              labelStyle: nanumText(16, FontWeight.w700,  Color(0xFFFF6A35)),
               indicatorColor: Color(0xFFFF6A35),
               controller: tabController,
               tabs: const [
@@ -45,18 +42,9 @@ class _KidContentState extends State<KidContent> with SingleTickerProviderStateM
               ],
             ),Expanded(
               child: Container(
-
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.grey.withOpacity(0.7),
-                  //     blurRadius: 5.0,
-                  //     offset: Offset(3, 3),
-                  //   ),
-                  // ],
                 ),
                 child: TabBarView(
                   controller: tabController,

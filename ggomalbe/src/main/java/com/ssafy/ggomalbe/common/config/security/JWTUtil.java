@@ -72,7 +72,7 @@ public class JWTUtil {
     }
 
     public MemberEntity.Role getRoleFromToken(String token) {
-        return (MemberEntity.Role) getAllClaimsFromToken(token).get("role");
+        return (MemberEntity.Role.valueOf(String.valueOf(getAllClaimsFromToken(token).get("role"))));
     }
 
     public String getUsernameFromToken(String token) {

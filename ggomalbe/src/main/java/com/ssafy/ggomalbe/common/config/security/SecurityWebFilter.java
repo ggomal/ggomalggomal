@@ -1,11 +1,12 @@
 package com.ssafy.ggomalbe.common.config.security;
 
-import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 
 @Configuration
 @EnableReactiveMethodSecurity
+@Slf4j
 public class SecurityWebFilter implements WebFilter {
     @Autowired
     JWTUtil jwtUtil;
@@ -36,12 +38,17 @@ public class SecurityWebFilter implements WebFilter {
                     .contextWrite(context ->
                             context.putAll(ReactiveSecurityContextHolder.withAuthentication(authentication)));
         }
-        Authentication authentication = CustomAuthentication.builder()
-                .memberId(3L)
-                .build();
-        return chain.filter(exchange)
-                .contextWrite(context ->
-                        context.putAll(ReactiveSecurityContextHolder.withAuthentication(authentication)));
+        // token 없거나 인증 실패시
+        ServerHttpResponse response = exchange.getResponse();
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        return response.setComplete();
+//        // 안되면 임시로 3번 넣어보기
+//        Authentication authentication = CustomAuthentication.builder()
+//                .memberId(3L)
+//                .build();
+//        return chain.filter(exchange)
+//                .contextWrite(context ->
+//                        context.putAll(ReactiveSecurityContextHolder.withAuthentication(authentication)));
     }
 
     private String resolveToken(ServerHttpRequest request) {

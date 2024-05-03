@@ -25,8 +25,7 @@ public class SecurityConfig {
         http
                 .authorizeExchange(exchanges -> exchanges
                         // 접근 허용 url
-                        .pathMatchers("/login", "/signup").permitAll()
-                        .pathMatchers("/kid").permitAll()
+                        .pathMatchers("/login").permitAll()
                         //swagger 접근 허용
                         .pathMatchers("/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyExchange().authenticated())

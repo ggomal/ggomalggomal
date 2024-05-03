@@ -38,15 +38,4 @@ public class AuthController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found. Please register");
                 });
     }
-
-
-    @PostMapping("/kid")
-    public Mono<MemberEntity> kidSignUp(@RequestBody KidSignUpRequest request) {
-        return null;
-    }
-
-    @PostMapping("/teacher")
-    public Mono<MemberEntity> teacherSignUp(){
-        return null;
-    }
 }

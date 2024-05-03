@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.common.config.security;
 
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -29,21 +30,26 @@ public class AuthManager implements ReactiveAuthenticationManager {
                 )
                 .cast(BearerToken.class)
                 .map(BearerToken::getCredentials)
-                .filter(jwtUtil::validateToken)
                 .flatMap(token -> {
-                    String userName = jwtUtil.getUsernameFromToken(token);
-                    Mono<UserDetails> foundUser = users.findByUsername(userName).defaultIfEmpty(new CustomUserDetails(null));
+                    try {
+                        String userName = jwtUtil.getUsernameFromToken(token);
+                        Mono<UserDetails> foundUser = users.findByUsername(userName).defaultIfEmpty(new CustomUserDetails(null));
 
-                    return foundUser.flatMap(u -> {
-                        if (u.getUsername() == null) {
-                            Mono.error(new IllegalArgumentException("User not found in auth manager"));
-                        }
-                        if (jwtUtil.validateToken(token)) {
+                        return foundUser.flatMap(u -> {
+                            if (u.getUsername() == null) {
+                                Mono.error(new IllegalArgumentException("User not found in auth manager"));
+                            }
+                            if (jwtUtil.validateToken(token)) {
+                                return Mono.justOrEmpty(new UsernamePasswordAuthenticationToken(u.getUsername(), u.getPassword(), u.getAuthorities()));
+                            }
+                            Mono.error(new IllegalArgumentException("Invalid Token or Expired token"));
                             return Mono.justOrEmpty(new UsernamePasswordAuthenticationToken(u.getUsername(), u.getPassword(), u.getAuthorities()));
-                        }
-                        Mono.error(new IllegalArgumentException("Invalid Token or Expired token"));
-                        return Mono.justOrEmpty(new UsernamePasswordAuthenticationToken(u.getUsername(), u.getPassword(), u.getAuthorities()));
-                    });
+                        });
+                    } catch (Exception e) {
+                        return Mono.just(new CustomUserDetails(null))
+                                .flatMap(u ->
+                                        Mono.justOrEmpty(new UsernamePasswordAuthenticationToken(null, null)));
+                    }
                 });
     }
 }

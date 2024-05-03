@@ -26,6 +26,7 @@ public class CustomAuthentication implements Authentication {
         return null;
     }
 
+    /** return memberId; */
     @Override
     public Long getDetails() {
         return memberId;

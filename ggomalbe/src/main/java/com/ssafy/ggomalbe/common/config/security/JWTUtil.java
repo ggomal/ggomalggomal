@@ -110,8 +110,9 @@ public class JWTUtil {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
-            System.out.println("jwt validated");
+            Jwts.parserBuilder().setSigningKey(key).build()
+                    .parseClaimsJws(token).getBody().getSubject();
+            LOGGER.info("jwt validated");
             return true;
         } catch (ExpiredJwtException ex) {
             LOGGER.error("JWT expired", ex.getMessage());

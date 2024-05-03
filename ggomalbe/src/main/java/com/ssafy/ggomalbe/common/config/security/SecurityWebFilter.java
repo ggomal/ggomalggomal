@@ -27,8 +27,11 @@ public class SecurityWebFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String token = resolveToken(exchange.getRequest());
-
-        if (token != null && jwtUtil.validateToken(token)) {
+        if (token == null) {
+            log.info("no jwt");
+            return chain.filter(exchange);
+        }
+        if (jwtUtil.validateToken(token)) {
             jwtUtil.getUsernameFromToken(token);
             Authentication authentication = CustomAuthentication.builder()
                     .memberId(jwtUtil.getMemberIdFromToken(token))
@@ -38,17 +41,13 @@ public class SecurityWebFilter implements WebFilter {
                     .contextWrite(context ->
                             context.putAll(ReactiveSecurityContextHolder.withAuthentication(authentication)));
         }
-        // token 없거나 인증 실패시
-        ServerHttpResponse response = exchange.getResponse();
-                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        return response.setComplete();
+        // token  인증 실패시
+        log.info("jwt validate false");
+        Authentication authentication = CustomAuthentication.builder().build();
+        return chain.filter(exchange)
+                .contextWrite(context ->
+                        context.putAll(ReactiveSecurityContextHolder.withAuthentication(authentication)));
 //        // 안되면 임시로 3번 넣어보기
-//        Authentication authentication = CustomAuthentication.builder()
-//                .memberId(3L)
-//                .build();
-//        return chain.filter(exchange)
-//                .contextWrite(context ->
-//                        context.putAll(ReactiveSecurityContextHolder.withAuthentication(authentication)));
     }
 
     private String resolveToken(ServerHttpRequest request) {

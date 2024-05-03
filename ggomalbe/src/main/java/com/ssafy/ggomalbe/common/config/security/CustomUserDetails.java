@@ -1,6 +1,7 @@
 package com.ssafy.ggomalbe.common.config.security;
 
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@ToString
 public class CustomUserDetails implements UserDetails {
     private final MemberEntity user;
 

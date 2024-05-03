@@ -42,7 +42,7 @@ public class RoomSocketHandler implements WebSocketHandler {
                             log.info("type null");
                             return Mono.empty();
                         }
-                        log.info("jsonNode.get(type) {}", jsonNode.get("type"));
+
                         String messageType = jsonNode.get("type").asText();
                         log.info("message type {}", messageType);
                         return switch (messageType) {

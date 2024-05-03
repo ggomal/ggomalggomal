@@ -73,7 +73,7 @@ public class TeacherSocketService {
 
         //아이 일 경우 바로 평가모드
         if(session.getId().equals(room.getKidSocket().getId())){
-            return evaluation(session,choiceLetter);
+            return evaluation(session,jsonNode);
         }
 
         //선생님일 경우 선택 모드
@@ -126,7 +126,7 @@ public class TeacherSocketService {
 
         room.sendKidRequest(response).subscribe();
 
-        return markingBingoCard(session,choiceLetter);
+        return markingBingoCard(session,jsonNode);
     }
 
     // 선생님이 O를 눌렀을때(아이의 발음을 api로 평가하고, 둘다 O표시를 하고, 빙고인지 판단하고 맞다면 게임종료)

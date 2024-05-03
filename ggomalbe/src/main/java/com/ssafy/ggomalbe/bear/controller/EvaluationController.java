@@ -2,7 +2,9 @@ package com.ssafy.ggomalbe.bear.controller;
 
 import com.ssafy.ggomalbe.bear.service.NaverCloudClient;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,19 +18,19 @@ import reactor.core.publisher.Mono;
 public class EvaluationController {
     private final NaverCloudClient naverCloudClient;
 
-    @PostMapping("/bear/evaluation")
-    public Mono<String> stt(@RequestPart("files") FilePart filePart) {
-        filePart
-                .content()
-                .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
-                .reduce((b1, b2) -> {
-                    b1.put(b2);
-                    return b1;
-                })
-                .flatMap(buffer -> naverCloudClient.soundToText(buffer))
-                .doOnNext((result) -> log.info(result))
-                .subscribe();
-        return Mono.just("안기다려");
+    @PostMapping(value = "/bear/evaluation", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> stt(@RequestPart("files") FilePart filePart) {
+        return Flux.concat(
+                Mono.just("loading..."),
+                filePart
+                        .content()
+                        .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
+                        .reduce((b1, b2) -> {
+                            b1.put(b2);
+                            return b1;
+                        })
+                        .flatMap(buffer -> naverCloudClient.soundToText(buffer))
+        );
     }
 
 

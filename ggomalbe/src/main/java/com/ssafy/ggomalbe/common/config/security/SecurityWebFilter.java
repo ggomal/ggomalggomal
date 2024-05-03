@@ -36,6 +36,7 @@ public class SecurityWebFilter implements WebFilter {
                     .memberId(jwtUtil.getMemberIdFromToken(token))
                     .name(jwtUtil.getMemberNameFromToken(token))
                     .centerId(jwtUtil.getCenterIdFromToken(token))
+                    .role(jwtUtil.getRoleFromToken(token))
                     .build();
             return chain.filter(exchange)
                     .contextWrite(context ->

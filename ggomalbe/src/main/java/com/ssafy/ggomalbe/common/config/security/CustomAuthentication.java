@@ -1,10 +1,10 @@
 package com.ssafy.ggomalbe.common.config.security;
 
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import java.security.Principal;
 import java.util.Collection;
@@ -13,7 +13,10 @@ import java.util.Collection;
 public class CustomAuthentication implements Authentication {
     private final Long memberId;
     private final String name;
+    @Getter
     private final Long centerId;
+    @Getter
+    private final MemberEntity.Role role;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -29,8 +32,6 @@ public class CustomAuthentication implements Authentication {
     public Long getDetails() {
         return memberId;
     }
-
-    public Long getCenterId() {return centerId;}
 
     /** return name */
     @Override

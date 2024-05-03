@@ -95,6 +95,7 @@ public class JWTUtil {
 
         Map<String, Object> jwtClaims = new HashMap<>();
         jwtClaims.put("memberId",user.getMemberId());
+        jwtClaims.put("memberName",user.getMemberId());
         jwtClaims.put("role",user.getRole());
         // Access Token 생성하기
         return Jwts.builder()

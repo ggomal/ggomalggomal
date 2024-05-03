@@ -12,6 +12,7 @@ import com.ssafy.ggomalbe.notice.dto.NoticeResponse;
 import com.ssafy.ggomalbe.notice.dto.NoticeUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -19,6 +20,7 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class NoticeServiceImpl implements NoticeService {
     private final NoticeRepository noticeRepository;
     private final HomeworkRepository homeworkRepository;
@@ -55,13 +57,22 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public Mono<NoticeResponse> updateNotice(Long kidId, NoticeUpdateRequest request) {
         return noticeRepository.findById(request.getNoticeId())
-                .doOnNext(notice -> notice.update(request))
-                .doOnNext(this::deleteHomeworks)
-                .doOnNext(entity -> addHomeworks(entity.getNoticeId(), request.getHomeworks()))
+                // request에 있는대로 notice update
+                .doOnNext(notice -> notice.updateContent(request.getContents()))
+                .publishOn(Schedulers.boundedElastic())
+                // 숙제 있으면 숙제 다 삭제하고 새로 등록
+                .doOnNext(notice -> {
+                    if (request.getHomeworks() != null) {
+                        deleteHomeworks(notice);
+                        addHomeworks(notice.getNoticeId(), request.getHomeworks());
+                    }
+                })
+                // 업데이트 된 대로 notice save
                 .flatMap(noticeRepository::save)
                 .map(NoticeMapper::toNoticeResponse)
                 .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
                         .map(HomeworkMapper::toHomeworkResponse)
+                        //homework list로 만들어서 담아줍니다.
                         .collectList()
                         .map(notice::setHomeworks));
     }

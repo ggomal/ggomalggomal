@@ -1,17 +1,14 @@
 package com.ssafy.ggomalbe.common.config.security;
 
-import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Map;
 
-@RequiredArgsConstructor
 @Builder
 public class CustomAuthentication implements Authentication {
     private final Long memberId;
@@ -26,12 +23,13 @@ public class CustomAuthentication implements Authentication {
         return null;
     }
 
-    /** return memberId; */
+    /** return memberId */
     @Override
     public Long getDetails() {
         return memberId;
     }
 
+    /** return name */
     @Override
     public Principal getPrincipal() {
         return () -> name;

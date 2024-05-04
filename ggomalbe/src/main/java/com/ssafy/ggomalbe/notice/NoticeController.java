@@ -19,15 +19,13 @@ import java.util.List;
 public class NoticeController {
     private final NoticeService noticeService;
 
-    @GetMapping
-    public Mono<List<NoticeResponse>> getAllNotice() {
+    @GetMapping("/{month}")
+    public Mono<List<NoticeResponse>> getAllNotice(@PathVariable Integer month) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .flatMap( memberId -> {
-                    return noticeService.getAllNotice(memberId)
-                            .collectList();
-                });
+                .flatMap( memberId -> noticeService.getAllNotice(memberId, month)
+                        .collectList());
     }
 
     @PostMapping
@@ -36,8 +34,8 @@ public class NoticeController {
                 .map(securityContext ->{
                     request.setTeacherName(securityContext.getAuthentication().getName());
                         return (Long) securityContext.getAuthentication().getDetails();})
-                .flatMap(kidId ->
-                        noticeService.addNotice(kidId, request));
+                .flatMap(memberId ->
+                        noticeService.addNotice(memberId, request));
     }
 
     @PutMapping

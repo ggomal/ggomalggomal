@@ -6,6 +6,7 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Flux;
 
+import java.util.List;
 import java.util.Set;
 
 public interface HomeworkRepository extends R2dbcRepository<HomeworkEntity, Long> {

@@ -5,7 +5,6 @@ import com.ssafy.ggomalbe.common.entity.NoticeEntity;
 import com.ssafy.ggomalbe.common.repository.HomeworkRepository;
 import com.ssafy.ggomalbe.common.repository.NoticeRepository;
 import com.ssafy.ggomalbe.homework.HomeworkMapper;
-import com.ssafy.ggomalbe.homework.dto.HomeworkResponse;
 import com.ssafy.ggomalbe.notice.dto.NoticeAddRequest;
 import com.ssafy.ggomalbe.notice.dto.NoticeAddResponse;
 import com.ssafy.ggomalbe.notice.dto.NoticeResponse;
@@ -26,8 +25,8 @@ public class NoticeServiceImpl implements NoticeService {
     private final HomeworkRepository homeworkRepository;
 
     @Override
-    public Flux<NoticeResponse> getAllNotice(Long kidId) {
-        return noticeRepository.findAllByKidId(kidId)
+    public Flux<NoticeResponse> getAllNotice(Long kidId, Integer month) {
+        return noticeRepository.findAllByKidIdAndCreatedAtMonth(kidId, month)
                 .map(NoticeMapper::toNoticeResponse)
                 .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
                         .map(HomeworkMapper::toHomeworkResponse)
@@ -35,17 +34,17 @@ public class NoticeServiceImpl implements NoticeService {
                         .map(notice::setHomeworks));
     }
 
-    @Override
-    public Mono<NoticeResponse> getNotice(Long noticeId) {
-        return noticeRepository.findByNoticeId(noticeId)
-                .map(NoticeMapper::toNoticeResponse);
-    }
+//    @Override
+//    public Mono<NoticeResponse> getNotice(Long noticeId) {
+//        return noticeRepository.findByNoticeId(noticeId)
+//                .map(NoticeMapper::toNoticeResponse);
+//    }
 
     @Override
-    public Mono<NoticeAddResponse> addNotice(Long kidId, NoticeAddRequest request) {
+    public Mono<NoticeAddResponse> addNotice(Long memberId, NoticeAddRequest request) {
         return noticeRepository.save(
                         NoticeEntity.builder()
-                                .kidId(kidId)
+                                .kidId(request.getKidId())
                                 .noticeContents(request.getContents())
                                 .teacherName(request.getTeacherName())
                                 .build())

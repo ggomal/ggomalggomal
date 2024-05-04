@@ -25,5 +25,4 @@ public class MemberKidResponse {
     private String kidNote; // 특이사항
     private String parentName;
 
-
 }

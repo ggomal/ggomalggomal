@@ -46,6 +46,7 @@ public class KidServiceImpl implements KidService{
     }
 
     public Flux<KidListResponse> getKidList(Long memberId){
+        System.out.println("get kids : i am teacher "+memberId);
         return memberRepository.getKidList(memberId);
     }
 }

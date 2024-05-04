@@ -7,6 +7,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class NoticeAddRequest {
+    private Long kidId;
     private String contents;
     @Setter
     private String teacherName;

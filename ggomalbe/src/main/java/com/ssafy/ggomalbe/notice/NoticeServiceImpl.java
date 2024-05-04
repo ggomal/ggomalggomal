@@ -41,10 +41,10 @@ public class NoticeServiceImpl implements NoticeService {
 //    }
 
     @Override
-    public Mono<NoticeAddResponse> addNotice(Long kidId, NoticeAddRequest request) {
+    public Mono<NoticeAddResponse> addNotice(Long memberId, NoticeAddRequest request) {
         return noticeRepository.save(
                         NoticeEntity.builder()
-                                .kidId(kidId)
+                                .kidId(request.getKidId())
                                 .noticeContents(request.getContents())
                                 .teacherName(request.getTeacherName())
                                 .build())

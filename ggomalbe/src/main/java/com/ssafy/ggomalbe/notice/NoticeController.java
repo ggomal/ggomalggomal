@@ -34,8 +34,8 @@ public class NoticeController {
                 .map(securityContext ->{
                     request.setTeacherName(securityContext.getAuthentication().getName());
                         return (Long) securityContext.getAuthentication().getDetails();})
-                .flatMap(kidId ->
-                        noticeService.addNotice(kidId, request));
+                .flatMap(memberId ->
+                        noticeService.addNotice(memberId, request));
     }
 
     @PutMapping

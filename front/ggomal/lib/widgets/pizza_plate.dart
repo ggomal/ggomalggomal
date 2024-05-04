@@ -10,7 +10,6 @@ class PizzaPlate extends StatefulWidget {
 }
 
 class _PizzaPlateState extends State<PizzaPlate> {
-
   List<Map<String, dynamic>> pizzaThingList = [
     {'img': 1, 'name': '햄'},
     {'img': 2, 'name': '피망'},
@@ -34,6 +33,41 @@ class _PizzaPlateState extends State<PizzaPlate> {
         });
   }
 
+  int toppingIndex = 0;
+
+  List<Map<String, dynamic>> toppings = [
+    {'img': 0, 'top': 80.0, 'left': 120.0, 'isVisible': true},
+    {'img': 0, 'top': 230.0, 'left': 150.0, 'isVisible': true},
+    {'img': 0, 'top': 130.0, 'left': 340.0, 'isVisible': true},
+    {'img': 0, 'top': 110.0, 'left': 190.0, 'isVisible': true},
+    {'img': 0, 'top': 100.0, 'left': 300.0, 'isVisible': true},
+    {'img': 0, 'top': 240.0, 'left': 270.0, 'isVisible': true},
+    {'img': 0, 'top': 250.0, 'left': 200.0, 'isVisible': true},
+    {'img': 0, 'top': 60.0, 'left': 260.0, 'isVisible': true},
+    {'img': 0, 'top': 200.0, 'left': 100.0, 'isVisible': true},
+    {'img': 0, 'top': 180.0, 'left': 180.0, 'isVisible': true},
+    {'img': 0, 'top': 150.0, 'left': 80.0, 'isVisible': true},
+    {'img': 0, 'top': 165.0, 'left': 295.0, 'isVisible': true},
+    {'img': 0, 'top': 150.0, 'left': 220.0, 'isVisible': true},
+    {'img': 0, 'top': 195.0, 'left': 345.0, 'isVisible': true},
+    {'img': 0, 'top': 70.0, 'left': 200.0, 'isVisible': true},
+    {'img': 0, 'top': 200.0, 'left': 250.0, 'isVisible': true},
+    {'img': 0, 'top': 135.0, 'left': 260.0, 'isVisible': true},
+    {'img': 0, 'top': 140.0, 'left': 140.0, 'isVisible': true},
+  ];
+
+  void handleTopping(int img) {
+    setState(() {
+      for (int i = 0; i < 3; i++) {
+        toppings[toppingIndex]['img'] = img;
+        toppingIndex += 1;
+      }
+    });
+    if(toppingIndex == 18){
+      print("게임 끝");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -41,9 +75,23 @@ class _PizzaPlateState extends State<PizzaPlate> {
       children: [
         Flexible(
           flex: 5,
-          child: Image.asset(
-            height: 500.0,
-            'assets/images/chick/pizza_dough.png',
+          child: Stack(
+            children: [
+              Image.asset(
+                height: 500.0,
+                'assets/images/chick/pizza_dough.png',
+              ),
+              ...toppings.map(
+                (e) => e['img'] != 0 ? Positioned(
+                  top: e['top'] as double,
+                  left: e['left'] as double,
+                  child: Image.asset(
+                    "assets/images/chick/pizza_thing_${e['img']}.png",
+                    width: 40,
+                  ),
+                ) : SizedBox.shrink(),
+              ),
+            ],
           ),
         ),
         Flexible(
@@ -64,7 +112,8 @@ class _PizzaPlateState extends State<PizzaPlate> {
                         .map(
                           (e) => GestureDetector(
                             onTap: () {
-                              handlePizzaThing(e);
+                              // handlePizzaThing(e);
+                              handleTopping(e['img']);
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -80,7 +129,8 @@ class _PizzaPlateState extends State<PizzaPlate> {
                                   ),
                                   Text(
                                     '${e['name']}',
-                                    style: mapleText(28.0, FontWeight.w500, Colors.black),
+                                    style: mapleText(
+                                        28.0, FontWeight.w500, Colors.black),
                                   ),
                                 ],
                               ),

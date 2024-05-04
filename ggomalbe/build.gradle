@@ -58,6 +58,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
 	testImplementation 'org.springdoc:springdoc-openapi-starter-webflux-api:2.5.0'
 
+	implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 tasks.named('test') {

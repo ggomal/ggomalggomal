@@ -41,7 +41,6 @@ public class Room {
             return;
         }
 
-        System.out.println(MemberEntity.Role.TEACHER);
         if(name.equals("kid")){
             kidSocket = session;
         }else{
@@ -84,6 +83,16 @@ public class Room {
     //선생님에게 빙고판 전달
     public Mono<Void> sendTeacherBingoBoard(String board) {
         return teacherSocket.send(Mono.just(teacherSocket.textMessage(board))).then();
+    }
+
+    //아이에게 소켓메시지 전달
+    public Mono<Void> sendKidRequest(String message) {
+        return kidSocket.send(Mono.just(kidSocket.textMessage(message))).then();
+    }
+
+    //선생님에게 소켓메시지 전달
+    public Mono<Void> sendTeacherRequest(String message) {
+        return teacherSocket.send(Mono.just(teacherSocket.textMessage(message))).then();
     }
 
 

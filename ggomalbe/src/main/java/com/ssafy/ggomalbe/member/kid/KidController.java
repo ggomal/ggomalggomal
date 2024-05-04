@@ -1,5 +1,8 @@
 package com.ssafy.ggomalbe.member.kid;
 
+import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.member.kid.dto.KidSignUpRequest;
 import com.mysql.cj.log.Log;
 import com.ssafy.ggomalbe.member.kid.dto.KidListResponse;
 import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
@@ -21,6 +24,17 @@ public class KidController {
 
     private final KidService kidService;
 
+    @PostMapping
+    public Mono<MemberEntity> kidSignUp(@RequestBody KidSignUpRequest request) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
+                .map(authentication ->{
+                    request.setCenterId(authentication.getCenterId());
+                    return authentication.getDetails();})
+                .doOnNext(request::setTeacherId)
+                .flatMap(l -> kidService.insertKid(request));
+    }
+
     @GetMapping
     public Mono<List<KidListResponse>> getKid(){
         return ReactiveSecurityContextHolder.getContext()
@@ -34,5 +48,6 @@ public class KidController {
     public Mono<MemberKidResponse> getKid(@PathVariable Long memberId) {
         System.out.println("member ID : " + memberId);
         return kidService.getKid(memberId);
+
     }
 }

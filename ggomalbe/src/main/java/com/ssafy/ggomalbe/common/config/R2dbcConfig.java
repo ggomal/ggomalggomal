@@ -20,7 +20,6 @@ public class R2dbcConfig extends R2dbcAutoConfiguration {
     @Bean
     public ConnectionFactoryOptionsBuilderCustomizer mysqlCustomizer() {
         return (builder) ->
-        builder.option(MySqlConnectionFactoryProvider.SERVER_ZONE_ID, ZoneId.of(
-           "UTC"));
+        builder.option(MySqlConnectionFactoryProvider.SERVER_ZONE_ID, ZoneId.of("UTC"));
     }
 }

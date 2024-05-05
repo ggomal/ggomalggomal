@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.util.StringUtils;
 
 @Table("notice")
 @Builder
@@ -26,10 +27,7 @@ public class NoticeEntity extends AbstractEntity {
     @Column("teacher_name")
     private String teacherName;
 
-    public void update(NoticeUpdateRequest request){
-        this.noticeId = request.getNoticeId();
-        this.kidId = request.getKidId();
-        this.noticeContents = request.getContents();
-        this.teacherName = request.getTeacherName();
+    public void updateContent(String noticeContents){
+        if (StringUtils.hasLength(noticeContents)) this.noticeContents = noticeContents;
     }
 }

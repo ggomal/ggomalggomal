@@ -1,4 +1,4 @@
-package com.ssafy.ggomalbe.member.controller;
+package com.ssafy.ggomalbe.member.login.controller;
 
 import com.ssafy.ggomalbe.bear.handlers.RoomSocketHandler;
 import com.ssafy.ggomalbe.bear.entity.Room;

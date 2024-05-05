@@ -1,23 +1,64 @@
 package com.ssafy.ggomalbe.member.kid;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
+import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.member.kid.dto.CoinResponse;
+import com.ssafy.ggomalbe.member.kid.dto.KidSignUpRequest;
+import com.ssafy.ggomalbe.member.kid.dto.KidListResponse;
+import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
+@Slf4j
 @RestController
-@RequestMapping("/api/v1/kid")
+@RequestMapping("/kid")
+@RequiredArgsConstructor
 public class KidController {
 
+    private final KidService kidService;
+
     @PostMapping
-    public Mono<String> addKid(){
-        return Mono.just("plz");
+    public Mono<MemberEntity> kidSignUp(@RequestBody KidSignUpRequest request) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
+                .map(authentication ->{
+                    request.setCenterId(authentication.getCenterId());
+                    return authentication.getDetails();})
+                .doOnNext(request::setTeacherId)
+                .flatMap(l -> kidService.insertKid(request));
     }
 
+    @Operation(description = "담당 아이 목록 조회")
     @GetMapping
-    public Flux<String> getKid(){
-        return Flux.fromArray(new String[] {"1","2","3","4","5"});
+    public Mono<List<KidListResponse>> getKidList(){
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext ->
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap(memberId ->
+                        kidService.getKidList(memberId).collectList());
     }
+
+    @Operation(description = "아이 상세정보 조회")
+    @GetMapping("/{memberId}")
+    public Mono<MemberKidResponse> getKid(@PathVariable Long memberId) {
+        return kidService.getKid(memberId);
+    }
+
+    @Operation(description = "아이 보유 재화 조회")
+    @GetMapping("/coin")
+    public Mono<CoinResponse> getCoin(){
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext ->
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap(memberId ->
+                   kidService.getOwnCoin(memberId));
+    }
+
+
 }

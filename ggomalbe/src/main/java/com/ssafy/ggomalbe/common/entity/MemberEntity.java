@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("member")
+@Getter
 @Builder
 public class MemberEntity extends AbstractEntity {
     @Id

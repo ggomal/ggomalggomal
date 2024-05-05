@@ -26,7 +26,6 @@ import java.time.Duration;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@Tag(name = "ExampleController", description = "ExampleController")
 public class ExampleController {
     private final Sinks.Many<String> sink = Sinks.many().multicast().directBestEffort();
 
@@ -34,8 +33,6 @@ public class ExampleController {
     //빙고에서 아이가 생성한 룸관리, 선생님을 참가시키기위한 해시맵
     private final RoomSocketHandler groupSocketHandler;
 
-
-    @Operation(summary = "getExampleData", description = "getExampleData...")
     @GetMapping(value = "/example", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getExampleData() {
         // 예시로 간단한 스트림을 생성하여 반환

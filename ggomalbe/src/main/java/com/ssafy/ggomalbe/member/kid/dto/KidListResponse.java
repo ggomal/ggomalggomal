@@ -11,8 +11,8 @@ public class KidListResponse {
 
     private Long memberId;
     private String name;
-//    private Integer age;
-    private LocalDate kidBirthDT;
+    private Integer age;
+//    private LocalDate kidBirthDT;
     private String id;
     private String password;
 }

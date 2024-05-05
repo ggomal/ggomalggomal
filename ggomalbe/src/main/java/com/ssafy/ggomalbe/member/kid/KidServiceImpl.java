@@ -6,6 +6,7 @@ import com.ssafy.ggomalbe.common.entity.TeacherKidEntity;
 import com.ssafy.ggomalbe.common.repository.KidRepository;
 import com.ssafy.ggomalbe.common.repository.MemberRepository;
 import com.ssafy.ggomalbe.common.repository.TeacherKidRepository;
+import com.ssafy.ggomalbe.member.kid.dto.CoinResponse;
 import com.ssafy.ggomalbe.member.kid.dto.KidListResponse;
 import com.ssafy.ggomalbe.member.kid.dto.KidSignUpRequest;
 import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
@@ -48,5 +49,11 @@ public class KidServiceImpl implements KidService{
     public Flux<KidListResponse> getKidList(Long memberId){
         System.out.println("get kids : i am teacher "+memberId);
         return memberRepository.getKidList(memberId);
+    }
+
+    @Override
+    public Mono<CoinResponse> getOwnCoin(Long memberId) {
+        return kidRepository.findById(memberId)
+                .map(member -> CoinResponse.builder().coin(member.getCoin()).build());
     }
 }

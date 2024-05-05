@@ -7,10 +7,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 @Getter
 @ToString
-@Setter
 @Builder
 public class MemberKidResponse {
     private Long memberId;
@@ -20,9 +20,12 @@ public class MemberKidResponse {
     private String parentPhone; // phone(연락처)
 
     private String kidImgUrl;
-    //    private int age;    // kidBirthDT(생년월일)로 계산
-    private LocalDate kidBirthDT;
+//    private LocalDate kidBirthDT;
+    private Integer age;    // kidBirthDT(생년월일)로 계산 -> 시간관련 함수 포함한 Query로 가져오기
     private String kidNote; // 특이사항
     private String parentName;
 
+//    public void setAge(LocalDate kidBirthDT){
+//        this.age = Period.between(kidBirthDT, LocalDate.now()).getYears();
+//    }
 }

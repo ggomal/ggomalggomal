@@ -2,16 +2,15 @@ package com.ssafy.ggomalbe.member.kid;
 
 import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.member.kid.dto.CoinResponse;
 import com.ssafy.ggomalbe.member.kid.dto.KidSignUpRequest;
-import com.mysql.cj.log.Log;
 import com.ssafy.ggomalbe.member.kid.dto.KidListResponse;
 import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -35,8 +34,9 @@ public class KidController {
                 .flatMap(l -> kidService.insertKid(request));
     }
 
+    @Operation(description = "담당 아이 목록 조회")
     @GetMapping
-    public Mono<List<KidListResponse>> getKid(){
+    public Mono<List<KidListResponse>> getKidList(){
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
@@ -44,10 +44,21 @@ public class KidController {
                         kidService.getKidList(memberId).collectList());
     }
 
+    @Operation(description = "아이 상세정보 조회")
     @GetMapping("/{memberId}")
     public Mono<MemberKidResponse> getKid(@PathVariable Long memberId) {
-        System.out.println("member ID : " + memberId);
         return kidService.getKid(memberId);
-
     }
+
+    @Operation(description = "아이 보유 재화 조회")
+    @GetMapping("/coin")
+    public Mono<CoinResponse> getCoin(){
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext ->
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap(memberId ->
+                   kidService.getOwnCoin(memberId));
+    }
+
+
 }

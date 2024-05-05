@@ -27,7 +27,7 @@ public class SecurityConfig {
                         // 접근 허용 url
                         .pathMatchers("/login").permitAll()
                         //swagger 접근 허용
-                        .pathMatchers("/swagger","/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .pathMatchers("/swagger", "/swagger-ui","/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyExchange().authenticated())
 //                .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/v1/**"))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)

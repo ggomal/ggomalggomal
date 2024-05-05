@@ -10,16 +10,14 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("kid_character")
 @Builder
 @Data
-public class KidCharacterEntity extends AbstractEntity {
+public class KidFurnitureEntity extends AbstractEntity {
     @Id
-    @Column("kid_character_id")
+    @Column("kid_furniture_id")
     private final Long kidCharacterId;
 
     @Column("member_id")
     private final Long memberId;
 
-    @Column("character_id")
+    @Column("furniture_id")
     private final Long characterId;
-
-    private final Long exp;
 }

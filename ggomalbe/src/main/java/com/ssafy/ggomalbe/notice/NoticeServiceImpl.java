@@ -31,7 +31,8 @@ public class NoticeServiceImpl implements NoticeService {
                 .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
                         .map(HomeworkMapper::toHomeworkResponse)
                         .buffer()
-                        .map(notice::setHomeworks));
+                        .map(notice::setHomeworks))
+                .doOnNext(noticeResponse -> noticeResponse.setMsg("SUCCESS"));
     }
 
 //    @Override

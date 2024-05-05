@@ -20,11 +20,11 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @GetMapping("/{month}")
-    public Mono<List<NoticeResponse>> getAllNotice(@PathVariable Integer month) {
+    public Mono<List<NoticeResponse>> getAllNotice(@PathVariable Integer month, @RequestParam(required = false, defaultValue = "-1") Long kidId) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .flatMap( memberId -> noticeService.getAllNotice(memberId, month)
+                .flatMap( memberId -> noticeService.getAllNotice(kidId==-1 ? memberId:kidId, month)
                         .collectList());
     }
 

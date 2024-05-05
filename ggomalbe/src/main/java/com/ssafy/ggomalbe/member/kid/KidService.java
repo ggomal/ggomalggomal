@@ -18,5 +18,4 @@ public interface KidService {
     Flux<KidListResponse> getKidList(Long memberId);
 
     Mono<CoinResponse> getOwnCoin(Long memberId);
-
 }

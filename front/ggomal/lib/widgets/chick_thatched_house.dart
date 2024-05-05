@@ -29,7 +29,6 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
               })
             }
         });
-    print("$thingList");
   }
 
   @override

@@ -10,6 +10,8 @@ class PizzaPlate extends StatefulWidget {
 }
 
 class _PizzaPlateState extends State<PizzaPlate> {
+  int toppingIndex = 0;
+
   List<Map<String, dynamic>> pizzaThingList = [
     {'img': 1, 'name': '햄'},
     {'img': 2, 'name': '피망'},
@@ -18,22 +20,6 @@ class _PizzaPlateState extends State<PizzaPlate> {
     {'img': 5, 'name': '토마토'},
     {'img': 6, 'name': '올리브'},
   ];
-
-  void handlePizzaThing(Map<String, dynamic> thing) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => ChickSpeechModal({
-        "game": "pizza",
-        "name": thing['name'],
-        "img": thing['img'],
-        "ending": "올려줘"
-      }),
-    ).then((value) => {
-          if (value) {setState(() {})}
-        });
-  }
-
-  int toppingIndex = 0;
 
   List<Map<String, dynamic>> toppings = [
     {'img': 0, 'top': 80.0, 'left': 120.0, 'isVisible': true},
@@ -56,16 +42,27 @@ class _PizzaPlateState extends State<PizzaPlate> {
     {'img': 0, 'top': 140.0, 'left': 140.0, 'isVisible': true},
   ];
 
-  void handleTopping(int img) {
-    setState(() {
-      for (int i = 0; i < 3; i++) {
-        toppings[toppingIndex]['img'] = img;
-        toppingIndex += 1;
-      }
+  void handleTopping(Map<String, dynamic> thing) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ChickSpeechModal({
+        "game": "pizza",
+        "name": thing['name'],
+        "img": thing['img'],
+        "ending": "올려줘"
+      }),
+    ).then((value) => {
+      if (value)
+        {
+          setState(() {
+            for (int i = 0; i < 3; i++) {
+              toppings[toppingIndex]['img'] = thing['img'];
+              toppingIndex += 1;
+            }
+          }),
+          if (toppingIndex == 18) {print("게임 끝")}
+        }
     });
-    if(toppingIndex == 18){
-      print("게임 끝");
-    }
   }
 
   @override
@@ -82,14 +79,16 @@ class _PizzaPlateState extends State<PizzaPlate> {
                 'assets/images/chick/pizza_dough.png',
               ),
               ...toppings.map(
-                (e) => e['img'] != 0 ? Positioned(
+                    (e) => e['img'] != 0
+                    ? Positioned(
                   top: e['top'] as double,
                   left: e['left'] as double,
                   child: Image.asset(
                     "assets/images/chick/pizza_thing_${e['img']}.png",
                     width: 40,
                   ),
-                ) : SizedBox.shrink(),
+                )
+                    : SizedBox.shrink(),
               ),
             ],
           ),
@@ -111,32 +110,31 @@ class _PizzaPlateState extends State<PizzaPlate> {
                     children: pizzaThingList
                         .map(
                           (e) => GestureDetector(
-                            onTap: () {
-                              // handlePizzaThing(e);
-                              handleTopping(e['img']);
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 25.0,
-                                vertical: 3.0,
-                              ),
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    height: 90,
-                                    width: 90,
-                                    'assets/images/chick/pizza_thing_${e['img']}.png',
-                                  ),
-                                  Text(
-                                    '${e['name']}',
-                                    style: mapleText(
-                                        28.0, FontWeight.w500, Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
+                        onTap: () {
+                          handleTopping(e);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 25.0,
+                            vertical: 3.0,
                           ),
-                        )
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                height: 90,
+                                width: 90,
+                                'assets/images/chick/pizza_thing_${e['img']}.png',
+                              ),
+                              Text(
+                                '${e['name']}',
+                                style: mapleText(
+                                    28.0, FontWeight.w500, Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
                         .toList(),
                   ),
                 ),

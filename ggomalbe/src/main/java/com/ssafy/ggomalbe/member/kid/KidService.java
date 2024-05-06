@@ -19,4 +19,5 @@ public interface KidService {
 
     Mono<CoinResponse> getOwnCoin(Long memberId);
 
+    Mono<Integer> setCoin(Long memberId, Long coin);
 }

@@ -56,4 +56,9 @@ public class KidServiceImpl implements KidService{
         return kidRepository.findById(memberId)
                 .map(member -> CoinResponse.builder().coin(member.getCoin()).build());
     }
+
+    @Override
+    public Mono<Integer> setCoin(Long memberId, Long coin) {
+        return kidRepository.setCoin(memberId, coin);
+    }
 }

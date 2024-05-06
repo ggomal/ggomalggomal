@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ggomal/screens/kids/bingo.dart';
 import 'package:ggomal/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -16,9 +18,11 @@ class _App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      MaterialApp.router(
-      routerConfig: router,
+    return ChangeNotifierProvider(
+      create: (context) => RoomId(),
+      child: MaterialApp.router(
+        routerConfig: router,
+      ),
     );
   }
 }

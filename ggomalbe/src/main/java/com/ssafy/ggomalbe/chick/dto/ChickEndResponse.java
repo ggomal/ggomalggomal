@@ -1,13 +1,12 @@
-package com.ssafy.ggomalbe.frog.dto;
+package com.ssafy.ggomalbe.chick.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EndGameResponse {
-    private Boolean isDone;
+public class ChickEndResponse {
+    private String msg;
 }

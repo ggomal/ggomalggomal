@@ -31,8 +31,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
                         .map(HomeworkMapper::toHomeworkResponse)
                         .buffer()
-                        .map(notice::setHomeworks))
-                .doOnNext(noticeResponse -> noticeResponse.setMsg("SUCCESS"));
+                        .map(notice::setHomeworks));
     }
 
 //    @Override
@@ -51,7 +50,8 @@ public class NoticeServiceImpl implements NoticeService {
                                 .build())
                 .flatMap(notice ->
                         Mono.just(new NoticeAddResponse(notice, request.getHomeworks())))
-                .doOnNext(this::addHomeworks);
+                .doOnNext(this::addHomeworks)
+                .doOnNext(res -> res.setMsg("SUCCESS"));
     }
 
     @Override
@@ -77,15 +77,15 @@ public class NoticeServiceImpl implements NoticeService {
                         .map(notice::setHomeworks));
     }
 
-    public void deleteHomeworks(Long noticeId) {
+    private void deleteHomeworks(Long noticeId) {
         homeworkRepository.deleteAllByNoticeId(noticeId).subscribe();
     }
 
-    public void deleteHomeworks(NoticeEntity notice) {
+    private void deleteHomeworks(NoticeEntity notice) {
         deleteHomeworks(notice.getNoticeId());
     }
 
-    public void addHomeworks(Long noticeId, String[] homeworks) {
+    private void addHomeworks(Long noticeId, String[] homeworks) {
         Flux.fromArray(homeworks)
                 .publishOn(Schedulers.boundedElastic())
                 .doOnNext(hwString ->
@@ -97,7 +97,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .subscribe();
     }
 
-    public void addHomeworks(NoticeAddResponse noticeAddResponse) {
+    private void addHomeworks(NoticeAddResponse noticeAddResponse) {
         addHomeworks(noticeAddResponse.getNoticeId(), noticeAddResponse.getHomeworks());
     }
 

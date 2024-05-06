@@ -3,6 +3,7 @@ import 'package:ggomal/screens/kids/chick_clean.dart';
 import 'package:ggomal/screens/kids/chick_pizza.dart';
 import 'package:ggomal/screens/manager/kid_detail.dart';
 import 'package:ggomal/screens/manager/kids_manage.dart';
+import 'package:ggomal/screens/manager/manager_calendar.dart';
 import 'package:ggomal/screens/manager/manager_main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/screens/kids/whale.dart';
@@ -75,6 +76,10 @@ final router = GoRouter(
     GoRoute(
       path: '/kids/report',
       builder: (context, state) => const KidReport(),
+    ),
+    GoRoute(
+      path: '/manager/calender',
+      builder: (context, state) => const ManagerCalendarScreen(),
     ),
   ],
 );

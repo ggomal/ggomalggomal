@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/router.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // 메인
-void main() {
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting();
+
   runApp(const _App());
 }
 

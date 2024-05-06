@@ -35,6 +35,7 @@ dependencies:
   jwt_decode: ^0.3.1
   fl_chart: ^0.67.0
   permission_handler: ^11.3.1
+  flutter_neat_and_clean_calendar: ^0.3.0+12
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -45,6 +46,14 @@ dependencies:
   go_router: ^14.0.0
   percent_indicator: ^4.0.1
   camera: ^0.10.5+9
+
+  table_calendar: ^3.1.0
+  intl: ^0.19.0
+  drift: ^2.16.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.0.0
+  path: ^1.9.0
+  get_it: ^7.6.7
 
 dev_dependencies:
   flutter_test:

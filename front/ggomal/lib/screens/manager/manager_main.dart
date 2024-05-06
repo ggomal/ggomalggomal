@@ -91,7 +91,7 @@ class ManagerMainScreen extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      // context.go('/manager/schedule');
+                      context.go('/manager/calender');
                     },
                     child: SizedBox(
                       width: 500.0,

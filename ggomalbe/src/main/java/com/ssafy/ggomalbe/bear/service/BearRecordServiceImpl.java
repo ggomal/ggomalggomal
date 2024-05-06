@@ -1,11 +1,14 @@
 package com.ssafy.ggomalbe.bear.service;
 
+import com.ssafy.ggomalbe.common.entity.BearRecordEntity;
 import com.ssafy.ggomalbe.common.repository.BearRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestPart;
+import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,7 +19,7 @@ import java.util.Map;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class BearRecordServiceImpl implements BearRecordService{
+public class BearRecordServiceImpl implements BearRecordService {
     private final BearRecordRepository bearRecordRepository;
     private final NaverCloudClient naverCloudClient;
     private final OpenApiClient openApiClient;
@@ -34,8 +37,37 @@ public class BearRecordServiceImpl implements BearRecordService{
 //
 //    public Mono<>
 
+    @Override
+    public Mono<BearRecordEntity> addBearRecord(FilePart filePart,Long memberId, Long gameNum, Long wordId, String letter, Short pronCount) {
+        return evaluation(filePart, letter)
+                .flatMap((evaluateResult) -> {
+                    float score = Float.parseFloat(evaluateResult.get("score"));
+                    String pronunciation = evaluateResult.get("pronunciation");
 
-    public Mono<Map<String, String>> evaluate(FilePart filePart, String letter) {
+                    BearRecordEntity bearRecordEntity = BearRecordEntity.builder()
+                            .memberId(memberId)
+                            .wordId(wordId)
+                            .gameNum(gameNum)
+                            .pronunciation(pronunciation)
+                            .pronCount(pronCount)
+                            .score(score)
+                            .build();
+                    return bearRecordRepository.save(bearRecordEntity);
+                }).doOnNext(data -> log.info("save {}", data.toString()));
+    }
+
+
+
+    /**
+     * 평가데이터 저장
+     * @param letter : 말해야 하는 정답 단어
+     * @param filePart : 아이가 단어를 읽고 녹음한 데이터
+     * @return
+     * score: letter와 아이의 음성을 비교하여 도출한 점수
+     * stt: 아이의 음성을 텍스트로 변환한 문자열
+     * letter : 아이가 말해야하는 정답 단어
+     */
+    public Mono<Map<String, String>> evaluation(FilePart filePart, String letter) {
         return filePart.content()
                 .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
                 .reduce((b1, b2) -> {
@@ -52,7 +84,7 @@ public class BearRecordServiceImpl implements BearRecordService{
                                         log.info("openApiResponse {}", openApiResponse);
                                         Map<String, String> returnObject = openApiResponse.getReturn_object();
                                         Map<String, String> result = new HashMap<>();
-                                        result.put("stt", sttText);
+                                        result.put("pronunciation", sttText);
                                         result.put("score", returnObject.get("score"));
                                         result.put("letter", letter);
                                         return result;

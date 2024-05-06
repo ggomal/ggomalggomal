@@ -12,9 +12,6 @@ import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -22,37 +19,36 @@ public class EvaluationController {
     private final NaverCloudClient naverCloudClient;
     private final OpenApiClient openApiClient;
 
-    @PostMapping(value = "/bear/evaluation", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> stt(@RequestPart("files") FilePart filePart) {
-        return Flux.concat(
-                Mono.just("loading..."),
-                filePart
-                        .content()
-                        .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
-                        .reduce((b1, b2) -> {
-                            b1.put(b2);
-                            return b1;
-                        })
-                        .flatMap(buffer -> naverCloudClient.soundToText(buffer))
-        );
+    @PostMapping(value = "/bear/evaluationTest", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Mono<Void> stt(@RequestPart("files") FilePart filePart) {
+        filePart
+                .content()
+                .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
+                .reduce((b1, b2) -> {
+                    b1.put(b2);
+                    return b1;
+                })
+                .flatMap(buffer -> naverCloudClient.soundToText(buffer))
+                .subscribe();
+        return Mono.empty();
     }
-
-    public Flux<Map<String, String>> openApi(@RequestPart("letter") String letter, @RequestPart("files") FilePart filePart) {
-        return Flux.concat(
-                Mono.just(new HashMap<>()),
-                filePart.content()
-                        .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
-                        .reduce((b1, b2) -> {
-                            b1.put(b2);
-                            return b1;
-                        })
-                        .flatMap(buffer -> openApiClient.letterToScore(letter, buffer))
-                        .map(openApiResponse -> {
-                            log.info("openApiResponse {}", openApiResponse);
-                            Map<String, String> result = openApiResponse.getReturn_object();
-                            return result;
-                        })
-        );
-    }
+//
+//    public Flux<Map<String, String>> openApi(@RequestPart("letter") String letter, @RequestPart("files") FilePart filePart) {
+//        return Flux.concat(
+//                Mono.just(new HashMap<>()),
+//                filePart.content()
+//                        .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers))
+//                        .reduce((b1, b2) -> {
+//                            b1.put(b2);
+//                            return b1;
+//                        })
+//                        .flatMap(buffer -> openApiClient.letterToScore(letter, buffer))
+//                        .map(openApiResponse -> {
+//                            log.info("openApiResponse {}", openApiResponse);
+//                            Map<String, String> result = openApiResponse.getReturn_object();
+//                            return result;
+//                        })
+//        );
+//    }
 
 }

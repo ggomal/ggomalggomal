@@ -6,28 +6,22 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("word")
 @Builder
 @Data
-public class WordEntity extends AbstractEntity {
-    @Id
-    @Column("word_id")
+public class WordResponse {
     private final Long wordId;
 
     private final String letter;
 
     private final String pronunciation;
 
-    @Column("letter_img_url")
     private final String letterImgUrl;
 
-    @Column("sound_url")
     private final String soundUrl;
 
     private final String initial;
 
     private final Short syllable;
 
-    @Column("finality_flag")
     private final Boolean finalityFlag;
 }

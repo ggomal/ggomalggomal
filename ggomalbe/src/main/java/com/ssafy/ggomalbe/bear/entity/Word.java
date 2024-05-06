@@ -9,14 +9,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("word")
 @Builder
 @Data
-public class WordEntity extends AbstractEntity {
+public class Word extends AbstractEntity {
     @Id
     @Column("word_id")
     private final Long wordId;
 
     private final String letter;
-
-    private final String pronunciation;
 
     @Column("letter_img_url")
     private final String letterImgUrl;

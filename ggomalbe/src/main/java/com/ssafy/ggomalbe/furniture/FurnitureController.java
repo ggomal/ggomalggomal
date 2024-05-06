@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/furniture")
 public class FurnitureController {
 
-    private final KidRepository kidRepository;
     private final FurnitureService furnitureService;
 
     @Operation(description = "보유 가구 조회")
@@ -41,11 +40,11 @@ public class FurnitureController {
 
         // ** 코인 보유량 체크하기
         // ** 예외처리 하기
-        memberId.flatMap(kidId -> kidRepository.findById(kidId))
-                .map(kidEntity -> {
-                    Long coin = kidEntity.getCoin();
-                    return kidRepository.setCoin(kidEntity.getMemberId(),coin - 2);
-                });
+//        memberId.flatMap(kidId -> kidRepository.findById(kidId))
+//                .map(kidEntity -> {
+//                    Long coin = kidEntity.getCoin();
+//                    return kidRepository.setCoin(kidEntity.getMemberId(),coin - 2);
+//                });
 
         return memberId.flatMap(kidId ->
                         furnitureService.addFurniture(kidId, request));

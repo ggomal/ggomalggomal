@@ -13,13 +13,17 @@ import org.springframework.data.relational.core.mapping.Table;
 public class FrogRecordEntity extends AbstractEntity {
     @Id
     @Column("frog_record_id")
-    private final Long frogRecordId;
+    private Long frogRecordId;
 
     @Column("member_id")
     private final Long memberId;
 
+    @Column("play_time")
+    private final Float playTime;
+
     @Column("duration_sec")
     private final Float durationSec;
 
+    @Column("length")
     private final Float length;
 }

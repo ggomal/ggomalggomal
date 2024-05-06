@@ -18,4 +18,6 @@ public interface KidService {
     Flux<KidListResponse> getKidList(Long memberId);
 
     Mono<CoinResponse> getOwnCoin(Long memberId);
+
+    Mono<Integer> setCoin(Long memberId, Long coin);
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
 
@@ -11,6 +12,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
+class RoomId with ChangeNotifier {
+  String? _roomId;
+  String? get roomId => _roomId;
+  set roomId(String? newRoomId) {
+    _roomId = newRoomId;
+    notifyListeners();
+  }
+}
+
 class BingoScreen extends StatefulWidget {
   const BingoScreen({super.key});
 
@@ -21,7 +31,8 @@ class BingoScreen extends StatefulWidget {
 class _BingoScreenState extends State<BingoScreen> {
   late final WebSocketChannel channel;
   bool isConnected = false;
-  String? roomId;
+  // String? roomId;
+  String? roomId = '7f6d91cf-25fb-47bc-aca2-c029f0e4bbc9';
   int recordCount = 0;
   late String currentFilePath;
 
@@ -63,16 +74,16 @@ class _BingoScreenState extends State<BingoScreen> {
   void connectToWebSocket() {
     if (!isConnected) {
       channel = IOWebSocketChannel.connect(
-          Uri.parse('ws://k10e206.p.ssafy.io/api/v1/room'),
+          Uri.parse('wss://k10e206.p.ssafy.io/api/v1/room'),
           headers: {
-            "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiS0lEIiwibWVtYmVySWQiOjQsInN1YiI6ImtpZDEiLCJpYXQiOjE3MTQ3MTc5MTIsImV4cCI6MTAxNzE0NzE3OTEyfQ.1mvgeblwElQTCM49IoHvUavwGMBgZ80DJSUh8aL7pdg',
+            "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IktJRCIsIm1lbWJlck5hbWUiOiLrp4jripjslYTsnbQiLCJtZW1iZXJJZCI6NCwic3ViIjoia2lkMSIsImlhdCI6MTcxNDkxMjg4MiwiZXhwIjoxMDE3MTQ5MTI4ODJ9.poP4jnnsdQhINLLD5RM9zDQNFcsJ_LQ57PDqB0exdJ8',
           });
-      channel.stream.listen((message) {
-        print("메시지 수신 : $message");
-        if (message.startsWith('Room created:')) {
-          roomId = message.split('Room created: ')[1].trim();
-          print("저장된 룸 아이디: $roomId");
-        }
+      channel.stream.listen((response) {
+        print('웹소켓 응답 : $response');
+        Map<String, dynamic> message = jsonDecode(response);
+        roomId = message['roomId'];
+        print("수신된 룸 아이디 : $roomId");
+
       }, onDone: () {
         print('연결 종료 ');
       }, onError: (error) {

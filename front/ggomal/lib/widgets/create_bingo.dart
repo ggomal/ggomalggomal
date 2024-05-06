@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ggomal/screens/kids/bingo.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:provider/provider.dart';
 
 class CreateBingoModal extends StatefulWidget {
   const CreateBingoModal({super.key});
@@ -11,31 +17,32 @@ class CreateBingoModal extends StatefulWidget {
 }
 
 class _CreateBingoModalState extends State<CreateBingoModal> {
+  late final WebSocketChannel channel;
+  late StreamController streamController;
+  bool isConnected = false;
+  BingoScreen bingo = BingoScreen();
+  String connectionStatus = '오프라인';
+  Color textColor = Colors.transparent;
+
+
   final List<String> words = [
     '1음절',
     '2음절',
-    '받침이 없는 단어',
-    '받침이 있는 단어',
-    '구',
-    '문장'
+    '3음절 이상'
   ];
   final List<String> initials = [
-    'ㅍ, ㅁ, ㅇ',
-    'ㄷ, ㅌ, ㄴ',
-    'ㄱ, ㅋ, ㅈ, ㅊ',
+    'ㅍ,ㅁ,ㅇ',
+    'ㄷ,ㅌ,ㄴ',
+    'ㄱ,ㅋ,ㅈ,ㅊ',
     'ㅅ',
-    '받침 ㄹ',
-    '초성 ㄹ'
+    'ㄹ'
   ];
-  String? _selectedWords;
+  final List<String> finality = [
+    '받침 있는 단어', '받침 없는 단어'
+  ];
   String? _selectedInitials;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedWords = words.first;
-    _selectedInitials = initials.first;
-  }
+  String? _selectedWords;
+  String? _selectedFinality;
 
   TextStyle baseText(double size, FontWeight weight) {
     return TextStyle(
@@ -47,13 +54,104 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    connectToWebSocket();
+    _selectedWords = words.first;
+    _selectedInitials = initials.first;
+    _selectedFinality = finality.first;
+  }
+
+  void connectToWebSocket() {
+      channel = IOWebSocketChannel.connect(
+          Uri.parse('wss://k10e206.p.ssafy.io/api/v1/room'),
+          headers: {
+            "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IlRFQUNIRVIiLCJtZW1iZXJOYW1lIjoi66eI64qY7ISg7IOdIiwibWVtYmVySWQiOjMsInN1YiI6InRlYWNoZXIxIiwiaWF0IjoxNzE0OTEyOTg1LCJleHAiOjEwMTcxNDkxMjk4NX0.Jj5OMXnMEINnP0FteSWVzGtzsEPJWGhnML3HS849nSI',
+          });
+      String? roomId = Provider.of<RoomId>(context, listen: false).roomId;
+      print('룸아이디 출력 $roomId');
+
+      streamController = StreamController();
+      Stream broadcastStream = streamController.stream.asBroadcastStream();
+
+      broadcastStream.listen((response) {
+        print('웹소켓 응답 : $response');
+        if (response.toString().contains('200')) {
+          setState(() {
+            connectionStatus = '온라인';
+          });
+        } else {
+          setState(() {
+            connectionStatus = '오프라인';
+          });
+        }
+      }, onDone: () {
+        print('연결 종료 ');
+      }, onError: (error) {
+        print('소켓 통신에 실패했습니다. $error');
+      });
+      // channel.sink.add(
+      //     '{"type" : "joinRoom", "roomId" : $roomId}'
+      // );
+      isConnected = true;
+  }
+
+  void setBingoBoard() {
+    int syllableCount = 1;
+    bool finalityFlag = true;
+
+    switch (_selectedWords) {
+      case '1음절':
+        syllableCount = 1;
+        break;
+      case '2음절':
+        syllableCount = 2;
+        break;
+      case '3음절 이상':
+        syllableCount = 3;
+        break;
+      default:
+        break;
+    }
+    if (_selectedFinality == '받침 있는 단어') {
+      finalityFlag = true;
+    } else if (_selectedFinality == '받침 없는 단어') {
+      finalityFlag = false;
+    }
+
+    print('빙고 보내는 데이터 $_selectedInitials, $syllableCount, $finalityFlag');
+    channel.stream.listen((response) {
+      print('빙고 만들기 응답: $response');
+    }, onDone: () {
+      print('빙고 연결 종료');
+    }, onError: (error) {
+      print('빙고 통신 실패 ㅋㅋ $error');
+    });
+
+    channel.sink.add(jsonEncode({
+      "type" : "setBingoBoard",
+      "initial" : _selectedInitials,
+      "syllable" : syllableCount,
+      "finalityFlag" : finalityFlag
+    }));
+
+  }
+
+  @override
+  void dispose() {
+    channel.sink.close();
+    streamController.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
         child: Stack(
       children: [
         Container(
           width: 400,
-          height: 530,
+          height: 630,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
@@ -87,8 +185,7 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                         child: Icon(
                           Icons.circle,
                           size: 18,
-                          color: Colors.green,
-                          // color : Colors.grey
+                          color: connectionStatus == '온라인' ? Colors.green : Colors.grey,
                         ),
                       ),
                       Flexible(
@@ -104,7 +201,7 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                       Flexible(
                         flex: 1,
                         child: Text(
-                          '온라인',
+                          connectionStatus.toString(),
                           style: baseText(
                             17,
                             FontWeight.normal,
@@ -126,7 +223,7 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(40, 5, 0, 5),
+                padding: EdgeInsets.fromLTRB(40, 0, 0, 5),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -185,7 +282,7 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                     ),
                   )),
               Padding(
-                padding: EdgeInsets.fromLTRB(40, 15, 0, 5),
+                padding: EdgeInsets.fromLTRB(40, 10, 0, 5),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -241,7 +338,64 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.fromLTRB(0, 30, 0, 20),
+                padding: EdgeInsets.fromLTRB(40, 10, 0, 5),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '종성 유무',
+                    style: baseText(20, FontWeight.normal),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: DropdownButton<String>(
+                    value: _selectedFinality,
+                    isExpanded: true,
+                    style: TextStyle(
+                      fontFamily: 'NanumS',
+                      fontSize: 20,
+                      color: Color(0xFF767676),
+                    ),
+                    underline: SizedBox.shrink(),
+                    icon: Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(Icons.arrow_drop_down, size: 40, color: Colors.grey),
+                    ),
+                    items: finality.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 30),
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              color: value == _selectedFinality ? Colors.black : null,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedFinality = newValue;
+                      });
+                    },
+                    itemHeight: null,
+                    dropdownColor: Colors.white,
+                    menuMaxHeight: 160,
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.fromLTRB(0, 25, 0, 0), child: Text('아이가 접속하지 않았습니다', style: TextStyle(color: textColor, fontFamily: 'NanumS', fontSize: 18,)),),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFAA8D),
@@ -252,8 +406,19 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
                         ),
                       ),
                     ),
+                    // onPressed: () {
+                    //   if (connectionStatus == '온라인') {
+                    //     setBingoBoard();
+                    //     context.go('/kids/bear/bingo');
+                    //   } else {
+                    //     setState(() {
+                    //       textColor = Colors.red;
+                    //     });
+                    //   }
+                    // },
                     onPressed: () {
-                      context.go('/kids/bear/bingo');
+                        // context.go('/kids/bear/bingo');
+                      setBingoBoard();
                     },
                     child: Text(
                       '시작하기',

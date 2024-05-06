@@ -19,25 +19,30 @@ import java.util.Set;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class WordService {
+public class WordServiceImpl implements WorkService{
     private final WordRepository wordRepository;
 
+    @Override
     public Mono<WordEntity> addWord(WordEntity wordEntity) {
         return wordRepository.save(wordEntity);
     }
 
+    @Override
     public Flux<WordEntity> addWordList(Flux<WordEntity> wordEntityList) {
         return wordRepository.saveAll(wordEntityList);
     }
 
+    @Override
     public Flux<WordEntity> getWordList(){
         return wordRepository.findAll();
     }
 
+    @Override
     public Mono<WordEntity> getWord(String letter) {
         return wordRepository.findByLetter(letter);
     }
 
+    @Override
     public Mono<WordCategoryRequest> getWordCategory() {
         Flux<WordEntity> wordFlux = getWordList();
         return wordFlux
@@ -54,9 +59,11 @@ public class WordService {
                 });
     }
 
+    @Override
     public Mono<List<BingoCard>> getAllBingo(){
         return wordRepository.findAll()
                 .map(wordEntity -> BingoCard.builder()
+                        .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
                         .pronunciation(wordEntity.getPronunciation())
                         .letterImgUrl(wordEntity.getLetterImgUrl())
@@ -66,9 +73,11 @@ public class WordService {
     }
 
 
+    @Override
     public Mono<List<BingoCard>> getBasicBingo(WordCategoryResponse wordCategoryResponse){
         return wordRepository.findByInitialInAndSyllableAndFinalityFlag(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable(), wordCategoryResponse.isFinalityFlag())
                 .map(wordEntity -> BingoCard.builder()
+                        .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
                         .pronunciation(wordEntity.getPronunciation())
                         .letterImgUrl(wordEntity.getLetterImgUrl())
@@ -77,9 +86,11 @@ public class WordService {
                 .collectList();
     }
 
+    @Override
     public Mono<List<BingoCard>> getAdvancedBingo(WordCategoryResponse wordCategoryResponse){
         return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityFlag(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable(), wordCategoryResponse.isFinalityFlag())
                 .map(wordEntity -> BingoCard.builder()
+                        .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
                         .pronunciation(wordEntity.getPronunciation())
                         .letterImgUrl(wordEntity.getLetterImgUrl())

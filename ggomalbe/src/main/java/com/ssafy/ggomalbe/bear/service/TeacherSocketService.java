@@ -11,6 +11,7 @@ import com.ssafy.ggomalbe.bear.entity.BingoPlayer;
 import com.ssafy.ggomalbe.bear.entity.Room;
 import com.ssafy.ggomalbe.bear.entity.SocketAction;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.common.service.GameNumService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class TeacherSocketService {
     private final ObjectMapper objectMapper;
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;
+    private final GameNumService gameNumService;
 
 
     //todo -> 단어 칸 누르기, 다시 버튼, 통과버튼
@@ -47,7 +49,7 @@ public class TeacherSocketService {
         log.info("complete");
         log.info("initialList = {}", initialList);
         log.info("syllable = {}", syllable);
-        log.info("finalityFlag = {}",finalityFlag);
+        log.info("finalityFlag = {}", finalityFlag);
 
         WordCategoryResponse wordCategoryResponse = WordCategoryResponse.builder()
                 .initialList(initialList)
@@ -55,15 +57,20 @@ public class TeacherSocketService {
                 .finalityFlag(finalityFlag)
                 .build();
 
-        return bingoSocketService.createBingoBoard(wordCategoryResponse)
-                .flatMap(bingoBoardT -> {
+        return gameNumService.getIncrementGameCount()
+                .flatMap((gameNum) -> {
+                //다른 두 Mono가 작업이 완료되는 시점에 특정 동작을 하기 위한 zipWith
                     return bingoSocketService.createBingoBoard(wordCategoryResponse)
-                            .flatMap(bingoBoardK -> {
+                            .zipWith(bingoSocketService.createBingoBoard(wordCategoryResponse))
+                            .flatMap((tuple) -> {
+                                BingoBoard bingoBoardT = tuple.getT1();
+                                BingoBoard bingoBoardK = tuple.getT2();
+
                                 log.info("bingoBoardK {}", bingoBoardK);
                                 log.info("bingoBoardT {}", bingoBoardT);
                                 Room room = roomService.findRoomByMemberId(session.getId());
 
-                                CreateBingoResponse createBingoResponseT = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, bingoBoardT);
+                                CreateBingoResponse createBingoResponseT = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, gameNum, bingoBoardT);
                                 String responseT;
                                 try {
                                     responseT = objectMapper.writeValueAsString(createBingoResponseT);
@@ -80,7 +87,7 @@ public class TeacherSocketService {
 
                                 WebSocketSession kidSocket = room.getKidSocket();
 
-                                CreateBingoResponse createBingoResponseK = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, bingoBoardK);
+                                CreateBingoResponse createBingoResponseK = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, gameNum, bingoBoardK);
                                 String responseK;
                                 try {
                                     responseK = objectMapper.writeValueAsString(createBingoResponseK);
@@ -94,6 +101,7 @@ public class TeacherSocketService {
                                 return room.sendKidBingoBoard(responseK);
                             });
                 });
+
     }
 
 

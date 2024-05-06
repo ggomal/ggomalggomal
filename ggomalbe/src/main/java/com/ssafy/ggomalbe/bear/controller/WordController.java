@@ -4,7 +4,7 @@ import com.ssafy.ggomalbe.bear.dto.WordCategoryRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.dto.WordRequest;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
-import com.ssafy.ggomalbe.bear.service.WordService;
+import com.ssafy.ggomalbe.bear.service.WordServiceImpl;
 import com.ssafy.ggomalbe.common.entity.WordEntity;
 import com.ssafy.ggomalbe.common.repository.WordCategoryRepository;
 import com.ssafy.ggomalbe.common.repository.WordRepository;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WordController {
     
-    private final WordService wordService;
+    private final WordServiceImpl wordService;
     private final WordRepository wordRepository;
     private final WordCategoryRepository wordCategoryRepository;
 

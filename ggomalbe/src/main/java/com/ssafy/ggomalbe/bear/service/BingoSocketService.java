@@ -6,13 +6,11 @@ import com.ssafy.ggomalbe.bear.dto.GameOverResponse;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.*;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
-import com.ssafy.ggomalbe.common.entity.WordEntity;
 import com.ssafy.ggomalbe.common.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.socket.WebSocketSession;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -29,7 +27,7 @@ public class BingoSocketService {
     private final ObjectMapper objectMapper;
 
     WordRepository wordRepository;
-    private final WordService wordService;
+    private final WordServiceImpl wordService;
 
 
     public void putBingoPlayer(BingoPlayer bingoPlayer) {

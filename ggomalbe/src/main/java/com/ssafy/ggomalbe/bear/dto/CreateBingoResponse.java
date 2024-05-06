@@ -11,5 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateBingoResponse {
     private SocketAction action;
+    private Long gameNum;
     private BingoBoard bingoBoard;
 }

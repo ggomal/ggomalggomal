@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class BingoCard {
+    private Long Id;
     private String letter;
     private String pronunciation;
     private String letterImgUrl;

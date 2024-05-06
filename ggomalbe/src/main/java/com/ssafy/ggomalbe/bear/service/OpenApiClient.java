@@ -1,6 +1,7 @@
 package com.ssafy.ggomalbe.bear.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.ggomalbe.bear.dto.OpenApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -11,9 +12,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Component
 @Slf4j
@@ -32,7 +35,7 @@ public class OpenApiClient {
                 .build();
     }
 
-    public Mono<String> letterToScore(String letter, ByteBuffer file) {
+    public Mono<OpenApiResponse> letterToScore(String letter, ByteBuffer file) {
 //        String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/Pronunciation"; // 영어
         String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor";   //한국어
 
@@ -54,7 +57,7 @@ public class OpenApiClient {
 
                     String audioContents = Base64.getEncoder().encodeToString(byteArray);
                     log.info("script {}", script);
-                    log.info("audioContents {}", audioContents);
+//                    log.info("audioContents {}", audioContents);
 
                     argument.put("language_code", languageCode);
                     argument.put("script", script);
@@ -68,7 +71,12 @@ public class OpenApiClient {
                             .header(HttpHeaders.AUTHORIZATION, accessKey)
                             .body(BodyInserters.fromValue(request))
                             .retrieve()
-                            .bodyToMono(String.class);
+                            .bodyToMono(OpenApiResponse.class)
+                            .timeout(Duration.ofSeconds(5))
+                            .onErrorReturn(new OpenApiResponse(0,null, new HashMap<String, String>() {{
+                                put("recognized", script);
+                                put("score", "0");
+                            }}));
                 });
     }
 }

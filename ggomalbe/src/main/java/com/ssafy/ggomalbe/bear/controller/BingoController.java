@@ -19,32 +19,32 @@ import reactor.core.publisher.Mono;
 public class BingoController {
     private final BingoSocketService bingoSocketService;
 
-    @GetMapping("/test")
-    public String testString() {
-        return "test success";
-    }
-
-//    @GetMapping("/create")
-//    public BingoBoard test() {
-//        return bingoSocketService.createBingoBoard();
+//    @GetMapping("/test")
+//    public String testString() {
+//        return "test success";
 //    }
-
-    @GetMapping("/find")
-    public void find() {
-//        bingoSocketService.findBingoCard();
-    }
-
-    @GetMapping("/enum")
-    public void enumTest() {
-        System.out.println(MemberEntity.Role.TEACHER);
-    }
-
-    @GetMapping("/token")
-    public Mono<MemberEntity.Role> authTest() {
-        return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext ->
-                        (CustomAuthentication) securityContext.getAuthentication())
-                .map(n->n.getRole())
-                .doOnNext(n->log.info("{}",n));
-    }
+//
+////    @GetMapping("/create")
+////    public BingoBoard test() {
+////        return bingoSocketService.createBingoBoard();
+////    }
+//
+//    @GetMapping("/find")
+//    public void find() {
+////        bingoSocketService.findBingoCard();
+//    }
+//
+//    @GetMapping("/enum")
+//    public void enumTest() {
+//        System.out.println(MemberEntity.Role.TEACHER);
+//    }
+//
+//    @GetMapping("/token")
+//    public Mono<MemberEntity.Role> authTest() {
+//        return ReactiveSecurityContextHolder.getContext()
+//                .map(securityContext ->
+//                        (CustomAuthentication) securityContext.getAuthentication())
+//                .map(n->n.getRole())
+//                .doOnNext(n->log.info("{}",n));
+//    }
 }

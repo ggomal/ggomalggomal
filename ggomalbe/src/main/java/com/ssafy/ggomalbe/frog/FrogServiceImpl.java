@@ -15,7 +15,7 @@ public class FrogServiceImpl implements FrogService {
 
     private final FrogRecordRepository frogRecordRepository;
 
-    public Mono<Boolean> setGameRecord(Long memberId, FrogGameEndRequest request){
+    public Mono<Boolean> setFrogGameRecord(Long memberId, FrogGameEndRequest request){
         FrogRecordEntity entity = FrogRecordEntity.builder()
                 .memberId(memberId)
                 .playTime(request.getPlayTime())

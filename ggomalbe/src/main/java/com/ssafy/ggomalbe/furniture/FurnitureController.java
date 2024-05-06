@@ -21,7 +21,7 @@ public class FurnitureController {
 
     private final FurnitureService furnitureService;
 
-    @Operation(description = "보유 가구 조회")
+    @Operation(description = "가구 목록 조회 & 보유 여부")
     @GetMapping
     public Mono<List<FurnitureListResponse>> getOwnFurniture(){
         return ReactiveSecurityContextHolder.getContext()

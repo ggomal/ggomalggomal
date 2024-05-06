@@ -1,7 +1,6 @@
 package com.ssafy.ggomalbe.frog;
 
-import com.ssafy.ggomalbe.common.entity.FrogRecordEntity;
-import com.ssafy.ggomalbe.frog.dto.EndGameResponse;
+import com.ssafy.ggomalbe.frog.dto.FrogGameEndResponse;
 import com.ssafy.ggomalbe.frog.dto.FrogGameEndRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +20,12 @@ public class FrogController {
     private final FrogService frogService;
 
     @PostMapping("/end")
-    public Mono<EndGameResponse> endFrogGame(@RequestBody FrogGameEndRequest request){
+    public Mono<FrogGameEndResponse> endFrogGame(@RequestBody FrogGameEndRequest request){
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(memberId -> frogService.setGameRecord(memberId, request))
-//                .map(entity -> entity.getFrogRecordId()!=null ? true : false)
-                .map(EndGameResponse::new);
+                .flatMap(memberId -> frogService.setFrogGameRecord(memberId, request))
+                .map(FrogGameEndResponse::new);
     }
 
 }

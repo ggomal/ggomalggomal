@@ -14,6 +14,7 @@ public class NoticeAddResponse {
     private final String contents;
     private final String teacherName;
     private String[] homeworks;
+    private String msg;
 
     public NoticeAddResponse(NoticeEntity notice, String[] homeworks) {
         this.noticeId = notice.getNoticeId();

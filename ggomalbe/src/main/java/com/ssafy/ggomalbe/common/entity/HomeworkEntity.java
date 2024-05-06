@@ -24,5 +24,9 @@ public class HomeworkEntity extends AbstractEntity {
     private final String homeworkContents;
 
     @Column("is_done")
-    private final Boolean isDone;
+    private Boolean isDone;
+
+    public void updateDone(Boolean isDone){
+        this.isDone = isDone;
+    }
 }

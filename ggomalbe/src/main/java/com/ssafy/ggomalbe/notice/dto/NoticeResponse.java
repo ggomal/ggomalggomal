@@ -23,7 +23,6 @@ public class NoticeResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime date;
     private List<HomeworkResponse> homeworks;
-    private String msg;
     public NoticeResponse setHomeworks(List<HomeworkResponse> homeworks){
         this.homeworks = homeworks;
         return this;

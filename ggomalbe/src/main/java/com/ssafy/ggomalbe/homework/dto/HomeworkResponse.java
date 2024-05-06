@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Transient;
 @Setter
 @Builder
 public class HomeworkResponse {
+    private Long homework_id;
     private String homeworkContents;
     private Boolean isDone;
 }

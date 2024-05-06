@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface BearRecordRepository extends R2dbcRepository<BearRecordEntity,Long> {
     public Flux<BearRecordEntity> findBearRecordEntitiesByMemberId(Long memberId);
+    Flux<BearRecordEntity> findByMemberId(Long memberId);
 }
 
 

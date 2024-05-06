@@ -5,7 +5,8 @@ import 'package:ggomal/screens/kids/frog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/utils/navbar.dart';
 
-import '../../utils/GameDialog.dart';
+import '../../utils/game_bosang_dialog.dart';
+import '../../utils/game_dialog.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});

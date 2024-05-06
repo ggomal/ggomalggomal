@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
+import 'package:ggomal/services/notice_dio.dart';
 
 class CreateNoticeModal extends StatefulWidget {
   const CreateNoticeModal({super.key});
@@ -9,8 +10,22 @@ class CreateNoticeModal extends StatefulWidget {
 }
 
 class _CreateNoticeModalState extends State<CreateNoticeModal> {
+  final TextEditingController _contentsController = TextEditingController();
+  final TextEditingController _homeworks1Controller = TextEditingController();
+  final TextEditingController _homeworks2Controller = TextEditingController();
+  final TextEditingController _homeworks3Controller = TextEditingController();
+
+
+
   @override
   Widget build(BuildContext context) {
+
+    List<Map<String, dynamic>> homeworks = [
+      {'number' : 1, 'controller': _homeworks1Controller},
+      {'number' : 2, 'controller': _homeworks2Controller},
+      {'number' : 3, 'controller': _homeworks3Controller},
+
+    ];
 
     Container lineBox(double heghtSize, String text, Widget lineWidget) {
       return Container(
@@ -78,6 +93,7 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                 "선생님 한마디",
                 Expanded(
                   child: TextField(
+                    controller: _contentsController,
                     style: nanumText(14.0, FontWeight.w500, Colors.black),
                     textAlignVertical: TextAlignVertical.top,
                     keyboardType: TextInputType.multiline,
@@ -90,7 +106,7 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                 200,
                 "숙제",
                 Column(
-                  children: [1, 2, 3]
+                  children: homeworks
                       .map(
                         (e) => Container(
                           padding: const EdgeInsets.all(10),
@@ -101,10 +117,11 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                               SizedBox(
                                 width: 50,
                                 height: 50,
-                                child: Center(child: Text("$e")),
+                                child: Center(child: Text("${e['number']}")),
                               ),
                               Expanded(
                                 child: TextField(
+                                  controller: e['controller'],
                                   style: nanumText(14.0, FontWeight.w500, Colors.black),
                                   textAlignVertical: TextAlignVertical.bottom,
                                   decoration: inputStyle("숙제를 입력하세요."),
@@ -121,7 +138,10 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () async {
+                      final response = await postNotice(1, _contentsController.text, [...homeworks.map((e) => e['controller'].text)]);
+                      Navigator.pop(context, response);
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFAA8D),
                       foregroundColor: Colors.white,
@@ -144,5 +164,15 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+
+    _contentsController.dispose();
+    _homeworks1Controller.dispose();
+    _homeworks2Controller.dispose();
+    _homeworks3Controller.dispose();
+     super.dispose();
   }
 }

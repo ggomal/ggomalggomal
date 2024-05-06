@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-class Notice extends StatelessWidget {
+class Notice extends StatefulWidget {
   final Map<String, dynamic> notice;
 
   const Notice(this.notice, {super.key});
 
+  @override
+  State<Notice> createState() => _NoticeState();
+}
+
+class _NoticeState extends State<Notice> {
   @override
   Widget build(BuildContext context) {
     TextStyle baseText(double size, FontWeight weight) {
@@ -43,8 +48,8 @@ class Notice extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("${notice['teacherName']} 선생님이 남긴 말", style: baseText(16, FontWeight.w900)),
-                Text("${notice['content']}", style: baseText(14, FontWeight.normal)),
+                Text("${widget.notice['teacherName']} 선생님이 남긴 말", style: baseText(16, FontWeight.w900)),
+                Text("${widget.notice['content']}", style: baseText(14, FontWeight.normal)),
               ],
             ),
           ),
@@ -55,9 +60,9 @@ class Notice extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("숙제", style: baseText(16, FontWeight.w900)),
-                ...notice['homeworks']
+                ...widget.notice['homeworks']
                     .map(
-                      (e) => Text("${e['homeworkContent']}", style: baseText(14, FontWeight.normal)),
+                      (e) => Text("${e['homeworkContents']}", style: baseText(14, FontWeight.normal)),
                 )
                     .toList(),
               ],

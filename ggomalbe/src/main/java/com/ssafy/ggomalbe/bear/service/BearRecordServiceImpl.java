@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestPart;
-import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +31,7 @@ public class BearRecordServiceImpl implements BearRecordService {
 
 
     @Override
-    public Mono<BearRecordEntity> addBearRecord(FilePart filePart,Long memberId, Long gameNum, Long wordId, String letter, Short pronCount) {
+    public Mono<BearRecordResponse> addBearRecord(FilePart filePart, Long memberId, Long gameNum, Long wordId, String letter, Short pronCount) {
         return evaluation(filePart, letter)
                 .flatMap((evaluateResult) -> {
                     float score = Float.parseFloat(evaluateResult.get("score"));
@@ -48,7 +46,19 @@ public class BearRecordServiceImpl implements BearRecordService {
                             .score(score)
                             .build();
                     return bearRecordRepository.save(bearRecordEntity);
-                }).doOnNext(data -> log.info("save {}", data.toString()));
+                })
+                .map(result->{
+                    return BearRecordResponse.builder()
+                            .bearRecordId(result.getBearRecordId())
+                            .memberId(result.getMemberId())
+                            .wordId(result.getWordId())
+                            .gameNum(result.getGameNum())
+                            .pronunciation(result.getPronunciation())
+                            .pronCount(result.getPronCount())
+                            .score(result.getScore())
+                            .build();
+                })
+                .doOnNext(result -> log.info("save {}", result.toString()));
     }
 
 

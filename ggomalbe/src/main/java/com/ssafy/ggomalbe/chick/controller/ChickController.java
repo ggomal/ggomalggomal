@@ -1,5 +1,6 @@
-package com.ssafy.ggomalbe.chick;
+package com.ssafy.ggomalbe.chick.controller;
 
+import com.ssafy.ggomalbe.chick.service.ChickService;
 import com.ssafy.ggomalbe.chick.dto.*;
 import com.ssafy.ggomalbe.member.kid.KidService;
 import io.swagger.v3.oas.annotations.Operation;

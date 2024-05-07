@@ -7,11 +7,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ChickRecordService {
-    public Mono<ChickRecordEntity> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence);
+    Mono<ChickRecordEntity> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence);
 
     Flux<ChickListResponse> getSituationList(Long memberId);
 
     Mono<Boolean> setChickGameRecord(ChickRecordEntity entity);
 
     Mono<Boolean> getNextSituation(Long memberId, Long situationId);
+
+    /** tts 결과가 정답 범위인지 검사*/
+    Mono<Boolean> checkSentence(FilePart filePart, String sentence);
 }

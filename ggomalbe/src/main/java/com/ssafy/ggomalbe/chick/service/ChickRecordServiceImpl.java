@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.chick.service;
 
 import com.ssafy.ggomalbe.chick.dto.ChickListResponse;
 import com.ssafy.ggomalbe.common.entity.SituationKidEntity;
+import com.ssafy.ggomalbe.common.repository.ChickRecognitionRepository;
 import com.ssafy.ggomalbe.common.repository.SituationKidRepository;
 import com.ssafy.ggomalbe.common.repository.SituationRepository;
 import com.ssafy.ggomalbe.common.service.EvaluationService;
@@ -29,25 +30,22 @@ public class ChickRecordServiceImpl implements ChickRecordService{
     private final EvaluationService evaluationService;
     private final SituationRepository situationRepository;
     private final SituationKidRepository situationKidRepository;
-
+    private final ChickRecognitionRepository chickRecognitionRepository;
 
     @Override
-    public Mono<ChickRecordEntity> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
-        return evaluationService.evaluation(filePart, sentence)
-                .flatMap((evaluateResult) -> {
-                    float score = evaluateResult.getScore();
-                    String pronunciation = evaluateResult.getPronunciation();
+    public Mono<Boolean> checkSentence(FilePart filePart, String sentence) {
+        return evaluationService.toText(filePart)
+                .flatMap(stt -> chickRecognitionRepository.existsByOriginTextAndRecognitionScope(sentence, stt));
+        //우리의 기준대로 맞고 틀리고
+        //넣어 -> 넣어, 너, 너어, 느어,
+        //치워 -> 치워, 치어, 쳐, 츠어
 
-                    //우리의 기준대로 맞고 틀리고
-                    //넣어 -> 넣어, 너, 너어, 느어,
-                    //치워 -> 치워, 치어, 쳐, 츠어
-
-                    //햄 넣어 -> 햄버거
-                    //response { isPass : false, word:["넣","어"] }
+        //햄 넣어 -> 햄버거
+        //response { isPass : false, word:["넣","어"] }
 
 
-                    //정답 : 햄 넣어 : ["햄", "넣", "어"]
-                    //발음 : "햄어"
+        //정답 : 햄 넣어 : ["햄", "넣", "어"]
+        //발음 : "햄어"
 
 //                    햄 넣어
 //                    피자 넣어
@@ -61,8 +59,15 @@ public class ChickRecordServiceImpl implements ChickRecordService{
 //                    돌 치워
 //                    물 치워
 //                    안경 치워
+//      이건 DB에 넣죠
+    }
 
-
+    @Override
+    public Mono<ChickRecordEntity> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
+        return evaluationService.evaluation(filePart, sentence)
+                .flatMap((evaluateResult) -> {
+                    float score = evaluateResult.getScore();
+                    String pronunciation = evaluateResult.getPronunciation();
 
                     ChickRecordEntity chickRecordEntity = ChickRecordEntity.builder()
                             .memberId(memberId)
@@ -73,6 +78,7 @@ public class ChickRecordServiceImpl implements ChickRecordService{
                     return chickRecordRepository.save(chickRecordEntity);
                 }).doOnNext(data -> log.info("save {}", data.toString()));
     }
+
     @Override
     public Flux<ChickListResponse> getSituationList(Long memberId) {
         return situationRepository.getOwnSituationList(memberId);

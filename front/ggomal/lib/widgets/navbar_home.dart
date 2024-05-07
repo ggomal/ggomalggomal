@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/widgets/kid_report.dart';
 
+import '../utils/notification_dialog.dart';
+
 class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
   const NavBarHome({super.key});
 
@@ -77,11 +79,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
               ){
             showDialog(
                 context: context,
-                builder: (context){
-              return Dialog(
-                child: Text('알림장이라고 하자'),
-              );
-            }
+                builder: (context) => NotificationDialog()
             );
           },
           child: Container(

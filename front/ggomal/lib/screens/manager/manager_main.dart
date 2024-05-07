@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/constants.dart';
 
+import '../../utils/navbar_manager.dart';
+
 
 class ManagerMainScreen extends StatelessWidget {
   const ManagerMainScreen({super.key});
@@ -10,6 +12,7 @@ class ManagerMainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xFFF9F9F9),
+        appBar: ManagerNavBar(),
         body: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 50.0,
@@ -18,10 +21,10 @@ class ManagerMainScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image.asset(
-                width: 250.0,
-                'assets/images/logo.png',
-              ),
+              // Image.asset(
+              //   width: 250.0,
+              //   'assets/images/logo.png',
+              // ),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),

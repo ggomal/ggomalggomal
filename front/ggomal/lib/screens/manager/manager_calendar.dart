@@ -10,6 +10,8 @@ import 'package:ggomal/screens/manager/const/color.dart';
 import 'package:ggomal/screens/manager/model/Schedule.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../utils/navbar_manager.dart';
+
 class ManagerCalendarScreen extends StatefulWidget {
   const ManagerCalendarScreen({super.key});
 
@@ -50,6 +52,8 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF9F9F9),
+      appBar: ManagerNavBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(

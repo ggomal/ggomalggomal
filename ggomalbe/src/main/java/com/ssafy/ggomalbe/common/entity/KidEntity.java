@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.common.entity;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -28,4 +29,15 @@ public class KidEntity extends AbstractEntity {
 
     @Column("coin")
     private final Long coin;
+
+    @Column("gender")
+    private final Gender gender;
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Gender {
+        MALE("남자"), FEMALE("여자"), ETC("기타");
+
+        private final String description;
+    }
 }

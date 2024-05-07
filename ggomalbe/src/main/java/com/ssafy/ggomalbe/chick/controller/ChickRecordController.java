@@ -23,7 +23,7 @@ public class ChickRecordController {
     private final RoomService roomService;
 
     @PostMapping("/evaluation")
-    public Mono<ChickRecordEntity> evaluation(@RequestPart("kidVoice") FilePart filePart, @RequestPart("gameNum") String gameNum, @RequestPart("letter") String sentence){
+    public Mono<ChickRecordEntity> evaluation(@RequestPart("kidVoice") FilePart filePart, @RequestPart("gameNum") String gameNum, @RequestPart("sentence") String sentence){
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())

@@ -33,6 +33,32 @@ public class ChickRecordServiceImpl implements ChickRecordService{
                     float score = Float.parseFloat(evaluateResult.get("score"));
                     String pronunciation = evaluateResult.get("pronunciation");
 
+                    //우리의 기준대로 맞고 틀리고
+                    //넣어 -> 넣어, 너, 너어, 느어,
+                    //치워 -> 치워, 치어, 쳐, 츠어
+
+                    //햄 넣어 -> 햄버거
+                    //response { isPass : false, word:["넣","어"] }
+
+
+                    //정답 : 햄 넣어 : ["햄", "넣", "어"]
+                    //발음 : "햄어"
+
+//                    햄 넣어
+//                    피자 넣어
+//                    고기 넣어
+//                    버섯 넣어
+//                    토마토 넣어
+//                    올리브 넣어
+
+
+//                    이불 치워
+//                    돌 치워
+//                    물 치워
+//                    안경 치워
+
+
+
                     ChickRecordEntity chickRecordEntity = ChickRecordEntity.builder()
                             .memberId(memberId)
                             .gameNum(gameNum)
@@ -72,7 +98,7 @@ public class ChickRecordServiceImpl implements ChickRecordService{
                                         Map<String, String> result = new HashMap<>();
                                         result.put("pronunciation", sttText);
                                         result.put("score", returnObject.get("score"));
-                                        result.put("letter", sentence);
+                                        result.put("sentence", sentence);
                                         return result;
                                     })
                             );

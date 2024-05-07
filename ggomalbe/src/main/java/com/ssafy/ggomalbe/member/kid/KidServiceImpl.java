@@ -61,7 +61,8 @@ public class KidServiceImpl implements KidService{
 
     @Override
     public Mono<Integer> addCoin(Long memberId, Long coin) {
-        System.out.println("add Coin... " + coin);
+        if (coin == null)
+            return Mono.empty();
         return kidRepository.addCoin(memberId, coin);
     }
 }

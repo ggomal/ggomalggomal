@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChickEndResponse {
-    private String msg;
+    private Boolean isGet;
 }

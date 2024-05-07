@@ -24,6 +24,6 @@ public class FrogServiceImpl implements FrogService {
                 .build();
 
         return frogRecordRepository.save(entity)
-                .map(saveEntity -> saveEntity.getFrogRecordId() != null ? true : false);
+                .map(saveEntity -> saveEntity.getFrogRecordId() != null);
     }
 }

@@ -9,6 +9,7 @@ import com.ssafy.ggomalbe.common.repository.SituationKidRepository;
 import com.ssafy.ggomalbe.common.repository.SituationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -42,8 +43,15 @@ public class ChickServiceImpl implements ChickService{
                                     .situationId(situationId+1)
                                     .memberId(memberId)
                                     .build();
-                            return situationKidRepository.save(entity)
-                                    .map(result -> result.getSituationKidId() != null);
+
+                            return situationKidRepository.existsByMemberIdAndSituationId(memberId, situationId + 1)
+                                    .flatMap(flag -> {
+                                        if (!flag)
+                                            return situationKidRepository.save(entity)
+                                                    .map(result -> result.getSituationKidId() != null);
+                                        else
+                                            return Mono.just(false);
+                                    });
                         }
                     });
     }

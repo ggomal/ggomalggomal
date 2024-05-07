@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.frog;
 
 import com.ssafy.ggomalbe.frog.dto.FrogGameEndResponse;
 import com.ssafy.ggomalbe.frog.dto.FrogGameEndRequest;
+import com.ssafy.ggomalbe.member.kid.KidService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/frog")
 public class FrogController {
 
+    private final KidService kidService;
     private final FrogService frogService;
 
     @PostMapping("/end")
@@ -24,7 +26,10 @@ public class FrogController {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(memberId -> frogService.setFrogGameRecord(memberId, request))
+                .flatMap(memberId -> {  // 코인 획득 -> 게임 기록 저장
+                    return kidService.addCoin(memberId, 2L)
+                            .then(frogService.setFrogGameRecord(memberId, request));
+                })
                 .map(FrogGameEndResponse::new);
     }
 

@@ -35,15 +35,16 @@ public class ChickController {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(id -> {
-                    kidService.addCoin(id, request.getGetCoin());   // 2. 재화획득
-                    return chickService.getNextSituation(id, request.getSituationId()); // 1. 다음 병아리 잠금해제
+                .flatMap(id -> {    // 재화획득 -> 다음 병아리 잠금해제
+                    return kidService.addCoin(id, request.getGetCoin())
+                            .then(chickService.getNextSituation(id, request.getSituationId()));
+//                    return chickService.getNextSituation(id, request.getSituationId());
                 })
                 .map(result -> {
                     if (result)
-                        return new ChickEndResponse("새로운 병아리를 획득했어요!");
+                        return new ChickEndResponse(true);
                     else
-                        return new ChickEndResponse("업데이트를 기다려주세요:)");
+                        return new ChickEndResponse(false);
                 });
         // 열 수 있는 알이 있다면 -> ** 저장 -> 열었다고 응답
     }

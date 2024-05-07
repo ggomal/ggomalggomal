@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.bear.controller;
 
+import com.ssafy.ggomalbe.bear.dto.BearRecordResponse;
 import com.ssafy.ggomalbe.bear.dto.WordDto;
 import com.ssafy.ggomalbe.bear.service.BearRecordService;
 import com.ssafy.ggomalbe.common.entity.BearRecordEntity;
@@ -24,7 +25,7 @@ public class BearRecordController {
     private final GameNumService gameNumService;
 
     @PostMapping("/evaluation")
-    public Mono<BearRecordEntity> evaluation(@RequestPart("kidVoice") FilePart filePart, @RequestPart("gameNum") String gameNum, @RequestPart("wordId") String wordId, @RequestPart("letter") String letter, @RequestPart("pronCount") String pronCount){
+    public Mono<BearRecordResponse> evaluation(@RequestPart("kidVoice") FilePart filePart, @RequestPart("gameNum") String gameNum, @RequestPart("wordId") String wordId, @RequestPart("letter") String letter, @RequestPart("pronCount") String pronCount){
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())

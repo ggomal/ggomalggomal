@@ -1,4 +1,4 @@
-package com.ssafy.ggomalbe.chick;
+package com.ssafy.ggomalbe.chick.service;
 
 import com.ssafy.ggomalbe.chick.dto.ChickListResponse;
 import com.ssafy.ggomalbe.chick.dto.ChickRecordRequest;

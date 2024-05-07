@@ -1,7 +1,8 @@
-package com.ssafy.ggomalbe.chick;
+package com.ssafy.ggomalbe.chick.service;
 
 import com.ssafy.ggomalbe.chick.dto.ChickListResponse;
 import com.ssafy.ggomalbe.chick.dto.ChickRecordRequest;
+import com.ssafy.ggomalbe.chick.service.ChickService;
 import com.ssafy.ggomalbe.common.entity.ChickRecordEntity;
 import com.ssafy.ggomalbe.common.entity.SituationKidEntity;
 import com.ssafy.ggomalbe.common.repository.ChickRecordRepository;
@@ -19,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
-public class ChickServiceImpl implements ChickService{
+public class ChickServiceImpl implements ChickService {
 
     private final SituationRepository situationRepository;
     private final SituationKidRepository situationKidRepository;

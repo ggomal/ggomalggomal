@@ -20,7 +20,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
     showDialog(
       context: context,
       builder: (BuildContext context) =>
-          ChickSpeechModal({"game": "clean", "name": thing['name'], "img": thing['img'], "ending": "정리해"}),
+          ChickSpeechModal({"game": "clean", "name": thing['name'], "img": thing['img'], "ending": "치워"}),
     ).then((value) => {
           if (value)
             {

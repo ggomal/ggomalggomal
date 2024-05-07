@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/services/kid_manage_dio.dart';
 import 'package:ggomal/widgets/kid_content.dart';
 import 'package:ggomal/widgets/kid_info.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/constants.dart';
 
 class KidDetail extends StatefulWidget {
-  const KidDetail(this.id, {super.key});
+  final String? kidId;
 
-  final String? id;
+  const KidDetail(this.kidId, {super.key});
 
   @override
   State<KidDetail> createState() => _KidDetailState();
 }
 
 class _KidDetailState extends State<KidDetail> {
+
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFF9F9F9),
@@ -65,7 +69,7 @@ class _KidDetailState extends State<KidDetail> {
                   ],
                 ),
                 child: Row(children: [
-                  KidInfo(),
+                  KidInfo(widget.kidId),
                   SizedBox(
                     width: 20,
                   ),

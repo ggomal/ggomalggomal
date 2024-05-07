@@ -22,6 +22,11 @@ signUpKid(String name, DateTime kidBirthDT, String gender, String kidImg,
 
 Future<List> getKidList() async {
   final response = await useDio().get('/kid');
+  return response.data;
+}
+
+Future getKid(String kidId) async {
+  final response = await useDio().get('/kid/$kidId');
   print(response.data);
   return response.data;
 }

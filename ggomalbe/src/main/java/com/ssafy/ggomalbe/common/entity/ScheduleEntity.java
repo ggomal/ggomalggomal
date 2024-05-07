@@ -3,14 +3,16 @@ package com.ssafy.ggomalbe.common.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Table("schedule")
 @Builder
+@Getter
 public class ScheduleEntity extends AbstractEntity {
     @Id
     @Column("schedule_id")
@@ -19,10 +21,12 @@ public class ScheduleEntity extends AbstractEntity {
     @Column("teacher_kid_id")
     private final Long teacherKidId;
 
+    @Setter
     @Column("start_time")
-    private final ZonedDateTime startTime;
+    private LocalDateTime startTime;
 
-    private final ScheduleEntity.Status status;
+    @Column("status")
+    private ScheduleEntity.Status status;
 
     @Getter
     @RequiredArgsConstructor
@@ -31,4 +35,9 @@ public class ScheduleEntity extends AbstractEntity {
 
         private final String description;
     }
+
+    public void setTODO(){this.status = Status.TODO;}
+    public void setPROGRESSING(){this.status = Status.PROGRESSING;}
+    public void setDONE(){this.status = Status.DONE;}
+
 }

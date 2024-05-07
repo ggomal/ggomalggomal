@@ -6,10 +6,7 @@ import com.ssafy.ggomalbe.common.entity.TeacherKidEntity;
 import com.ssafy.ggomalbe.common.repository.KidRepository;
 import com.ssafy.ggomalbe.common.repository.MemberRepository;
 import com.ssafy.ggomalbe.common.repository.TeacherKidRepository;
-import com.ssafy.ggomalbe.member.kid.dto.CoinResponse;
-import com.ssafy.ggomalbe.member.kid.dto.KidListResponse;
-import com.ssafy.ggomalbe.member.kid.dto.KidSignUpRequest;
-import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
+import com.ssafy.ggomalbe.member.kid.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +23,7 @@ public class KidServiceImpl implements KidService{
     private final TeacherKidRepository teacherKidRepository;
 
     @Override
-    public Mono<MemberEntity> insertKid(KidSignUpRequest request) {
+    public Mono<KidSignUpResponse> insertKid(KidSignUpRequest request) {
         return memberRepository.save(request.toMemberEntity())
                 .map(memberEntity -> {
                     request.setMemberId(memberEntity.getMemberId());
@@ -34,7 +31,7 @@ public class KidServiceImpl implements KidService{
                 })
                 .doOnSuccess(this::saveKid)
                 .doOnSuccess(this::saveTeacherKid)
-                .map(KidSignUpRequest::toMemberEntity);
+                .map(KidSignUpRequest::toKidSignUpResponse);
     }
     public void saveKid(KidEntity kid){kidRepository.save(kid).subscribe();}
     public void saveKid(KidSignUpRequest request){saveKid(request.toKidEntity());}

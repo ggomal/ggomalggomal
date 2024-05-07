@@ -1,7 +1,7 @@
 package com.ssafy.ggomalbe.bear.controller;
 
-import com.ssafy.ggomalbe.bear.service.NaverCloudClient;
-import com.ssafy.ggomalbe.bear.service.OpenApiClient;
+import com.ssafy.ggomalbe.common.service.NaverCloudClient;
+import com.ssafy.ggomalbe.common.service.OpenApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

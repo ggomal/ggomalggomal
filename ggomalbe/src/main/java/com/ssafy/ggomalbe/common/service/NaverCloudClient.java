@@ -1,4 +1,4 @@
-package com.ssafy.ggomalbe.bear.service;
+package com.ssafy.ggomalbe.common.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

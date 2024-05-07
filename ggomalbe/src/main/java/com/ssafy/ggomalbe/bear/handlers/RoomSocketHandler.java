@@ -1,19 +1,14 @@
 package com.ssafy.ggomalbe.bear.handlers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ggomalbe.bear.service.BingoSocketService;
-import com.ssafy.ggomalbe.bear.service.NaverCloudClient;
+import com.ssafy.ggomalbe.common.service.NaverCloudClient;
 import com.ssafy.ggomalbe.bear.service.RoomService;
 import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
-import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
-import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;

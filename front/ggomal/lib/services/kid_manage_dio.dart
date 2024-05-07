@@ -19,3 +19,9 @@ signUpKid(String name, DateTime kidBirthDT, String gender, String kidImg,
     return "아이 등록에 실패하였습니다.";
   }
 }
+
+Future<List> getKidList() async {
+  final response = await useDio().get('/kid');
+  print(response.data);
+  return response.data;
+}

@@ -18,7 +18,5 @@ Future<List> getNoticeList(int kidId) async {
   final response = await useDio().get('/notice/5', queryParameters: {
     "kidId": kidId,
   });
-  print("여기서 데이터를 받아옵니다");
-  print(response.data[response.data.length - 1]);
   return response.data;
 }

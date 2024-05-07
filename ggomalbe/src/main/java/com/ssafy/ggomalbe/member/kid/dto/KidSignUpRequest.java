@@ -29,11 +29,18 @@ public class KidSignUpRequest {
     private Long memberId;
     @Setter
     private String kidImgUrl;
+
+    private String user;
+
+    public void setUser(){
+        user = centerId.toString() + TokenGenerator.randomCharacterWithPrefix("stu");
+    }
+
     public MemberEntity toMemberEntity(){
         return MemberEntity.builder()
                 .name(name)
                 .centerId(centerId)
-                .user(centerId.toString() + TokenGenerator.randomCharacterWithPrefix("stu"))
+                .user(user)
                 .password(kidBirthDT.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .phone(phone)
                 .role(MemberEntity.Role.KID)
@@ -54,6 +61,17 @@ public class KidSignUpRequest {
         return TeacherKidEntity.builder()
                 .teacherId(teacherId)
                 .kidId(memberId)
+                .build();
+    }
+
+    public KidSignUpResponse toKidSignUpResponse(){
+        return KidSignUpResponse.builder()
+                .kidId(memberId)
+                .id(user)
+                .password(kidBirthDT.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                .name(name)
+                .phone(phone)
+                .role(MemberEntity.Role.KID)
                 .build();
     }
 }

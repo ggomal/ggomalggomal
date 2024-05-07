@@ -2,10 +2,7 @@ package com.ssafy.ggomalbe.member.kid;
 
 import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
-import com.ssafy.ggomalbe.member.kid.dto.CoinResponse;
-import com.ssafy.ggomalbe.member.kid.dto.KidSignUpRequest;
-import com.ssafy.ggomalbe.member.kid.dto.KidListResponse;
-import com.ssafy.ggomalbe.member.kid.dto.MemberKidResponse;
+import com.ssafy.ggomalbe.member.kid.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +21,14 @@ public class KidController {
     private final KidService kidService;
 
     @PostMapping
-    public Mono<MemberEntity> kidSignUp(@RequestBody KidSignUpRequest request) {
+    public Mono<KidSignUpResponse> kidSignUp(@RequestBody KidSignUpRequest request) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
                 .map(authentication ->{
                     request.setCenterId(authentication.getCenterId());
                     return authentication.getDetails();})
                 .doOnNext(request::setTeacherId)
+                .doOnNext(d->request.setUser())
                 .flatMap(l -> kidService.insertKid(request));
     }
 

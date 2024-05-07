@@ -10,7 +10,6 @@ Dio useDio() {
     receiveTimeout: Duration(seconds: 3),
   );
 
-
   return Dio(options);
 
 }

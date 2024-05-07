@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animated_background/animated_background.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
+import 'package:ggomal/login_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,14 +10,49 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreen();
 }
-
 class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
+  final Dio dio = Dio();
+  final LoginStorage loginStorage = LoginStorage();
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final List<ParticleOptionsData> particleOptionsList = [
     ParticleOptionsData(baseColor: Colors.cyan),
     ParticleOptionsData(baseColor: Colors.yellow),
     ParticleOptionsData(baseColor: Colors.pink),
   ];
 
+  Future<void> loginUser() async {
+    try {
+      Response response = await dio.post(
+        'https://k10e206.p.ssafy.io/api/v1/login',
+        data: {
+          'id': idController.text,
+          'password': passwordController.text,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var responseData = response.data;
+        String jwt = responseData['jwt'];
+        String role = responseData['role'];
+        await loginStorage.setJwt(jwt);
+        await loginStorage.setRole(role);
+
+        // 성공하면 시작 페이지로 이동하게 하기
+        context.go('/start');
+      } else {
+        print('로그인 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('네트워크 에러: $e');
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +85,9 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                         children: [
                           Text("아이디"),
                           Expanded(
-                            child: TextField(),
+                            child: TextField(
+                              controller: idController,
+                            ),
                           ),
                         ],
                       ),
@@ -56,7 +95,10 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                         children: [
                           Text("비밀번호"),
                           Expanded(
-                            child: TextField(),
+                            child: TextField(
+                              controller: passwordController,
+                              // obscureText: true,
+                            ),
                           ),
                         ],
                       ),
@@ -67,6 +109,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     OutlinedButton(
+                      // onPressed: loginUser,
                       onPressed: () {
                         context.go('/start');
                       },

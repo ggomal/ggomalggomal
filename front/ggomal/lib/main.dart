@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ggomal/screens/kids/bingo.dart';
 import 'package:ggomal/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 // 메인
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   await initializeDateFormatting();
 
@@ -18,11 +17,8 @@ class _App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => RoomId(),
-      child: MaterialApp.router(
+    return MaterialApp.router(
         routerConfig: router,
-      ),
     );
   }
 }

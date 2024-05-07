@@ -24,7 +24,6 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
   String connectionStatus = '오프라인';
   Color textColor = Colors.transparent;
 
-
   final List<String> words = [
     '1음절',
     '2음절',
@@ -67,9 +66,8 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
           Uri.parse('wss://k10e206.p.ssafy.io/api/v1/room'),
           headers: {
             "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IlRFQUNIRVIiLCJtZW1iZXJOYW1lIjoi66eI64qY7ISg7IOdIiwibWVtYmVySWQiOjMsInN1YiI6InRlYWNoZXIxIiwiaWF0IjoxNzE0OTEyOTg1LCJleHAiOjEwMTcxNDkxMjk4NX0.Jj5OMXnMEINnP0FteSWVzGtzsEPJWGhnML3HS849nSI',
+            "name" : "teacher"
           });
-      String? roomId = Provider.of<RoomId>(context, listen: false).roomId;
-      print('룸아이디 출력 $roomId');
 
       streamController = StreamController();
       Stream broadcastStream = streamController.stream.asBroadcastStream();
@@ -90,9 +88,9 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
       }, onError: (error) {
         print('소켓 통신에 실패했습니다. $error');
       });
-      // channel.sink.add(
-      //     '{"type" : "joinRoom", "roomId" : $roomId}'
-      // );
+      channel.sink.add(
+          '{"type" : "joinRoom"}'
+      );
       isConnected = true;
   }
 
@@ -151,7 +149,7 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
       children: [
         Container(
           width: 400,
-          height: 630,
+          height: 650,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),

@@ -49,7 +49,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
         "game": "pizza",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "올려줘"
+        "ending": "넣어"
       }),
     ).then((value) => {
       if (value)

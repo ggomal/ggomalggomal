@@ -1,99 +1,83 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ggomal/services/notice_dio.dart';
+import 'package:ggomal/widgets/check.dart';
 import 'package:ggomal/widgets/create_notice.dart';
 import 'package:ggomal/widgets/notice.dart';
 
-class KidNote extends StatelessWidget {
+class KidNote extends StatefulWidget {
   const KidNote({super.key});
 
   @override
+  State<KidNote> createState() => _KidNoteState();
+}
+
+class _KidNoteState extends State<KidNote> {
+  late Future<List> _noticeListFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _noticeListFuture = getNoticeList(1);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> noticeList = [
-      {
-        "noticeId": 1,
-        "date": "2024-04-13",
-        "teacherName": "장지민",
-        "content": "오늘 몹시 즐거워하여 춤을 추었습니다.",
-        "homeworks": [
-          {"homeworkContent": "개구리 게임 2회", "isDone": false},
-        ]
-      },
-      {
-        "noticeId": 2,
-        "date": "2024-04-20",
-        "teacherName": "박서현",
-        "content": "오늘 몹시 즐거워하여 노래를 불렀습니다.",
-        "homeworks": [
-          {"homeworkContent": "개구리 게임 1회", "isDone": false},
-        ]
-      },
-      {
-        "noticeId": 3,
-        "date": "2024-04-20",
-        "teacherName": "위재원",
-        "content": "오늘 몹시 즐거워하여 노래를 불렀습니다.",
-        "homeworks": [
-          {"homeworkContent": "개구리 게임 1회", "isDone": false},
-        ]
-      },{
-        "noticeId": 4,
-        "date": "2024-04-20",
-        "teacherName": "김창희",
-        "content": "오늘 몹시 즐거워하여 노래를 불렀습니다.",
-        "homeworks": [
-          {"homeworkContent": "개구리 게임 1회", "isDone": false},
-        ]
-      },{
-        "noticeId": 2,
-        "date": "2024-04-20",
-        "teacherName": "박수빈",
-        "content": "오늘 몹시 즐거워하여 노래를 불렀습니다.",
-        "homeworks": [
-          {"homeworkContent": "개구리 게임 1회", "isDone": false},
-        ]
-      },{
-        "noticeId": 2,
-        "date": "2024-04-20",
-        "teacherName": "최진우",
-        "content": "오늘 몹시 즐거워하여 노래를 불렀습니다.",
-        "homeworks": [
-          {"homeworkContent": "개구리 게임 1회", "isDone": false},
-        ]
-      }
-    ];
-
-    return
-
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, right: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onTap: () => showDialog(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0, right: 20.0),
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            GestureDetector(
+              onTap: () => showDialog(
+                context: context,
+                builder: (BuildContext context) => CreateNoticeModal(),
+              ).then(
+                (response) => {
+                  showDialog(
                       context: context,
-                      builder: (BuildContext context) => CreateNoticeModal(),
-                    ),
-                    child: Image.asset(
-                      "assets/images/manager/add_button.png",
-                      width: 40,
-                    ),
-                  )
-                ]
+                      builder: (BuildContext context) =>
+                          CheckModal(response)).then((value) => {
+                        setState(() {
+                          _noticeListFuture = getNoticeList(1);
+                        })
+                      }),
+                },
               ),
-            ),
-            SizedBox(
-              height: 300,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: noticeList.map((e) => Notice(e)).toList(),
-
-
-                  ),
-            ),
-          ],
-        );
+              child: Image.asset(
+                "assets/images/manager/add_button.png",
+                width: 40,
+              ),
+            )
+          ]),
+        ),
+        SizedBox(
+          height: 300,
+          child: FutureBuilder<List<dynamic>>(
+            future: _noticeListFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return Text('데이터 로딩 실패');
+              } else {
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  reverse: true,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return Notice(snapshot.data![index]);
+                  },
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -32,7 +32,7 @@ class KidCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.go('/manager/kids/${kidData['id']}');
+        context.go('/manager/kids/${kidData['memberId']}');
       },
       child: Container(
         width: 300.0,

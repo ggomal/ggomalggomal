@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/status.dart' as status;
 
 class BearScreen extends StatefulWidget {
   const BearScreen({super.key});
@@ -12,13 +16,47 @@ class BearScreen extends StatefulWidget {
 
 class _BearScreenState extends State<BearScreen> {
   final player = AudioPlayer();
+  late final WebSocketChannel channel;
+  bool isConnected = false;
 
   @override
   void initState() {
     super.initState();
     player.play(AssetSource('images/bear/audio/bear_welcome.mp3'));
+    connectToWebSocket();
   }
 
+  void connectToWebSocket() {
+    if (!isConnected) {
+      channel = IOWebSocketChannel.connect(
+          Uri.parse('wss://k10e206.p.ssafy.io/api/v1/room'),
+          headers: {
+            "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IktJRCIsIm1lbWJlck5hbWUiOiLrp4jripjslYTsnbQiLCJtZW1iZXJJZCI6NCwic3ViIjoia2lkMSIsImlhdCI6MTcxNDkxMjg4MiwiZXhwIjoxMDE3MTQ5MTI4ODJ9.poP4jnnsdQhINLLD5RM9zDQNFcsJ_LQ57PDqB0exdJ8',
+            "name" : "kid"
+          });
+      channel.stream.listen((response) {
+        print('웹소켓 응답 : $response');
+        Map<String, dynamic> message = jsonDecode(response);
+        String? roomId = message['roomId'];
+        print("수신된 룸 아이디 : $roomId");
+      }, onDone: () {
+        print('연결 종료 ');
+      }, onError: (error) {
+        print('소켓 통신에 실패했습니다. $error');
+      });
+      channel.sink.add(
+          '{"type" : "createRoom"}'
+      );
+      // print('소켓 연결이 처음 성공 시 출력 ');
+      isConnected = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    channel.sink.close(status.goingAway);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

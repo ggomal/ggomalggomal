@@ -1,25 +1,12 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
-
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
-
-class RoomId with ChangeNotifier {
-  String? _roomId;
-  String? get roomId => _roomId;
-  set roomId(String? newRoomId) {
-    _roomId = newRoomId;
-    notifyListeners();
-  }
-}
 
 class BingoScreen extends StatefulWidget {
   const BingoScreen({super.key});
@@ -31,21 +18,18 @@ class BingoScreen extends StatefulWidget {
 class _BingoScreenState extends State<BingoScreen> {
   late final WebSocketChannel channel;
   bool isConnected = false;
-  // String? roomId;
-  String? roomId = '7f6d91cf-25fb-47bc-aca2-c029f0e4bbc9';
+  String? roomId;
   int recordCount = 0;
   late String currentFilePath;
 
   @override
   void initState() {
     super.initState();
-    connectToWebSocket();
     initRecorder();
   }
 
   final recorder = FlutterSoundRecorder();
   Future initRecorder() async {
-    // final status = await Permission.microphone.request();
     var status = await Permission.speech.status;
     if (!status.isGranted) {
       print('권한 허용안됨');
@@ -69,32 +53,6 @@ class _BingoScreenState extends State<BingoScreen> {
       recordCount++;
     });
     print('녹음종료됨');
-  }
-
-  void connectToWebSocket() {
-    if (!isConnected) {
-      channel = IOWebSocketChannel.connect(
-          Uri.parse('wss://k10e206.p.ssafy.io/api/v1/room'),
-          headers: {
-            "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IktJRCIsIm1lbWJlck5hbWUiOiLrp4jripjslYTsnbQiLCJtZW1iZXJJZCI6NCwic3ViIjoia2lkMSIsImlhdCI6MTcxNDkxMjg4MiwiZXhwIjoxMDE3MTQ5MTI4ODJ9.poP4jnnsdQhINLLD5RM9zDQNFcsJ_LQ57PDqB0exdJ8',
-          });
-      channel.stream.listen((response) {
-        print('웹소켓 응답 : $response');
-        Map<String, dynamic> message = jsonDecode(response);
-        roomId = message['roomId'];
-        print("수신된 룸 아이디 : $roomId");
-
-      }, onDone: () {
-        print('연결 종료 ');
-      }, onError: (error) {
-        print('소켓 통신에 실패했습니다. $error');
-      });
-      channel.sink.add(
-          '{"type" : "createRoom"}'
-      );
-      // print('소켓 연결이 처음 성공 시 출력 ');
-      isConnected = true;
-    }
   }
 
   Future<void> sendLastAudio() async {

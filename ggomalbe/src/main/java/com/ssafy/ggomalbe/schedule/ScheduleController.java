@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.schedule;
 
 import com.ssafy.ggomalbe.schedule.dto.ScheduleAddRequest;
 import com.ssafy.ggomalbe.schedule.dto.ScheduleGetCommand;
+import com.ssafy.ggomalbe.schedule.dto.ScheduleListResponse;
 import com.ssafy.ggomalbe.schedule.dto.ScheduleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -26,9 +27,9 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public Mono<List<ScheduleResponse>> getAllSchedule(@RequestParam(required = false, defaultValue = "-1") Long kidId,
-                                                       @RequestParam(required = false, defaultValue = "-1") Integer year,
-                                                       @RequestParam(required = false, defaultValue = "-1") Integer month) {
+    public Mono<List<ScheduleListResponse>> getAllSchedule(@RequestParam(required = false, defaultValue = "-1") Long kidId,
+                                                           @RequestParam(required = false, defaultValue = "-1") Integer year,
+                                                           @RequestParam(required = false, defaultValue = "-1") Integer month) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())

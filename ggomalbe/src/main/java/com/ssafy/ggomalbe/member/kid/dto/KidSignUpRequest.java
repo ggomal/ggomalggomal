@@ -74,6 +74,7 @@ public class KidSignUpRequest {
                 .name(name)
                 .phone(phone)
                 .role(MemberEntity.Role.KID)
+                .kidNote(kidNote)
                 .gender(gender)
                 .build();
     }

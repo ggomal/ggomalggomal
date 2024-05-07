@@ -15,16 +15,12 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
   final TextEditingController _homeworks2Controller = TextEditingController();
   final TextEditingController _homeworks3Controller = TextEditingController();
 
-
-
   @override
   Widget build(BuildContext context) {
-
     List<Map<String, dynamic>> homeworks = [
-      {'number' : 1, 'controller': _homeworks1Controller},
-      {'number' : 2, 'controller': _homeworks2Controller},
-      {'number' : 3, 'controller': _homeworks3Controller},
-
+      {'number': 1, 'controller': _homeworks1Controller},
+      {'number': 2, 'controller': _homeworks2Controller},
+      {'number': 3, 'controller': _homeworks3Controller},
     ];
 
     Container lineBox(double heghtSize, String text, Widget lineWidget) {
@@ -35,7 +31,8 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
           children: [
             SizedBox(
                 width: 150,
-                child: Text(text, style: nanumText(16.0, FontWeight.w900, Colors.black))),
+                child: Text(text,
+                    style: nanumText(16.0, FontWeight.w900, Colors.black))),
             lineWidget,
           ],
         ),
@@ -122,7 +119,8 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                               Expanded(
                                 child: TextField(
                                   controller: e['controller'],
-                                  style: nanumText(14.0, FontWeight.w500, Colors.black),
+                                  style: nanumText(
+                                      14.0, FontWeight.w500, Colors.black),
                                   textAlignVertical: TextAlignVertical.bottom,
                                   decoration: inputStyle("숙제를 입력하세요."),
                                 ),
@@ -139,9 +137,12 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      final response = await postNotice(1, _contentsController.text, [...homeworks.map((e) => e['controller'].text)]);
+                      String response = await postNotice(
+                          1,
+                          _contentsController.text,
+                          [...homeworks.map((e) => e['controller'].text)]);
                       Navigator.pop(context, response);
-                      },
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFAA8D),
                       foregroundColor: Colors.white,
@@ -150,7 +151,9 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () {
+                      Navigator.pop(context, "알림장 등록을 취소하였습니다.");
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFAA8D),
                       foregroundColor: Colors.white,
@@ -168,11 +171,10 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
 
   @override
   void dispose() {
-
     _contentsController.dispose();
     _homeworks1Controller.dispose();
     _homeworks2Controller.dispose();
     _homeworks3Controller.dispose();
-     super.dispose();
+    super.dispose();
   }
 }

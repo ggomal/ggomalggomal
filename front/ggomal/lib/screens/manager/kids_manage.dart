@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ggomal/widgets/check.dart';
 import 'package:ggomal/widgets/enroll_kid.dart';
 import 'package:ggomal/widgets/kid_card.dart';
 
@@ -38,7 +39,13 @@ class KidsManageScreen extends StatelessWidget {
                         onTap: () => showDialog(
                           context: context,
                           builder: (BuildContext context) => EnrollKidModal(),
-                        ),
+                        ).then((response) => {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    CheckModal(response),
+                              ).then((value) => {print("학생 리스트 다시 받아!")}),
+                            }),
                         child: Container(
                           width: 300.0,
                           height: 160.0,
@@ -61,26 +68,84 @@ class KidsManageScreen extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(25.0),
                             child: Image.asset(
-
                               'assets/images/manager/enroll_button.png',
-
                             ),
                           ),
                         ),
                       ),
                       ...[
-                        {"name": "박수빈", "age" : 10, "id" : "subin", "password" : "subin123"},
-                        {"name": "장지민", "age" : 10, "id" : "jm", "password" : "jm123"},
-                        {"name": "김창희", "age" : 10, "id" : "ch", "password" : "ch123"},
-                        {"name": "박서현", "age" : 10, "id" : "sh", "password" : "sh123"},
-                        {"name": "최진우", "age" : 10, "id" : "jw", "password" : "jw123"},
-                        {"name": "수빈공주", "age" : 10, "id" : "princess", "password" : "princess123 "},
-                        {"name": "박수빈", "age" : 10, "id" : "subin", "password" : "subin123"},
-                        {"name": "장지민", "age" : 10, "id" : "jm", "password" : "jm123"},
-                        {"name": "김창희", "age" : 10, "id" : "ch", "password" : "ch123"},
-                        {"name": "박서현", "age" : 10, "id" : "sh", "password" : "sh123"},
-                        {"name": "최진우", "age" : 10, "id" : "jw", "password" : "jw123"},
-                        {"name": "수빈공주", "age" : 10, "id" : "princess", "password" : "princess123 "},
+                        {
+                          "name": "박수빈",
+                          "age": 10,
+                          "id": "subin",
+                          "password": "subin123"
+                        },
+                        {
+                          "name": "장지민",
+                          "age": 10,
+                          "id": "jm",
+                          "password": "jm123"
+                        },
+                        {
+                          "name": "김창희",
+                          "age": 10,
+                          "id": "ch",
+                          "password": "ch123"
+                        },
+                        {
+                          "name": "박서현",
+                          "age": 10,
+                          "id": "sh",
+                          "password": "sh123"
+                        },
+                        {
+                          "name": "최진우",
+                          "age": 10,
+                          "id": "jw",
+                          "password": "jw123"
+                        },
+                        {
+                          "name": "수빈공주",
+                          "age": 10,
+                          "id": "princess",
+                          "password": "princess123 "
+                        },
+                        {
+                          "name": "박수빈",
+                          "age": 10,
+                          "id": "subin",
+                          "password": "subin123"
+                        },
+                        {
+                          "name": "장지민",
+                          "age": 10,
+                          "id": "jm",
+                          "password": "jm123"
+                        },
+                        {
+                          "name": "김창희",
+                          "age": 10,
+                          "id": "ch",
+                          "password": "ch123"
+                        },
+                        {
+                          "name": "박서현",
+                          "age": 10,
+                          "id": "sh",
+                          "password": "sh123"
+                        },
+                        {
+                          "name": "최진우",
+                          "age": 10,
+                          "id": "jw",
+                          "password": "jw123"
+                        },
+                        {
+                          "name": "수빈공주",
+                          "age": 10,
+                          "id": "princess",
+                          "password": "princess123 "
+                        },
                       ]
                           .map(
                             (e) => KidCard(e),

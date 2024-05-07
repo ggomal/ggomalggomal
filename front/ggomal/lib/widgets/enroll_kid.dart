@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/services/kid_manage_dio.dart';
 import 'package:ggomal/widgets/kid_image.dart';
 import 'package:ggomal/constants.dart';
 
@@ -11,7 +12,12 @@ class EnrollKidModal extends StatefulWidget {
 
 class _EnrollKidModalState extends State<EnrollKidModal> {
   DateTime? _birthDate = DateTime.now();
-  int? _gender = 1;
+  String? _gender = "FEMALE";
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
+  final TextEditingController _parentNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +77,7 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                 "이름",
                 Expanded(
                   child: TextField(
+                    controller: _nameController,
                     style: nanumText(14.0, FontWeight.w500, Colors.black),
                     textAlignVertical: TextAlignVertical.bottom,
                     decoration: inputStyle("이름을 입력해 주세요."),
@@ -85,11 +92,12 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                       context: context,
                       firstDate: DateTime(2000),
                       lastDate: DateTime.now(),
-                    ).then((birthDate) => {
-                          setState(() {
-                            _birthDate = birthDate;
-                          })
-                        });
+                    ).then((birthDate) =>
+                    {
+                      setState(() {
+                        _birthDate = birthDate;
+                      })
+                    });
                   },
                   child: Text(_birthDate.toString().split(" ")[0]),
                 )),
@@ -107,10 +115,10 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                     child: DropdownButton(
                       value: _gender,
                       items: [
-                        DropdownMenuItem(value: 1, child: Text("여자")),
-                        DropdownMenuItem(value: 2, child: Text("남자")),
+                        DropdownMenuItem(value: "FEMALE", child: Text("여자")),
+                        DropdownMenuItem(value: "MALE", child: Text("남자")),
                       ],
-                      onChanged: (int? value) {
+                      onChanged: (String? value) {
                         setState(() {
                           _gender = value;
                         });
@@ -137,10 +145,11 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                 "특이사항",
                 Expanded(
                     child: TextField(
-                  style: nanumText(14.0, FontWeight.w500, Colors.black),
-                  textAlignVertical: TextAlignVertical.bottom,
-                  decoration: inputStyle("특이사항을 입력해 주세요."),
-                ))),
+                      controller: _noteController,
+                      style: nanumText(14.0, FontWeight.w500, Colors.black),
+                      textAlignVertical: TextAlignVertical.bottom,
+                      decoration: inputStyle("특이사항을 입력해 주세요."),
+                    ))),
             lineBox(
                 100,
                 "보호자",
@@ -155,17 +164,18 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                           child: Row(children: [
                             SizedBox(
                               width: 50,
-                              child: Text("관계",
+                              child: Text("이름",
                                   style: nanumText(
                                       16, FontWeight.w900, Colors.black)),
                             ),
                             Expanded(
                                 child: TextField(
-                              style: nanumText(
-                                  14.0, FontWeight.w500, Colors.black),
-                              textAlignVertical: TextAlignVertical.bottom,
-                              decoration: inputStyle("관계를 입력해 주세요."),
-                            ))
+                                  controller: _parentNameController,
+                                  style: nanumText(
+                                      14.0, FontWeight.w500, Colors.black),
+                                  textAlignVertical: TextAlignVertical.bottom,
+                                  decoration: inputStyle("이름을 입력해 주세요."),
+                                ))
                           ]),
                         )),
                     SizedBox(
@@ -182,11 +192,12 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                             ),
                             Expanded(
                                 child: TextField(
-                              style: nanumText(
-                                  14.0, FontWeight.w500, Colors.black),
-                              textAlignVertical: TextAlignVertical.bottom,
-                              decoration: inputStyle("연락처를 입력해 주세요."),
-                            ))
+                                  controller: _phoneController,
+                                  style: nanumText(
+                                      14.0, FontWeight.w500, Colors.black),
+                                  textAlignVertical: TextAlignVertical.bottom,
+                                  decoration: inputStyle("연락처를 입력해 주세요."),
+                                ))
                           ]),
                         )),
                   ],
@@ -198,8 +209,16 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    String response = await signUpKid(
+                        _nameController.text,
+                        _birthDate!,
+                        _gender!,
+                        "test",
+                        _noteController.text,
+                        _parentNameController.text,
+                        _phoneController.text);
+                    Navigator.pop(context, response);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFAA8D),
@@ -210,7 +229,7 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                 SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context, "아이 등록을 취소하였습니다.");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFAA8D),

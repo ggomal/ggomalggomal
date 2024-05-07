@@ -1,5 +1,9 @@
 package com.ssafy.ggomalbe.chick.service;
 
+import com.ssafy.ggomalbe.chick.dto.ChickListResponse;
+import com.ssafy.ggomalbe.common.entity.SituationKidEntity;
+import com.ssafy.ggomalbe.common.repository.SituationKidRepository;
+import com.ssafy.ggomalbe.common.repository.SituationRepository;
 import com.ssafy.ggomalbe.common.service.EvaluationService;
 import com.ssafy.ggomalbe.common.service.NaverCloudClient;
 import com.ssafy.ggomalbe.common.service.OpenApiClient;
@@ -23,6 +27,9 @@ import java.util.Map;
 public class ChickRecordServiceImpl implements ChickRecordService{
     private final ChickRecordRepository chickRecordRepository;
     private final EvaluationService evaluationService;
+    private final SituationRepository situationRepository;
+    private final SituationKidRepository situationKidRepository;
+
 
     @Override
     public Mono<ChickRecordEntity> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
@@ -66,9 +73,42 @@ public class ChickRecordServiceImpl implements ChickRecordService{
                     return chickRecordRepository.save(chickRecordEntity);
                 }).doOnNext(data -> log.info("save {}", data.toString()));
     }
+    @Override
+    public Flux<ChickListResponse> getSituationList(Long memberId) {
+        return situationRepository.getOwnSituationList(memberId);
+    }
+
+    @Override
+    public Mono<Boolean> getNextSituation(Long memberId, Long situationId) {
+        return situationRepository.count()
+                .flatMap(max -> {
+                    // ** 마지막 병아리가 아닌데 이미 잠금 해제 했을 경우 -> 다음 거 이미 열려있는 경우 그냥 처리 안하고 넘겨 줘야함
+                    if (situationId >= max) {   // 마지막 병아리일 경우
+                        return Mono.just(false);
+                    } else {
+                        SituationKidEntity entity = SituationKidEntity.builder()
+                                .situationId(situationId+1)
+                                .memberId(memberId)
+                                .build();
+
+                        return situationKidRepository.existsByMemberIdAndSituationId(memberId, situationId + 1)
+                                .flatMap(flag -> {
+                                    if (!flag)
+                                        return situationKidRepository.save(entity)
+                                                .map(result -> result.getSituationKidId() != null);
+                                    else
+                                        return Mono.just(false);
+                                });
+                    }
+                });
+    }
 
 
-
+    @Override
+    public Mono<Boolean> setChickGameRecord(ChickRecordEntity entity) {
+        return chickRecordRepository.save(entity)
+                .map(saveEntity -> saveEntity.getChickRecordId() != null);
+    }
 
 
 //    public Mono<Void> isPass(FilePart filePart, String sentence) {

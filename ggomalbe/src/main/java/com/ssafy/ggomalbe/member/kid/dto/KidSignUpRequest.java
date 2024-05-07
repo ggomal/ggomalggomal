@@ -20,6 +20,7 @@ public class KidSignUpRequest {
     private LocalDate kidBirthDT;
     private String kidNote;
     private String parentName;
+    private KidEntity.Gender gender;
 
     @Setter
     private Long teacherId;
@@ -54,6 +55,7 @@ public class KidSignUpRequest {
                 .kidBirthDT(kidBirthDT)
                 .kidNote(kidNote)
                 .parentName(parentName)
+                .gender(gender)
                 .build();
     }
 
@@ -72,6 +74,7 @@ public class KidSignUpRequest {
                 .name(name)
                 .phone(phone)
                 .role(MemberEntity.Role.KID)
+                .gender(gender)
                 .build();
     }
 }

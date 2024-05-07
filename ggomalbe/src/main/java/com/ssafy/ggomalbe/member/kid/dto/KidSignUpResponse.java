@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.member.kid.dto;
 
+import com.ssafy.ggomalbe.common.entity.KidEntity;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,5 @@ public class KidSignUpResponse {
     private String phone;
     private MemberEntity.Role role;
     private String kidNote;
+    private KidEntity.Gender gender;
 }

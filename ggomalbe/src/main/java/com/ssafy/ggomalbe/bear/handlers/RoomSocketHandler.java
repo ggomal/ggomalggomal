@@ -9,6 +9,7 @@ import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -33,14 +34,7 @@ public class RoomSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         log.info("room-socket sessionId {}", session.getId());
 
-        //String jwtToken = session.getHandshakeInfo().getHeaders().getFirst("authorization");
-//        return ReactiveSecurityContextHolder.getContext()
-//                .map(securityContext ->
-//                        securityContext.getAuthentication().getName())
-//                .doOnNext( memberId -> {
-//                    log.info("memberId {}",memberId);
-//                }).then();
-
+//        String jwtToken = session.getHandshakeInfo().getHeaders().getFirst("authorization");
         return session.receive()                                // WebSocket 세션을 통해 클라이언트로부터 메시지를 수신
                 .map(WebSocketMessage::getPayloadAsText)      //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                           //비동기 처리를 위한 flatMap, 처리하고 Mono로 반환하여 새로운 Publisher생성

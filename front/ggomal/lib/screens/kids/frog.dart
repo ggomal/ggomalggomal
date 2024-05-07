@@ -1,41 +1,148 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
 
+import '../../const/keys.dart';
 import '../../widgets/percent_bar.dart';
 
-class FrogScreen extends StatelessWidget {
+class FrogScreen extends StatefulWidget {
   const FrogScreen({Key? key}) : super(key: key);
+
+  @override
+  State<FrogScreen> createState() => _FrogScreenState();
+}
+
+class _FrogScreenState extends State<FrogScreen> {
+  RtcEngine? engine;
+
+  int uid = 0;
+  int? remoteUid;
+
+  Future<void> init() async {
+    final resp = await [Permission.camera].request();
+
+    final cameraPermission = resp[Permission.camera];
+
+    if (cameraPermission != PermissionStatus.granted) {
+      throw '카메라 권한이 없습니다.';
+    }
+
+    if (engine == null) {
+      engine = createAgoraRtcEngine();
+
+      await engine!.initialize(
+        RtcEngineContext(
+          appId: appId,
+        ),
+      );
+
+      // engine!.registerEventHandler(
+      //   RtcEngineEventHandler(
+      //     onJoinChannelSuccess: (
+      //         RtcConnection connection,
+      //         int elapsed,
+      //         ) {},
+      //     onLeaveChannel: (
+      //         RtcConnection connection,
+      //         RtcStats stats,
+      //         ) {},
+      //     onUserJoined: (
+      //         RtcConnection connection,
+      //         int remoteUid,
+      //         int elapsed,
+      //         ) {
+      //       print('---User Joined---');
+      //       setState(() {
+      //         this.remoteUid = remoteUid;
+      //       });
+      //     },
+      //     onUserOffline: (
+      //         RtcConnection connection,
+      //         int remoteUid,
+      //         UserOfflineReasonType reason,
+      //         ) {
+      //       setState(() {
+      //         this.remoteUid = null;
+      //       });
+      //     },
+      //   ),
+      // );
+
+      await engine!.enableVideo();
+      await engine!.startPreview();
+
+      ChannelMediaOptions options = ChannelMediaOptions();
+
+      await engine!.joinChannel(
+        token: token,
+        channelId: channelName,
+        uid: uid,
+        options: options,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: NavBar(),
-      body: Stack(
-        children: [
-          Image.asset(
-            "assets/images/frog/frog_screen.png",
-            fit: BoxFit.cover,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-          ),
-          WhaleSea(),
-        ],
+      body:
+      FutureBuilder<void>(
+        future: init(),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if(snapshot.hasError){
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+          return Stack(
+            children: [
+              Image.asset(
+                "assets/images/frog/frog_screen.png",
+                fit: BoxFit.cover,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+              ),
+              FrogGame(),
+              Positioned(
+                bottom: 0,
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    child: AgoraVideoView(
+                      controller: VideoViewController(
+                        rtcEngine: engine!,
+                        canvas: VideoCanvas(
+                          uid: uid
+                        )
+                      ),
+                    ),
+                  ))
+            ],
+          );
+        }
       ),
     );
   }
 }
 
-class WhaleSea extends StatefulWidget {
-  const WhaleSea({Key? key}) : super(key: key);
+class FrogGame extends StatefulWidget {
+  const FrogGame({Key? key}) : super(key: key);
 
   @override
-  State<WhaleSea> createState() => _WhaleSeaState();
+  State<FrogGame> createState() => _FrogGameState();
 }
 
-class _WhaleSeaState extends State<WhaleSea> {
+class _FrogGameState extends State<FrogGame> {
   late int _fishCount = 0;
 
   final List<Map<String, dynamic>> _fishLocation = [
@@ -121,5 +228,24 @@ class _WhaleSeaState extends State<WhaleSea> {
     );
   }
 }
+
+class CamScreen extends StatefulWidget {
+  const CamScreen({super.key});
+
+  @override
+  State<CamScreen> createState() => _CamScreenState();
+}
+
+class _CamScreenState extends State<CamScreen> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width:300,
+      height:300,
+      color: Colors.red,);
+  }
+}
+
 
 

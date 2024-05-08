@@ -1,18 +1,13 @@
 package com.ssafy.ggomalbe.bear.controller;
 
 import com.ssafy.ggomalbe.bear.dto.BearRecordResponse;
-import com.ssafy.ggomalbe.bear.dto.WordDto;
 import com.ssafy.ggomalbe.bear.service.BearRecordService;
-import com.ssafy.ggomalbe.common.entity.BearRecordEntity;
-import com.ssafy.ggomalbe.common.entity.Word;
 import com.ssafy.ggomalbe.common.service.GameNumService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController

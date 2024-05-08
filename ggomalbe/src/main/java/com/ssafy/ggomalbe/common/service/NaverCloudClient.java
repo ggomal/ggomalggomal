@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.ByteBuffer;
@@ -32,6 +33,14 @@ public class NaverCloudClient {
                 .baseUrl("https://naveropenapi.apigw.ntruss.com")
                 .build();
     }
+
+    // 순서
+    // 1. 저장한 단어 -> CLOVA API로 전송
+    // 2. 음성파일 리턴 -> S3 /sound 폴더에 저장
+    // 3. 저장된 url 반환해서 DB update
+//    public Flux<String> saveWordSound(){
+//
+//    }
 
     public Mono<String> soundToText(ByteBuffer file) {
         return Mono.fromCallable(() -> file)

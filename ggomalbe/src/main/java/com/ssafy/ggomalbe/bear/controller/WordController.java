@@ -123,16 +123,17 @@ public class WordController {
 
     // WordRequest를 WordEntity로 변환하는 메소드
     private WordEntity convertToEntity(WordRequest wordRequest) {
+        if (wordRequest.getFinality().equals("null")) {wordRequest.setFinality(null);}
         if (wordRequest.getSoundUrl() == null) {wordRequest.setSoundUrl("");}
         if (wordRequest.getLetterImgUrl() == null) {wordRequest.setLetterImgUrl("");}
         return WordEntity.builder()
                 .letter(wordRequest.getLetter())
                 .pronunciation(wordRequest.getPronunciation())
+                .syllable(wordRequest.getSyllable())
+                .initial(wordRequest.getInitial())
+                .finality(wordRequest.getFinality())
                 .letterImgUrl(wordRequest.getLetterImgUrl())
                 .soundUrl(wordRequest.getSoundUrl())
-                .initial(wordRequest.getInitial())
-                .syllable(wordRequest.getSyllable())
-                .finalityFlag(wordRequest.getFinalityFlag())
                 .build();
     }
 }

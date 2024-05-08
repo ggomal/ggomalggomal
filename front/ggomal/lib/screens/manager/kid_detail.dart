@@ -73,7 +73,7 @@ class _KidDetailState extends State<KidDetail> {
                   SizedBox(
                     width: 20,
                   ),
-                  KidContent(),
+                  KidContent(widget.kidId),
                 ]),
               ),
             ),

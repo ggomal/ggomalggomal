@@ -10,6 +10,8 @@ import com.ssafy.ggomalbe.common.repository.WordCategoryRepository;
 import com.ssafy.ggomalbe.common.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -121,6 +123,8 @@ public class WordController {
     }
 
 
+
+
     // WordRequest를 WordEntity로 변환하는 메소드
     private WordEntity convertToEntity(WordRequest wordRequest) {
         if (wordRequest.getFinality().equals("null")) {wordRequest.setFinality(null);}
@@ -136,4 +140,5 @@ public class WordController {
                 .soundUrl(wordRequest.getSoundUrl())
                 .build();
     }
+
 }

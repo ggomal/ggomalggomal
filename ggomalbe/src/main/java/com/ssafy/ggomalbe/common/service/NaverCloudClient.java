@@ -12,7 +12,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -38,9 +40,29 @@ public class NaverCloudClient {
     // 1. 저장한 단어 -> CLOVA API로 전송
     // 2. 음성파일 리턴 -> S3 /sound 폴더에 저장
     // 3. 저장된 url 반환해서 DB update
-//    public Flux<String> saveWordSound(){
-//
-//    }
+    public List<String> getWordSound(List<String> wordList){
+        String url = "/tts-premium/v1/tts";
+
+        List<String> result = new ArrayList<>();
+
+        try {
+            // 저장한 단어 -> 클로바 api로 전송
+            for (String word : wordList){
+                // 음성파일을 리턴 받아서 s3 /sound 폴더에 저장
+                
+
+
+
+                // 저장된 s3 url 리스트 반환
+//                result.add()
+            }
+
+        } catch (Error e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 
     public Mono<String> soundToText(ByteBuffer file) {
         return Mono.fromCallable(() -> file)

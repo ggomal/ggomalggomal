@@ -2,11 +2,10 @@ package com.ssafy.ggomalbe.bear.controller;
 
 import com.ssafy.ggomalbe.bear.dto.WordRequest;
 import com.ssafy.ggomalbe.common.entity.WordEntity;
+import com.ssafy.ggomalbe.common.service.NaverCloudClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -23,6 +22,7 @@ import java.util.List;
 public class ConvertController {
 
     private final WordController wordController;
+    private final NaverCloudClient naverCloudClient;
 
     // csv file -> wordRequest List
     @GetMapping("/convert")
@@ -95,6 +95,41 @@ public class ConvertController {
         System.out.println("단어 저장 : " + resultList.log());
 
         return resultList.collectList().map(List::size);
+    }
+
+
+    @GetMapping(value = "/saveSound")
+    public Mono<Integer> saveSound(@RequestParam String fileName) {
+        // csv 파일로부터 저장할 단어 리스트 추출
+        List<String> request = new ArrayList<>();
+        String path = "src/main/resources/word/"+fileName+".csv";
+
+        try {
+            BufferedReader br = Files.newBufferedReader(Paths.get(path));
+            String line = "";
+            int lineCounter = 0;
+            while ((line = br.readLine()) != null) {
+                lineCounter++;
+                String[] temp = line.split(",");
+                System.out.println(temp[0]);
+
+                if (lineCounter == 1) continue;
+
+                request.add(temp[0]);
+            }
+
+            // 네이버 클로바 api에서 음성 받아와서 저장 후 s3 url 리스트 반환
+            // naverCloudClient.getWordSound(request)
+
+            // 음성파일 s3 url -> db 업데이트
+            // updateSoundUrlByLetter()
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

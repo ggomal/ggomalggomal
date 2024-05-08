@@ -65,7 +65,6 @@ public class ChickRecordServiceImpl implements ChickRecordService{
     @Override
     public Mono<ChickRecordEntity> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
         return evaluationService.evaluation(filePart, sentence)
-                .doOnNext(System.out::println)
                 .flatMap((evaluateResult) -> {
                     float score = evaluateResult.getScore();
                     String pronunciation = evaluateResult.getPronunciation();

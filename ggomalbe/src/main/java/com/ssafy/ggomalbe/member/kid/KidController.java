@@ -1,7 +1,6 @@
 package com.ssafy.ggomalbe.member.kid;
 
 import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
-import com.ssafy.ggomalbe.common.service.S3Client;
 import com.ssafy.ggomalbe.member.kid.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -20,7 +18,6 @@ import java.util.List;
 public class KidController {
 
     private final KidService kidService;
-    private final S3Client s3Client;
 
     @PostMapping
     public Mono<KidSignUpResponse> kidSignUp(@RequestBody KidSignUpRequest request) {
@@ -31,10 +28,6 @@ public class KidController {
                     return authentication.getDetails();})
                 .doOnNext(request::setTeacherId)
                 .doOnNext(d -> request.setUser())
-                .flatMap(d -> {
-                    return s3Client.postImg(request.getUser(), request.getImg())
-                            .doOnNext(request::setKidImgUrl);
-                })
                 .flatMap(l -> kidService.insertKid(request));
     }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/states/furniture_state.dart';
 import 'package:provider/provider.dart';
 import 'package:ggomal/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,7 +10,14 @@ void main() async {
 
   await initializeDateFormatting();
 
-  runApp(const _App());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FurnitureState()),
+      ],
+      child: _App(),
+    ),
+  );
 }
 
 class _App extends StatelessWidget {
@@ -18,7 +26,7 @@ class _App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-        routerConfig: router,
+      routerConfig: router,
     );
   }
 }

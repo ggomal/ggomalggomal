@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
 
+import '../../states/furniture_state.dart';
 import '../../widgets/navbar_home.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,29 +35,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: NavBarHome(),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/home.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: _items.map((item) {
-            if (!item['isVisible']) return Container();
-            return Positioned(
-              left: (screenSize.width / 2) * (1 + item['x']),
-              top: (screenSize.height / 2) * (1 + item['y']),
-              child: InkWell(
-                onTap: () {
-                  player.play(AssetSource(item['audio']));
-                  toggleVisibility(_items.indexOf(item));
-                },
-                child: Image.asset(item['asset'], width: item['width'] / 1.0,),
+      body: Consumer<FurnitureState>(
+        builder: (context, furnitureState, child) {
+          return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/home.png'),
+                fit: BoxFit.cover,
               ),
-            );
-          }).toList(),
-        ),
+            ),
+            child: Stack(
+              children: furnitureState.items.asMap().entries.map((entry) {
+                int index = entry.key;
+                var item = entry.value;
+                if (!item['isVisible']) return Container();
+                return Positioned(
+                  left: (screenSize.width / 2) * (1 + item['x']),
+                  top: (screenSize.height / 2) * (1 + item['y']),
+                  child: InkWell(
+                    onTap: () {
+                      player.play(AssetSource(item['audio']));
+                      furnitureState.toggleVisibility(index);
+                    },
+                    child: Image.asset(item['asset'], width: item['width'] / 1.0,),
+                  ),
+                );
+              }).toList(),
+            ),
+          );
+        }
       ),
     );
   }

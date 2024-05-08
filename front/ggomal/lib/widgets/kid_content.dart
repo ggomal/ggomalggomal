@@ -4,7 +4,8 @@ import 'package:ggomal/widgets/kid_report.dart';
 import 'package:ggomal/constants.dart';
 
 class KidContent extends StatefulWidget {
-  const KidContent({super.key});
+  final String? kidId;
+  const KidContent(this.kidId, {super.key});
 
   @override
   State<KidContent> createState() => _KidContentState();
@@ -50,7 +51,7 @@ class _KidContentState extends State<KidContent> with SingleTickerProviderStateM
                   controller: tabController,
                   children: [
                     KidReport(),
-                    KidNote(),
+                    KidNote(widget.kidId),
                   ],
                 ),
               ),

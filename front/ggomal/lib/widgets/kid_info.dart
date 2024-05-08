@@ -25,21 +25,6 @@ class _KidInfoState extends State<KidInfo> {
   @override
   Widget build(BuildContext context) {
 
-    final Map<String, dynamic> kid = {
-      "kid_id": 2,
-      "name": "춘식이",
-      "age": 5,
-      "id": "chunsik",
-      "password": "chunsik123",
-      "birth_DT": "2024-04-01",
-      "parent_name": "박수빈",
-      "parent_phone": "010-0000-0000",
-      "kid_note": "빙고 규칙을 자세히 알려주어야 합니다.",
-      "kid_img_url": "assets/images/manager/chunsik.jpg"
-    };
-
-
-
     Widget textLine(Map<String, String> text) {
       return Flexible(
         flex: 1,

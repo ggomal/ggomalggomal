@@ -3,7 +3,8 @@ import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/notice_dio.dart';
 
 class CreateNoticeModal extends StatefulWidget {
-  const CreateNoticeModal({super.key});
+  final String? kidId;
+  const CreateNoticeModal(this.kidId, {super.key});
 
   @override
   State<CreateNoticeModal> createState() => _CreateNoticeModalState();
@@ -138,7 +139,7 @@ class _CreateNoticeModalState extends State<CreateNoticeModal> {
                   ElevatedButton(
                     onPressed: () async {
                       String response = await postNotice(
-                          1,
+                          widget.kidId as String,
                           _contentsController.text,
                           [...homeworks.map((e) => e['controller'].text)]);
                       Navigator.pop(context, response);

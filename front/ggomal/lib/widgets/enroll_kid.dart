@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ggomal/services/kid_manage_dio.dart';
 import 'package:ggomal/widgets/kid_image.dart';
 import 'package:ggomal/constants.dart';
+import 'dart:io';
 
 class EnrollKidModal extends StatefulWidget {
   const EnrollKidModal({super.key});
@@ -13,11 +14,13 @@ class EnrollKidModal extends StatefulWidget {
 class _EnrollKidModalState extends State<EnrollKidModal> {
   DateTime? _birthDate = DateTime.now();
   String? _gender = "FEMALE";
+  File? _selectedImage;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _parentNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +138,13 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
             lineBox(
               150,
               "사진",
-              Container(
+              SizedBox(
                 height: 150,
-                child: KidImage(),
+                child: KidImage(onImageSelected: (selectedImage) {
+                  setState(() {
+                    _selectedImage = selectedImage;
+                  });
+                },),
               ),
             ),
             lineBox(
@@ -214,7 +221,7 @@ class _EnrollKidModalState extends State<EnrollKidModal> {
                         _nameController.text,
                         _birthDate!,
                         _gender!,
-                        "test",
+                        _selectedImage,
                         _noteController.text,
                         _parentNameController.text,
                         _phoneController.text);

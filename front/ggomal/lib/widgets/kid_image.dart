@@ -4,7 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ggomal/constants.dart';
 
 class KidImage extends StatefulWidget {
-  const KidImage({super.key});
+  final Function(File?) onImageSelected;
+  const KidImage({Key? key, required this.onImageSelected}) : super(key: key);
 
   @override
   State<KidImage> createState() => _KidImageState();
@@ -22,6 +23,8 @@ class _KidImageState extends State<KidImage> {
         setState(() {
           _imageFile = imageFile;
         });
+        File file = File(imageFile.path);
+        widget.onImageSelected(file);
       }
     } catch (e) {
       print("$e");

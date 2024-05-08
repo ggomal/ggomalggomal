@@ -6,7 +6,8 @@ import 'package:ggomal/widgets/create_notice.dart';
 import 'package:ggomal/widgets/notice.dart';
 
 class KidNote extends StatefulWidget {
-  const KidNote({super.key});
+  final String? kidId;
+  const KidNote(this.kidId, {super.key});
 
   @override
   State<KidNote> createState() => _KidNoteState();
@@ -18,7 +19,7 @@ class _KidNoteState extends State<KidNote> {
   @override
   void initState() {
     super.initState();
-    _noticeListFuture = getNoticeList(1);
+    _noticeListFuture = getNoticeList(widget.kidId as String);
   }
 
   @override
@@ -31,7 +32,7 @@ class _KidNoteState extends State<KidNote> {
             GestureDetector(
               onTap: () => showDialog(
                 context: context,
-                builder: (BuildContext context) => CreateNoticeModal(),
+                builder: (BuildContext context) => CreateNoticeModal(widget.kidId),
               ).then(
                 (response) => {
                   showDialog(
@@ -39,7 +40,7 @@ class _KidNoteState extends State<KidNote> {
                       builder: (BuildContext context) =>
                           CheckModal(response)).then((value) => {
                         setState(() {
-                          _noticeListFuture = getNoticeList(1);
+                          _noticeListFuture = getNoticeList(widget.kidId as String);
                         })
                       }),
                 },

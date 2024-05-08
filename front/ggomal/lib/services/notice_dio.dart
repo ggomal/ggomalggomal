@@ -1,6 +1,6 @@
 import 'package:ggomal/services/dio.dart';
 
-postNotice(int kidId, String contents, List<String> homeworks) async {
+postNotice(String kidId, String contents, List<String> homeworks) async {
   try {
     await useDio().post('/notice', data: {
       "kidId": kidId,
@@ -14,7 +14,7 @@ postNotice(int kidId, String contents, List<String> homeworks) async {
   }
 }
 
-Future<List> getNoticeList(int kidId) async {
+Future<List> getNoticeList(String kidId) async {
   final response = await useDio().get('/notice/5', queryParameters: {
     "kidId": kidId,
   });

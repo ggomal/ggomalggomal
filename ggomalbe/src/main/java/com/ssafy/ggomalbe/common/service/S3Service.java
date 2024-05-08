@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
@@ -20,16 +18,15 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+
     private final S3AsyncClient s3client;
     private final S3ClientConfigurationProperties s3config;
-
 
     // length = header길이, fileKey = 저장되는 파일 경로 + 이름, mediaType = 미디어타입, metadata =
     public Mono<ResponseEntity<UploadResult>> uploadHandler(HttpHeaders headers, Flux<ByteBuffer> body) {
@@ -62,4 +59,5 @@ public class S3Service {
                             .body(new UploadResult(HttpStatus.CREATED, new String[] {fileKey}));
                 });
     }
+
 }

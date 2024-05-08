@@ -24,6 +24,14 @@ public interface WordRepository extends R2dbcRepository<WordEntity,Long> {
     @Query("update word set sound_url = :soundUrl where letter = :letter and sound_url = '';")
     Flux<WordEntity> updateSoundUrlByLetter(String letter, String soundUrl);
 
+    // letter 중에 soundUrl이 없는 게 있으면 true -> 넣어야 하면 true
+    @Query("""
+                select if(count(*) > 0, 'true', 'false')
+                from word
+                where letter = :letter
+                and sound_url = "";
+            """)
+    Boolean isSoundEmpty(String letter);
 }
 
 

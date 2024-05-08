@@ -101,15 +101,15 @@ public class WordServiceImpl implements WordService {
     }
 
 
-    public Flux<WordEntity> updateSoundUrlByLetter(List<LetterSoundRequest> letterSoundList) {
-        return Flux.fromIterable(letterSoundList)
-                .flatMap(letterSoundRequest -> {
-                    String letter = letterSoundRequest.getLetter();
-                    String soundUrl = letterSoundRequest.getSoundUrl();
-
-                    return wordRepository.updateSoundUrlByLetter(letter, soundUrl);
-                });
-    }
+//    public Flux<WordEntity> updateSoundUrlByLetter(List<LetterSoundRequest> letterSoundList) {
+//        return Flux.fromIterable(letterSoundList)
+//                .flatMap(letterSoundRequest -> {
+//                    String letter = letterSoundRequest.getLetter();
+//                    String soundUrl = letterSoundRequest.getSoundUrl();
+//
+//                    return wordRepository.updateSoundUrlByLetter(letter, soundUrl);
+//                });
+//    }
 
 }
 

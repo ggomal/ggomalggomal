@@ -19,7 +19,7 @@ import java.util.Set;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class WordServiceImpl implements WorkService{
+public class WordServiceImpl implements WordService {
     private final WordRepository wordRepository;
 
     @Override

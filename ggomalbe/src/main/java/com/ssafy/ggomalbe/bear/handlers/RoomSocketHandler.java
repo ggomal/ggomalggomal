@@ -9,11 +9,13 @@ import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 
@@ -33,14 +35,7 @@ public class RoomSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         log.info("room-socket sessionId {}", session.getId());
 
-        //String jwtToken = session.getHandshakeInfo().getHeaders().getFirst("authorization");
-//        return ReactiveSecurityContextHolder.getContext()
-//                .map(securityContext ->
-//                        securityContext.getAuthentication().getName())
-//                .doOnNext( memberId -> {
-//                    log.info("memberId {}",memberId);
-//                }).then();
-
+//        String jwtToken = session.getHandshakeInfo().getHeaders().getFirst("authorization");
         return session.receive()                                // WebSocket 세션을 통해 클라이언트로부터 메시지를 수신
                 .map(WebSocketMessage::getPayloadAsText)      //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                           //비동기 처리를 위한 flatMap, 처리하고 Mono로 반환하여 새로운 Publisher생성
@@ -80,6 +75,7 @@ public class RoomSocketHandler implements WebSocketHandler {
                         return Mono.error(new IllegalArgumentException("Invalid JSON format"));
                     }
                 })
+                .publishOn(Schedulers.boundedElastic())
                 .doFinally(signalType -> {
                     //then은 비동기 작업을 순차적으로 실행하고 싶을 때 사용(이전 작업이 완료(empty여도 상관없음)되어야 실행)
                     // WebSocket 연결이 종료될 때 해당 세션을 방에서 제거

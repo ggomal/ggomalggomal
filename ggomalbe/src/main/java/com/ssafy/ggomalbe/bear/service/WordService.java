@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public interface WorkService {
+public interface WordService {
     Mono<WordEntity> addWord(WordEntity wordEntity);
 
     Flux<WordEntity> addWordList(Flux<WordEntity> wordEntityList);

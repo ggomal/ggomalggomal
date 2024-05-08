@@ -18,16 +18,16 @@ public class WordEntity extends AbstractEntity {
 
     private final String pronunciation;
 
+    private final Short syllable;
+
+    private final String initial;
+
+    @Column("finality")
+    private final String finality;
+
     @Column("letter_img_url")
     private final String letterImgUrl;
 
     @Column("sound_url")
     private final String soundUrl;
-
-    private final String initial;
-
-    private final Short syllable;
-
-    @Column("finality_flag")
-    private final Boolean finalityFlag;
 }

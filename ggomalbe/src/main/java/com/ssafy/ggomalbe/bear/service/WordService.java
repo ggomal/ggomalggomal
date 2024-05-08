@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.bear.service;
 
+import com.ssafy.ggomalbe.bear.dto.LetterSoundRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
@@ -9,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public interface WorkService {
+public interface WordService {
     Mono<WordEntity> addWord(WordEntity wordEntity);
 
     Flux<WordEntity> addWordList(Flux<WordEntity> wordEntityList);
@@ -26,4 +27,5 @@ public interface WorkService {
 
     Mono<List<BingoCard>> getAdvancedBingo(WordCategoryResponse wordCategoryResponse);
 
+    Flux<WordEntity> updateSoundUrlByLetter(List<LetterSoundRequest> letterSoundList);
 }

@@ -14,11 +14,15 @@ import java.util.List;
 public interface WordRepository extends R2dbcRepository<WordEntity,Long> {
     Mono<WordEntity> findByLetter(String letter);
 
+    // ** finalityFlag -> finality
     @Query("SELECT * FROM word WHERE syllable = :syllable AND finality_flag= :finalityFlag AND initial IN (:initialList)")
     Flux<WordEntity> findByInitialInAndSyllableAndFinalityFlag(List<String> initialList, Short syllable, boolean finalityFlag);
 
     @Query("SELECT * FROM word WHERE syllable >= :syllable AND finality_flag= :finalityFlag AND initial IN (:initialList)")
     Flux<WordEntity> findByInitialInAndSyllableGreaterThanEqualAndFinalityFlag(List<String> initialList, Short syllable, boolean finalityFlag);
+
+    @Query("update word set sound_url = :soundUrl where letter = :letter and sound_url = '';")
+    Flux<WordEntity> updateSoundUrlByLetter(String letter, String soundUrl);
 
 }
 

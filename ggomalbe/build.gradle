@@ -46,6 +46,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 //	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+	// aws s3
+//	// https://mvnrepository.com/artifact/software.amazon.awssdk/protocol-core
+//	implementation 'software.amazon.awssdk:protocol-core:2.25.46'
+//	testImplementation 'software.amazon.awssdk:s3:2.25.46'
+//	testImplementation 'software.amazon.awssdk:netty-nio-client:2.25.46'
+
+	implementation platform('software.amazon.awssdk:bom:2.20.56')
+	implementation 'software.amazon.awssdk:s3'
+	implementation 'software.amazon.awssdk:netty-nio-client'
+
+
+	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+
+
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -59,6 +75,14 @@ dependencies {
 	testImplementation 'org.springdoc:springdoc-openapi-starter-webflux-api:2.5.0'
 
 	implementation 'com.google.code.gson:gson:2.9.0'
+
+	// aws
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	implementation(platform("software.amazon.awssdk:bom:2.17.122"))
+	implementation("software.amazon.awssdk:s3")
+	implementation("software.amazon.awssdk:netty-nio-client")
+
 }
 
 tasks.named('test') {

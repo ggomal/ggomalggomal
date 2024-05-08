@@ -1,10 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:ggomal/services/dio.dart';
 import 'package:intl/intl.dart';
 
 signUpKid(String name, DateTime kidBirthDT, String gender, String kidImg,
     String kidNote, String parentName, String phone) async {
   try {
-    final response = await useDio().post('/kid', data: {
+    Dio dio = await useDio();
+    final response = await dio.post('/kid', data: {
       "name": name,
       "gender": gender,
       "phone": phone,
@@ -21,12 +23,14 @@ signUpKid(String name, DateTime kidBirthDT, String gender, String kidImg,
 }
 
 Future<List> getKidList() async {
-  final response = await useDio().get('/kid');
+  Dio dio = await useDio();
+  final response = await dio.get('/kid');
   return response.data;
 }
 
 Future getKid(String kidId) async {
-  final response = await useDio().get('/kid/$kidId');
+  Dio dio = await useDio();
+  final response = await dio.get('/kid/$kidId');
   print(response.data);
   return response.data;
 }

@@ -1,7 +1,6 @@
 package com.ssafy.ggomalbe.member.kid;
 
 import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
-import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.member.kid.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class KidController {
                     request.setCenterId(authentication.getCenterId());
                     return authentication.getDetails();})
                 .doOnNext(request::setTeacherId)
-                .doOnNext(d->request.setUser())
+                .doOnNext(d -> request.setUser())
                 .flatMap(l -> kidService.insertKid(request));
     }
 

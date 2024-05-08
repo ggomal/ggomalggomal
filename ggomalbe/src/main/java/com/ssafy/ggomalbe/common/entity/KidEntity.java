@@ -3,6 +3,7 @@ package com.ssafy.ggomalbe.common.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Table("kid")
 @Getter
 @Builder
+@ToString
 public class KidEntity extends AbstractEntity {
     @Column("member_id")
     private final Long memberId;

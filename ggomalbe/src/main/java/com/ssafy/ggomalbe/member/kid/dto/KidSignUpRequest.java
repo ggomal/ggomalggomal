@@ -7,6 +7,7 @@ import com.ssafy.ggomalbe.common.util.TokenGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +35,7 @@ public class KidSignUpRequest {
     private String user;
 
     public void setUser(){
-        user = centerId.toString() + TokenGenerator.randomCharacterWithPrefix("stu");
+        if (!StringUtils.hasLength(user)) user = centerId.toString() + TokenGenerator.randomCharacterWithPrefix("stu");
     }
 
     public MemberEntity toMemberEntity(){
@@ -56,6 +57,7 @@ public class KidSignUpRequest {
                 .kidNote(kidNote)
                 .parentName(parentName)
                 .gender(gender)
+                .coin(0L)
                 .build();
     }
 
@@ -69,6 +71,7 @@ public class KidSignUpRequest {
     public KidSignUpResponse toKidSignUpResponse(){
         return KidSignUpResponse.builder()
                 .kidId(memberId)
+                .centerId(centerId)
                 .id(user)
                 .password(kidBirthDT.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .name(name)

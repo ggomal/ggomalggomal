@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.member.kid;
 
+import com.ssafy.ggomalbe.common.config.S3ClientConfigurationProperties;
 import com.ssafy.ggomalbe.common.entity.KidEntity;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.common.entity.SituationKidEntity;
@@ -14,6 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor

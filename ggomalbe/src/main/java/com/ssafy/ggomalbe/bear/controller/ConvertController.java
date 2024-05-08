@@ -1,6 +1,8 @@
 package com.ssafy.ggomalbe.bear.controller;
 
+import com.ssafy.ggomalbe.bear.dto.LetterSoundRequest;
 import com.ssafy.ggomalbe.bear.dto.WordRequest;
+import com.ssafy.ggomalbe.bear.service.WordService;
 import com.ssafy.ggomalbe.common.entity.WordEntity;
 import com.ssafy.ggomalbe.common.service.NaverCloudClient;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class ConvertController {
 
     private final WordController wordController;
     private final NaverCloudClient naverCloudClient;
+
+    private final WordService wordService;
 
     // csv file -> wordRequest List
     @GetMapping("/convert")
@@ -118,18 +122,18 @@ public class ConvertController {
                 request.add(temp[0]);
             }
 
-            // 네이버 클로바 api에서 음성 받아와서 저장 후 s3 url 리스트 반환
-            // naverCloudClient.getWordSound(request)
+            // 네이버 클로바 api에서 음성 받아와서 저장 후 (단어, s3 url) 리스트 반환
+             List<LetterSoundRequest> requestList = naverCloudClient.getWordSound(request);
 
             // 음성파일 s3 url -> db 업데이트
             // updateSoundUrlByLetter()
-
+            wordService.updateSoundUrlByLetter(requestList);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
+        return null;
     }
 
 }

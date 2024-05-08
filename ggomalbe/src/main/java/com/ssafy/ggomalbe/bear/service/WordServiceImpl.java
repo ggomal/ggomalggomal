@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.bear.service;
 
+import com.ssafy.ggomalbe.bear.dto.LetterSoundRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
@@ -100,4 +101,17 @@ public class WordServiceImpl implements WordService {
     }
 
 
+    public Flux<WordEntity> updateSoundUrlByLetter(List<LetterSoundRequest> letterSoundList) {
+        return Flux.fromIterable(letterSoundList)
+                .flatMap(letterSoundRequest -> {
+                    String letter = letterSoundRequest.getLetter();
+                    String soundUrl = letterSoundRequest.getSoundUrl();
+
+                    return wordRepository.updateSoundUrlByLetter(letter, soundUrl);
+                });
+    }
+
 }
+
+
+

@@ -14,9 +14,11 @@ postNotice(String kidId, String contents, List<String> homeworks) async {
   }
 }
 
-Future<List> getNoticeList(String kidId) async {
-  final response = await useDio().get('/notice/5', queryParameters: {
+Future<List> getNoticeList(String kidId, int month) async {
+  print(kidId);
+  final response = await useDio().get('/notice/$month', queryParameters: {
     "kidId": kidId,
   });
+  print(response);
   return response.data;
 }

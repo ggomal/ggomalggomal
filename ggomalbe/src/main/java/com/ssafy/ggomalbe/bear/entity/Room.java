@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.bear.entity;
 
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 //임시테스트용 룸 클래스
 @Data
+@Slf4j
 public class Room {
     private final String roomId;
 
@@ -28,20 +30,10 @@ public class Room {
     private WebSocketSession teacherSocket;
 
     //변경필요
-    public void addParticipant(WebSocketSession session) {
-        System.out.println("addParticipant");
-        List<String> nameHeader = session.getHandshakeInfo().getHeaders().get("name");
-        String name = null;
-
-        if (nameHeader != null && !nameHeader.isEmpty()) {
-            name = nameHeader.get(0);
-            System.out.println("find member "+name);
-        }else{
-            System.out.println("not find member");
-            return;
-        }
-
-        if(name.equals("kid")){
+    public void addParticipant(WebSocketSession session, MemberEntity.Role memberRole) {
+        log.info("addParticipant");
+        log.info("find {}", memberRole);
+        if(memberRole == MemberEntity.Role.KID){
             kidSocket = session;
         }else{
             teacherSocket = session;

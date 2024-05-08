@@ -19,6 +19,5 @@ Future<List> getNoticeList(String kidId, int month) async {
   final response = await useDio().get('/notice/$month', queryParameters: {
     "kidId": kidId,
   });
-  print(response);
   return response.data;
 }

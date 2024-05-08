@@ -43,6 +43,5 @@ Future<List> getKidList() async {
 
 Future getKid(String kidId) async {
   final response = await useDio().get('/kid/$kidId');
-  print(response.data);
   return response.data;
 }

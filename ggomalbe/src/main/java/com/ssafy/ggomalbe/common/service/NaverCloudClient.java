@@ -33,6 +33,24 @@ public class NaverCloudClient {
                 .build();
     }
 
+    public Mono<Long> saveWordPronounce(){
+        return Mono.fromCallable(()-> )
+                .flatMap(fileContent -> {
+                    String language = "Kor";
+                    return webClient.post()
+                            .uri(uriBuilder -> uriBuilder.path("/tts-premium/v1/tts")
+                                    .queryParam("lang", language)
+                                    .build())
+                            .header("X-NCP-APIGW-API-KEY-ID", CLIENT_ID)
+                            .header("X-NCP-APIGW-API-KEY", CLIENT_SECRET)
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                            .bodyValue(fileContent)
+                            .retrieve()
+                            .bodyToMono(String.class)
+                            .map(this::getTextFromResponse);
+                });
+    }
+
     public Mono<String> soundToText(ByteBuffer file) {
         return Mono.fromCallable(() -> file)
                 .flatMap(fileContent -> {

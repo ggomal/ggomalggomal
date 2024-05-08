@@ -55,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: InkWell(
                     onTap: () {
                       player.play(AssetSource(item['audio']));
-                      furnitureState.toggleVisibility(index);
                     },
                     child: Image.asset(item['asset'], width: item['width'] / 1.0,),
                   ),

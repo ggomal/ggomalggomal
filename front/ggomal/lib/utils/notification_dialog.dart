@@ -88,7 +88,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
                                 size: 50,
                               ),
                               color: Colors.black,
-                              onPressed: () => _changeDate(false),
+                              onPressed: () => _changeDate(true),
                             )),
                         Container(
                             alignment: Alignment.bottomLeft,

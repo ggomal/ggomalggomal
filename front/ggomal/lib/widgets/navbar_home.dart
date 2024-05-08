@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ggomal/widgets/kid_report.dart';
 
 import '../utils/notification_dialog.dart';
+import '../utils/room_furniture.dart';
 
 class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
   const NavBarHome({super.key});
@@ -43,11 +44,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
               onTap: () {
                 showDialog(
                     context: context,
-                    builder: (context){
-                      return Dialog(
-                        child: Text('방꾸미기 모달'),
-                      );
-                    }
+                    builder: (context) =>  FurnitureDialog()
                 );
               },
                 child:

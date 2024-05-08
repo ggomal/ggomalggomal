@@ -22,7 +22,7 @@ import reactor.core.scheduler.Schedulers;
 import java.util.List;
 
 @RestController
-@RequestMapping("chick-record")
+@RequestMapping("chick")
 @Slf4j
 @RequiredArgsConstructor
 public class ChickRecordController {

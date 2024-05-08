@@ -47,6 +47,7 @@ public class TeacherSocketService {
         List<String> initialList = Arrays.asList(jsonNode.get("initial").asText().split(","));
         short syllable = Short.parseShort(jsonNode.get("syllable").asText());
         boolean finalityFlag = jsonNode.get("finalityFlag").asBoolean();
+
         log.info("complete");
         log.info("initialList = {}", initialList);
         log.info("syllable = {}", syllable);

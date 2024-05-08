@@ -60,9 +60,12 @@ public class WordServiceImpl implements WordService {
                 });
     }
 
+
+
+
     @Override
-    public Mono<List<BingoCard>> getAllBingo(){
-        return wordRepository.findAll()
+    public Mono<List<BingoCard>> getBasicBingoFinalityIsNotNull(WordCategoryResponse wordCategoryResponse){
+        return wordRepository.findByInitialInAndSyllableAndFinalityIsNotNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
                 .map(wordEntity -> BingoCard.builder()
                         .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
@@ -75,8 +78,8 @@ public class WordServiceImpl implements WordService {
 
 
     @Override
-    public Mono<List<BingoCard>> getBasicBingo(WordCategoryResponse wordCategoryResponse){
-        return wordRepository.findByInitialInAndSyllableAndFinalityFlag(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable(), wordCategoryResponse.isFinalityFlag())
+    public Mono<List<BingoCard>> getBasicBingoFinalityIsNull(WordCategoryResponse wordCategoryResponse){
+        return wordRepository.findByInitialInAndSyllableAndFinalityIsNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
                 .map(wordEntity -> BingoCard.builder()
                         .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
@@ -88,8 +91,21 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public Mono<List<BingoCard>> getAdvancedBingo(WordCategoryResponse wordCategoryResponse){
-        return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityFlag(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable(), wordCategoryResponse.isFinalityFlag())
+    public Mono<List<BingoCard>> getAdvancedBingoFinalityIsNotNull(WordCategoryResponse wordCategoryResponse){
+        return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityIsNotNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
+                .map(wordEntity -> BingoCard.builder()
+                        .Id(wordEntity.getWordId())
+                        .letter(wordEntity.getLetter())
+                        .pronunciation(wordEntity.getPronunciation())
+                        .letterImgUrl(wordEntity.getLetterImgUrl())
+                        .soundUrl(wordEntity.getSoundUrl())
+                        .build())
+                .collectList();
+    }
+
+    @Override
+    public Mono<List<BingoCard>> getAdvancedBingoFinalityIsNull(WordCategoryResponse wordCategoryResponse){
+        return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityIsNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
                 .map(wordEntity -> BingoCard.builder()
                         .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())

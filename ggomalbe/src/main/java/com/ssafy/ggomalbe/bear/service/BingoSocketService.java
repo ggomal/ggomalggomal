@@ -26,8 +26,8 @@ public class BingoSocketService {
     private final RoomService roomService;
     private final ObjectMapper objectMapper;
 
-    WordRepository wordRepository;
-    private final WordServiceImpl wordService;
+    private final WordRepository wordRepository;
+    private final WordService wordService;
 
 
     public void putBingoPlayer(BingoPlayer bingoPlayer) {
@@ -48,14 +48,21 @@ public class BingoSocketService {
         Short syllable = wordCategoryResponse.getSyllable();
         boolean finalityFlag = wordCategoryResponse.isFinalityFlag();
 
-//        if (syllable > 2) {
-//            log.info("advance");
-//            return wordService.getAdvancedBingo(wordCategoryResponse);
-//        } else {
-//            log.info("basic");
-//            return wordService.getBasicBingo(wordCategoryResponse);
-//        }
-        return wordService.getAllBingo();
+        if (syllable > 2) {
+            log.info("advance");
+            if(finalityFlag){
+                return wordService.getAdvancedBingoFinalityIsNotNull(wordCategoryResponse);
+            }else {
+                return wordService.getAdvancedBingoFinalityIsNull(wordCategoryResponse);
+            }
+        } else {
+            log.info("basic");
+            if(finalityFlag){
+                return wordService.getBasicBingoFinalityIsNotNull(wordCategoryResponse);
+            }else {
+                return wordService.getBasicBingoFinalityIsNull(wordCategoryResponse);
+            }
+        }
     }
 
     //빙고판 생성
@@ -74,7 +81,6 @@ public class BingoSocketService {
                         }
                         bingoBoard[r][i % BINGO_LINE] = bingo.get(i);
                     }
-
                     return new BingoBoard(bingoBoard, createBingoVisitBoard());
                 });
 

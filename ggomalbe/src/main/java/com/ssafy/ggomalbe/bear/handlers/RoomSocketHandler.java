@@ -15,6 +15,7 @@ import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 
@@ -74,6 +75,7 @@ public class RoomSocketHandler implements WebSocketHandler {
                         return Mono.error(new IllegalArgumentException("Invalid JSON format"));
                     }
                 })
+                .publishOn(Schedulers.boundedElastic())
                 .doFinally(signalType -> {
                     //then은 비동기 작업을 순차적으로 실행하고 싶을 때 사용(이전 작업이 완료(empty여도 상관없음)되어야 실행)
                     // WebSocket 연결이 종료될 때 해당 세션을 방에서 제거

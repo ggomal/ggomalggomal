@@ -8,6 +8,8 @@ import com.ssafy.ggomalbe.bear.dto.CreateRoomResponse;
 import com.ssafy.ggomalbe.bear.dto.ErrorResponse;
 import com.ssafy.ggomalbe.bear.entity.Room;
 import com.ssafy.ggomalbe.bear.entity.SocketAction;
+import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -48,9 +50,11 @@ public class RoomService {
 
     public Mono<Void> createRoom(JsonNode jsonNode, WebSocketSession session) throws IOException {
         return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext ->
-                        (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(memberId -> {
+                .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
+                .flatMap(authentication -> {
+                    Long memberId = authentication.getDetails();
+                    MemberEntity.Role memberRole = authentication.getRole();
+
                     log.info("createRoom memberId: {}", memberId);
                     String roomId = createRoomNumber();
 
@@ -64,7 +68,7 @@ public class RoomService {
                         rooms.put(roomId, room);
 
                         log.info("addParticipant");
-                        room.addParticipant(session);
+                        room.addParticipant(session, memberRole);
                         memberRoom.put(session.getId(), room);
 
                         CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.CREATE_ROOM, roomId);
@@ -82,11 +86,13 @@ public class RoomService {
     //동기적인 절차를 따라야하지 않는가
     public Mono<Void> joinRoom(JsonNode jsonNode, WebSocketSession session) throws JsonProcessingException {
         return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext ->
-                        (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(memberId -> {
+                .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
+                .flatMap(authentication -> {
+                    Long memberId = authentication.getDetails();
+                    MemberEntity.Role memberRole = authentication.getRole();
+
                     log.info("joinRoom memberId: {}", memberId);
-                    String roomId = jsonNode.get("roomId").asText();
+//                    String roomId = jsonNode.get("roomId").asText();
 
                     //선생님이 방에 참가하기위해 아이의 아이디로 세션을 찾아온후, 세션이 참가하고있는 방의 아이디를 준다
                     String kidId = jsonNode.get("kidId").asText();
@@ -97,14 +103,13 @@ public class RoomService {
                     log.info("join session Id : {}", kidSession.getId());
                     Room room = memberRoom.get(kidSession.getId());
 
-
                     if (room != null) {
-                        room.addParticipant(session);
+                        room.addParticipant(session, memberRole);
                         memberRoom.put(session.getId(),room);
                         //WebSocket 세션을 통해 메시지를 클라이언트에게 보내는 작업 수행
                         //비동기적으로 실행되며, 클라이언트에게 메시지를 성공적으로 보내면 Mono<Void>를 반환
 
-                        CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.JOIN_ROOM,roomId);
+                        CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.JOIN_ROOM,kidId);
                         String response = new Gson().toJson(createRoomResponse);
 
                         return session.send(Mono.just(session.textMessage(response)));

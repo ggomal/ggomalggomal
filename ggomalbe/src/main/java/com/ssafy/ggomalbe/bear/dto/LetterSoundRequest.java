@@ -7,5 +7,4 @@ import lombok.Data;
 @Data
 public class LetterSoundRequest {
     private String letter;
-    private byte[] sound;
 }

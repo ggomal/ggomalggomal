@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,15 +103,16 @@ public class WordServiceImpl implements WordService {
     }
 
 
-//    public Flux<WordEntity> updateSoundUrlByLetter(List<LetterSoundRequest> letterSoundList) {
-//        return Flux.fromIterable(letterSoundList)
-//                .flatMap(letterSoundRequest -> {
-//                    String letter = letterSoundRequest.getLetter();
-//                    String soundUrl = letterSoundRequest.getSoundUrl();
-//
-//                    return wordRepository.updateSoundUrlByLetter(letter, soundUrl);
-//                });
-//    }
+    public Flux<String> updateSoundUrlByLetter(String fileName, List<String> wordList) {
+        return Flux.fromIterable(wordList)
+                .flatMap(word -> {
+                    String aws = "https://ggomalggomal.s3.ap-southeast-2.amazonaws.com/ggomal/sound/"+fileName;
+                    String name = URLEncoder.encode(word, StandardCharsets.UTF_8);
+
+                    String url = aws + "/" + name + ".mp3";
+                    return wordRepository.updateSoundUrlByLetter(word, url).map(wordEntity -> wordEntity.getLetter());
+                });
+    }
 
 }
 

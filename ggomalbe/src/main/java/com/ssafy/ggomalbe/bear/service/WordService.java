@@ -27,5 +27,5 @@ public interface WordService {
 
     Mono<List<BingoCard>> getAdvancedBingo(WordCategoryResponse wordCategoryResponse);
 
-//    Flux<WordEntity> updateSoundUrlByLetter(List<LetterSoundRequest> letterSoundList);
+    Flux<String> updateSoundUrlByLetter(String fileName, List<String> wordList);
 }

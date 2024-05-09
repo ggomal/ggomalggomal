@@ -1,6 +1,5 @@
 package com.ssafy.ggomalbe.bear.controller;
 
-import com.ssafy.ggomalbe.bear.dto.LetterSoundRequest;
 import com.ssafy.ggomalbe.bear.dto.WordRequest;
 import com.ssafy.ggomalbe.bear.service.WordService;
 import com.ssafy.ggomalbe.common.entity.WordEntity;
@@ -9,17 +8,12 @@ import com.ssafy.ggomalbe.common.service.NaverCloudClient;
 import com.ssafy.ggomalbe.common.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -74,7 +68,7 @@ public class ConvertController {
     }
 
 
-    // csv file -> wordRequest List
+    // csv file -> wordRequest List -> get Clova .mp3
     @GetMapping("/saveCsv")
     public Mono<Integer> saveCsv(@RequestParam String fileName) {
         // 추후 return 할 데이터 목록
@@ -112,53 +106,66 @@ public class ConvertController {
     }
 
 
+    // 순서
+    // 1. 저장한 단어 -> CLOVA API로 전송
+    // 2. 음성파일 리턴 -> S3 /sound 폴더에 저장 ==========> XXX 일단 로컬 /sound 폴더에 저장 후 수동으로 S3 업데이트
+    // 3. 저장된 url 반환해서 DB update
     @PostMapping(value = "/saveSound")
-    public Mono<Integer> saveSound(@RequestParam String word) {
-        String fileName = "a";
+    public Mono<Integer> saveSound(@RequestParam String fileName) {
         // csv 파일로부터 저장할 단어 리스트 추출
-        String path = "src/main/resources/word/"+fileName+".csv";
-
-        HttpHeaders httpHeaders = new HttpHeaders();
+        String readFile = "src/main/resources/word/"+fileName+".csv";
 
         try {
-            BufferedReader br = Files.newBufferedReader(Paths.get(path));
+            BufferedReader br = Files.newBufferedReader(Paths.get(readFile));
             String line = "";
             int lineCounter = 0;
-//            while ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 lineCounter++;
                 String[] temp = line.split(",");
 
-//                String word = temp[0];
-//                System.out.println(temp[0]);
+                String word = temp[0];
+                System.out.println(word);
 
-                // 컬럼명 스킵
-//                if (lineCounter == 1) continue;
+                if (lineCounter == 1) continue; // 컬럼명 스킵
 
-                // 이미 단어에 soundUrl이 있으면 continue;
-//                if (!wordRepository.isSoundEmpty(word)) continue;
+                // 네이버 클로바 api에서 음성 받아와서 저장
+                naverCloudClient.getWordSound(fileName, word);
+                // 음성파일을 리턴 받아서 s3 /sound 폴더에 저장
+            }
+            System.out.println(lineCounter-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-                // 네이버 클로바 api에서 음성 받아와서 저장 후 (String letter, byte[] sound) 반환
-//                LetterSoundRequest letterSound = naverCloudClient.getWordSound(word);
-//                byte[] sound = letterSound.getSound();
-            System.out.println(word);
-                naverCloudClient.getWordSound(word);
+        return null;
+    }
+
+
+    @PostMapping("/saveS3SoundUrl")
+    public Flux<String> saveS3SoundUrl(@RequestParam String fileName) {
+        // List<단어, s3 url> -> db 업데이트
+        // updateSoundUrlByLetter()
+        String readFile = "src/main/resources/word/"+fileName+".csv";
+        try {
+            BufferedReader br = Files.newBufferedReader(Paths.get(readFile));
+            String line = "";
+            int lineCounter = 0;
+            List<String> wordList = new ArrayList<>();
+            while ((line = br.readLine()) != null) {
+                lineCounter++;
+                String[] temp = line.split(",");
+
+                String word = temp[0];
+                System.out.println(word);
+
+                if (lineCounter == 1) continue; // 컬럼명 스킵
 
                 // 음성파일을 리턴 받아서 s3 /sound 폴더에 저장
-//                if (letterSound.getSound() != null) {
-//                    // S3에 저장
-//                    s3Service.uploadHandler(httpHeaders, Flux.just(ByteBuffer.wrap(sound)));
-//
-//
-//                }
+                wordList.add(word);
+            }
 
-                // db에 업데이트 할 리스트(List<단어,s3 url>)에 ( 단어, s3 url ) 추가
-
-//            }
-
-
-            // List<단어, s3 url> -> db 업데이트
-            // updateSoundUrlByLetter()
-//            wordService.updateSoundUrlByLetter(requestList);
+            System.out.println(lineCounter-1);
+            return wordService.updateSoundUrlByLetter(fileName, wordList);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -49,6 +49,7 @@ public class RoomSocketHandler implements WebSocketHandler {
 
                         String messageType = jsonNode.get("type").asText();
                         log.info("message type {}", messageType);
+
                         return switch (messageType) {
                             case "joinRoom" -> roomService.joinRoom(jsonNode, session);
                             case "createRoom" -> roomService.createRoom(jsonNode, session);

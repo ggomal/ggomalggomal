@@ -4,6 +4,7 @@ import com.ssafy.ggomalbe.bear.dto.WordCategoryRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.dto.WordRequest;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;
+import com.ssafy.ggomalbe.bear.service.WordService;
 import com.ssafy.ggomalbe.bear.service.WordServiceImpl;
 import com.ssafy.ggomalbe.common.entity.WordEntity;
 import com.ssafy.ggomalbe.common.repository.WordCategoryRepository;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WordController {
     
-    private final WordServiceImpl wordService;
+    private final WordService wordService;
     private final WordRepository wordRepository;
     private final WordCategoryRepository wordCategoryRepository;
 
@@ -36,7 +37,7 @@ public class WordController {
         initialList.add("ㄸ");
         Short syllable = 2;
         boolean finalityFlag = true;
-        return wordRepository.findByInitialInAndSyllableAndFinalityFlag(initialList, syllable, finalityFlag);
+        return wordRepository.findByInitialInAndSyllableAndFinalityIsNotNull(initialList, syllable);
     }
 
     @GetMapping("/condition2")
@@ -46,7 +47,7 @@ public class WordController {
         initialList.add("ㅆ");
         Short syllable = 3;
         boolean finalityFlag = true;
-        return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityFlag(initialList, syllable, finalityFlag);
+        return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityIsNotNull(initialList, syllable);
     }
 
     @GetMapping("/category")
@@ -57,8 +58,10 @@ public class WordController {
     @GetMapping("/bingo")
     public Mono<List<BingoCard>> getBingo() {
         List<String> initialList =new ArrayList<>();
-        initialList.add("ㄸ");
-        Short syllable = 2;
+        initialList.add("ㅍ");
+        initialList.add("ㅁ");
+        initialList.add("ㅇ");
+        Short syllable = 3;
         boolean finalityFlag = true;
 
         WordCategoryResponse wordCategoryResponse = WordCategoryResponse.builder()
@@ -67,7 +70,7 @@ public class WordController {
                 .initialList(initialList)
                 .build();
 
-        return wordService.getBasicBingo(wordCategoryResponse);
+        return wordService.getAdvancedBingoFinalityIsNotNull(wordCategoryResponse);
     }
 
     @GetMapping("/bingo2")
@@ -83,7 +86,7 @@ public class WordController {
                 .initialList(initialList)
                 .build();
 
-        return wordService.getAdvancedBingo(wordCategoryResponse);
+        return wordService.getAdvancedBingoFinalityIsNull(wordCategoryResponse);
     }
 
     @GetMapping

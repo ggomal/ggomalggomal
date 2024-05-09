@@ -30,22 +30,19 @@ public class RoomService {
     // roomId와 Room mapping
     private static final Map<String, Room> rooms = new ConcurrentHashMap<>();
 
-    // 해당 아이디인 멤버가 어떤 Room에 있는지(sessionId 를  memberId로 변경해야함)
+    // 세션아이디가 어떤 Room에 있는지(sessionId 를  memberId로 변경해야함)
     private static final Map<String, Room> memberRoom = new ConcurrentHashMap<>();
 
-    //해당 아이디와 세션아이디를 매핑
-    private static final Map<String, WebSocketSession> memberSession = new ConcurrentHashMap<>();
+    //멤버 아이디와 세션아이디를 매핑
+    private static final Map<String, WebSocketSession> memberIdSession = new ConcurrentHashMap<>();
 
-    private final ObjectMapper objectMapper;
+    //해당 세션을 가지고 있는 멤버아이디 -> doFinally때 메모리에서 삭제하기위함
+    private static final Map<String, String> sessionIdMember = new ConcurrentHashMap<>();
+
 
     // 멤버의 아이디로 멤버가 참하고 있는 방을 return
     public Room findRoomByMemberId(String id) {
         return memberRoom.get(id);
-    }
-
-    public Room getRoom(String id) {
-        return rooms.get(id);
-
     }
 
     public Mono<Void> createRoom(JsonNode jsonNode, WebSocketSession session) throws IOException {
@@ -58,19 +55,25 @@ public class RoomService {
                     log.info("createRoom memberId: {}", memberId);
                     String roomId = createRoomNumber();
 
-                    memberSession.put(String.valueOf(memberId),session);
+                    //세션아이디 -> 멤버아이디
+                    //멤버아이디 -> 세션아이디
+                    String memberIdStr = String.valueOf(memberId);
+                    memberIdSession.put(memberIdStr,session);
+                    sessionIdMember.put(session.getId(),memberIdStr);
                     log.info("create session Id : {}", session.getId());
 
-
                     if (!rooms.containsKey(roomId)) {
+                        //UUID를 아이디로 가지는 room생성
                         log.info("createRoom ing {}", roomId);
                         Room room = new Room(roomId);
                         rooms.put(roomId, room);
 
+                        //룸을 만든 사용자를 룸에 참가시킨다
                         log.info("addParticipant");
                         room.addParticipant(session, memberRole);
                         memberRoom.put(session.getId(), room);
 
+                        //해당 세션에게 방을 만들었다고 알림
                         CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.CREATE_ROOM, roomId);
 //                        String response = objectMapper.writeValueAsString(createRoomResponse);
                         String response = new Gson().toJson(createRoomResponse);
@@ -83,7 +86,6 @@ public class RoomService {
                 });
     }
 
-    //동기적인 절차를 따라야하지 않는가
     public Mono<Void> joinRoom(JsonNode jsonNode, WebSocketSession session) throws JsonProcessingException {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
@@ -91,15 +93,21 @@ public class RoomService {
                     Long memberId = authentication.getDetails();
                     MemberEntity.Role memberRole = authentication.getRole();
 
-                    log.info("joinRoom memberId: {}", memberId);
-//                    String roomId = jsonNode.get("roomId").asText();
-
+                    //선생님이 방에 참가하기위해서는 kidId가 session에 있어야한다.
                     //선생님이 방에 참가하기위해 아이의 아이디로 세션을 찾아온후, 세션이 참가하고있는 방의 아이디를 준다
+
+                    if(!isExistsStr(jsonNode, "kidId")) return Mono.empty();
                     String kidId = jsonNode.get("kidId").asText();
 
-                    memberSession.put(String.valueOf(memberId),session);
 
-                    WebSocketSession kidSession = memberSession.get(kidId);
+                    //memberId와 session을 mapping
+                    String memberIdStr = String.valueOf(memberId);
+                    memberIdSession.put(memberIdStr,session);
+                    sessionIdMember.put(session.getId(),memberIdStr);
+                    log.info("joinRoom memberId: {}", memberId);
+
+                    //kidId로 세션을 가져와서 룸을 찾는다. 
+                    WebSocketSession kidSession = memberIdSession.get(kidId);
                     log.info("join session Id : {}", kidSession.getId());
                     Room room = memberRoom.get(kidSession.getId());
 
@@ -128,6 +136,7 @@ public class RoomService {
         if (room == null) {
             return Mono.empty();
         }
+        if(!isExistsStr(jsonNode, "message")) return Mono.empty();
         String message = jsonNode.get("message").asText();
 
         //메시지를 보낼때 내가 그 방에 참가 하고 있어야 보낼수 있다.
@@ -163,5 +172,13 @@ public class RoomService {
 
     public String createRoomNumber() {
         return UUID.randomUUID().toString();
+    }
+
+    public boolean isExistsStr(JsonNode jsonNode, String str){
+        if (jsonNode.get(str) == null) {
+            log.info("null {}", str);
+            return false;
+        }
+        return true;
     }
 }

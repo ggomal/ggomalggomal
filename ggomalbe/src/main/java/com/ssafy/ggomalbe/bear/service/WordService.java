@@ -21,11 +21,13 @@ public interface WordService {
 
     Mono<WordCategoryRequest> getWordCategory();
 
-    Mono<List<BingoCard>> getAllBingo();
+    Mono<List<BingoCard>> getBasicBingoFinalityIsNotNull(WordCategoryResponse wordCategoryResponse);
 
-    Mono<List<BingoCard>> getBasicBingo(WordCategoryResponse wordCategoryResponse);
+    Mono<List<BingoCard>> getBasicBingoFinalityIsNull(WordCategoryResponse wordCategoryResponse);
 
-    Mono<List<BingoCard>> getAdvancedBingo(WordCategoryResponse wordCategoryResponse);
+    Mono<List<BingoCard>> getAdvancedBingoFinalityIsNotNull(WordCategoryResponse wordCategoryResponse);
+
+    Mono<List<BingoCard>> getAdvancedBingoFinalityIsNull(WordCategoryResponse wordCategoryResponse);
 
     Flux<String> updateSoundUrlByLetter(String fileName, List<String> wordList);
 }

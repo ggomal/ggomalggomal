@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +47,7 @@ public class TeacherSocketService {
         List<String> initialList = Arrays.asList(jsonNode.get("initial").asText().split(","));
         short syllable = Short.parseShort(jsonNode.get("syllable").asText());
         boolean finalityFlag = jsonNode.get("finalityFlag").asBoolean();
+
         log.info("complete");
         log.info("initialList = {}", initialList);
         log.info("syllable = {}", syllable);
@@ -62,6 +64,7 @@ public class TeacherSocketService {
                 //다른 두 Mono가 작업이 완료되는 시점에 특정 동작을 하기 위한 zipWith
                     return bingoSocketService.createBingoBoard(wordCategoryResponse)
                             .zipWith(bingoSocketService.createBingoBoard(wordCategoryResponse))
+                            .publishOn(Schedulers.boundedElastic())
                             .flatMap((tuple) -> {
                                 BingoBoard bingoBoardT = tuple.getT1();
                                 BingoBoard bingoBoardK = tuple.getT2();

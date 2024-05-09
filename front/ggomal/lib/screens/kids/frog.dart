@@ -48,13 +48,6 @@ class _FrogScreenState extends State<FrogScreen> {
           }
           return Stack(
             children: [
-              // Image.asset(
-              //   "assets/images/frog/frog_screen.png",
-              //   fit: BoxFit.cover,
-              //   width: MediaQuery.of(context).size.width,
-              //   height: MediaQuery.of(context).size.height,
-              // ),
-
               Positioned(
                 // bottom: 0,
                   child: Container(
@@ -82,15 +75,15 @@ class _FrogGameState extends State<FrogGame> {
   late int _fishCount = 0;
 
   final List<Map<String, dynamic>> _fishLocation = [
-    {"x": -0.7, "y": 0.7, "isVisible": true},
+    {"x": -0.7, "y": -0.7, "isVisible": true},
     {"x": -0.4, "y": -0.2, "isVisible": true},
     {"x": -0.3, "y": 0.2, "isVisible": true},
-    {"x": -0.2, "y": -0.7, "isVisible": true},
-    {"x": -0.1, "y": 0.6, "isVisible": true},
-    {"x": 0.1, "y": -0.6, "isVisible": true},
+    {"x": -0.2, "y": -0.4, "isVisible": true},
+    {"x": -0.1, "y": -0.6, "isVisible": true},
+    {"x": 0.1, "y": -0.5, "isVisible": true},
     {"x": 0.4, "y": 0.2, "isVisible": true},
-    {"x": 0.5, "y": 0.8, "isVisible": true},
-    {"x": 0.6, "y": 0.5, "isVisible": true},
+    {"x": 0.5, "y": -0.4, "isVisible": true},
+    {"x": -0.6, "y": 0.3, "isVisible": true},
     {"x": 0.7, "y": -0.5, "isVisible": true},
   ];
 
@@ -123,7 +116,7 @@ class _FrogGameState extends State<FrogGame> {
             child: GestureDetector(
               onTap: () => _eatItem(index),
               child: Image.asset(
-                "assets/images/frog/banana.png",
+                "assets/images/frog/flyfly.png",
                 width: 70,
               ),
             ),

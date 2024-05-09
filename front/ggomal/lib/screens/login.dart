@@ -122,9 +122,9 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                   children: [
                     OutlinedButton(
                       //이거 주석 풀면 아이/선생님 로그인 검사 들어감
-                      // onPressed: loginUser,
+                      onPressed: loginUser,
                       //이거 주석 풀면 로그인 없이 바로 키즈 페이지랑 관리자 접속됨
-                      onPressed: () {context.go('/start');},
+                      // onPressed: () {context.go('/start');},
                       child: Text("로그인"),
                     ),
                     OutlinedButton(

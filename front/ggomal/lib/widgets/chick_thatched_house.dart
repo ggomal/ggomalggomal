@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/services/chick_dio.dart';
+import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/chick_speech.dart';
 
 class ChickThatchedHouse extends StatefulWidget {
@@ -9,6 +11,7 @@ class ChickThatchedHouse extends StatefulWidget {
 }
 
 class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
+  int count = 0;
   List<Map<String, dynamic>> thingList = [
     {"name": "이불", "img": 1, "isVisible": true},
     {"name": "돌", "img": 2, "isVisible": true},
@@ -19,13 +22,27 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
   void handleCleanThing(Map<String, dynamic> thing) {
     showDialog(
       context: context,
-      builder: (BuildContext context) =>
-          ChickSpeechModal({"game": "clean", "name": thing['name'], "img": thing['img'], "ending": "치워"}),
+      builder: (BuildContext context) => ChickSpeechModal({
+        "gameNum": 2,
+        "game": "clean",
+        "name": thing['name'],
+        "img": thing['img'],
+        "ending": "정리 해주세요"
+      }),
     ).then((value) => {
           if (value)
             {
               setState(() {
                 thing["isVisible"] = false;
+                count += 1;
+                if (count == 4) {
+                  chickReword(1, 2);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        GameContinueDialog(continuePage: '/chick', count: 2),
+                  );
+                }
               })
             }
         });

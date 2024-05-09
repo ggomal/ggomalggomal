@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/services/chick_dio.dart';
+import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/chick_speech.dart';
 import 'package:ggomal/constants.dart';
 
@@ -46,23 +48,32 @@ class _PizzaPlateState extends State<PizzaPlate> {
     showDialog(
       context: context,
       builder: (BuildContext context) => ChickSpeechModal({
+        "gameNum": 1,
         "game": "pizza",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "넣어"
+        "ending": "넣어주세요"
       }),
     ).then((value) => {
-      if (value)
-        {
-          setState(() {
-            for (int i = 0; i < 3; i++) {
-              toppings[toppingIndex]['img'] = thing['img'];
-              toppingIndex += 1;
+          if (value)
+            {
+              setState(() {
+                for (int i = 0; i < 3; i++) {
+                  toppings[toppingIndex]['img'] = thing['img'];
+                  toppingIndex += 1;
+                }
+              }),
+              if (toppingIndex == 18)
+                {
+                  chickReword(2, 2),
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        GameContinueDialog(continuePage:'/chick', count: 2),
+                  )
+                }
             }
-          }),
-          if (toppingIndex == 18) {print("게임 끝")}
-        }
-    });
+        });
   }
 
   @override
@@ -79,15 +90,15 @@ class _PizzaPlateState extends State<PizzaPlate> {
                 'assets/images/chick/pizza_dough.png',
               ),
               ...toppings.map(
-                    (e) => e['img'] != 0
+                (e) => e['img'] != 0
                     ? Positioned(
-                  top: e['top'] as double,
-                  left: e['left'] as double,
-                  child: Image.asset(
-                    "assets/images/chick/pizza_thing_${e['img']}.png",
-                    width: 40,
-                  ),
-                )
+                        top: e['top'] as double,
+                        left: e['left'] as double,
+                        child: Image.asset(
+                          "assets/images/chick/pizza_thing_${e['img']}.png",
+                          width: 40,
+                        ),
+                      )
                     : SizedBox.shrink(),
               ),
             ],
@@ -110,31 +121,31 @@ class _PizzaPlateState extends State<PizzaPlate> {
                     children: pizzaThingList
                         .map(
                           (e) => GestureDetector(
-                        onTap: () {
-                          handleTopping(e);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 25.0,
-                            vertical: 3.0,
-                          ),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                height: 90,
-                                width: 90,
-                                'assets/images/chick/pizza_thing_${e['img']}.png',
+                            onTap: () {
+                              handleTopping(e);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 25.0,
+                                vertical: 3.0,
                               ),
-                              Text(
-                                '${e['name']}',
-                                style: mapleText(
-                                    28.0, FontWeight.w500, Colors.black),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    height: 90,
+                                    width: 90,
+                                    'assets/images/chick/pizza_thing_${e['img']}.png',
+                                  ),
+                                  Text(
+                                    '${e['name']}',
+                                    style: mapleText(
+                                        28.0, FontWeight.w500, Colors.black),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    )
+                        )
                         .toList(),
                   ),
                 ),

@@ -52,7 +52,7 @@ public class KidSignUpRequest {
     public KidEntity toKidEntity(){
         return KidEntity.builder()
                 .memberId(memberId)
-                .kidImgUrl(kidImgUrl==null? "noImg":kidImgUrl)
+                .kidImgUrl(kidImgUrl==null? "https://ggomalggomal.s3.ap-southeast-2.amazonaws.com/userImg/noImg":kidImgUrl)
                 .kidBirthDT(kidBirthDT)
                 .kidNote(kidNote)
                 .parentName(parentName)

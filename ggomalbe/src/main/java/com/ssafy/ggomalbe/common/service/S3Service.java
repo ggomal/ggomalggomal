@@ -28,29 +28,19 @@ public class S3Service {
     private final S3AsyncClient s3client;
     private final S3ClientConfigurationProperties s3config;
 
-    // length = header길이, fileKey = 저장되는 파일 경로 + 이름, mediaType = 미디어타입, metadata =
-    public Mono<ResponseEntity<UploadResult>> uploadHandler(HttpHeaders headers, Flux<ByteBuffer> body) {
-        long length = headers.getContentLength();
-
+    public Mono<ResponseEntity<UploadResult>> uploadHandler(String fileKey, Flux<ByteBuffer> file) {
         Map<String, String> metadata = new HashMap<String, String>();
-        MediaType mediaType = headers.getContentType();
-
-        if (mediaType == null) {
-            mediaType = MediaType.APPLICATION_OCTET_STREAM;
-        }
+        MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
 
         // fileKey가 s3에 저장될 이름입니다.
-        String fileKey = UUID.randomUUID().toString() + "." + mediaType.getSubtype();
-
         CompletableFuture<PutObjectResponse> future = s3client
                 .putObject(PutObjectRequest.builder()
                                 .bucket(s3config.getBucket())
-                                .contentLength(length)
                                 .key(fileKey)
                                 .contentType(mediaType.toString())
                                 .metadata(metadata)
                                 .build(),
-                        AsyncRequestBody.fromPublisher(body));
+                        AsyncRequestBody.fromPublisher(file));
 
         return Mono.fromFuture(future)
                 .map((response) -> {

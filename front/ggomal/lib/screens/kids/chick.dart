@@ -15,16 +15,16 @@ class _ChickScreenState extends State<ChickScreen> {
 
   List<Map<String, dynamic>> gameInfoList = [
     {
-      'img': 'chick_pizza',
-      'game': 'pizza',
-      'title': '피자를 완성해주세요 !',
-      'content': '재료를 말하면 피자위에 재료가 올라갑니다.\n요리사가 되어 피자를 만들어 보아요.'
-    },
-    {
       'img': 'chick_clean',
       'game': 'clean',
       'title': '집을 청소해주세요 !',
       'content': '침대 위 물건을 말하면 물건이 사라져요.\n물건을 하나씩 불러서 집을 청소해주세요.'
+    },
+    {
+      'img': 'chick_pizza',
+      'game': 'pizza',
+      'title': '피자를 완성해주세요 !',
+      'content': '재료를 말하면 피자위에 재료가 올라갑니다.\n요리사가 되어 피자를 만들어 보아요.'
     },
     {
       'img': 'egg',
@@ -70,7 +70,7 @@ class _ChickScreenState extends State<ChickScreen> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
-                      return Text('학생 정보 로딩 실패');
+                      return Center(child: Text('아이 정보 로딩 실패'));
                     } else {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

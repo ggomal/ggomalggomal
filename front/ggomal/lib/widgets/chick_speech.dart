@@ -41,10 +41,12 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     if (await audioFile.exists()) {
       String m4a = filePath.replaceAll('.aac', '.m4a');
       await audioFile.rename(m4a);
-      final response = await checkAudio(1, "${widget.speechData['name']} ${widget.speechData['ending']}", m4a);
-      print(response);
-
-    }else{
+      final response = await checkAudio(1,
+          "${widget.speechData['name']} ${widget.speechData['ending']}", m4a);
+      if(response['result'] || recordCount == 3){
+        Navigator.pop(context, true);
+      }
+    } else {
       print("파일이 존재하지 않습니다.");
     }
   }
@@ -104,7 +106,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                           child: Text(
                               "${speechData['name']} ${speechData['ending']}",
                               style: mapleText(
-                                  60, FontWeight.w700, Colors.black))),
+                                  48, FontWeight.w700, Colors.black))),
                     ),
                   ]),
                 ),
@@ -116,7 +118,15 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                       await record();
                     }
                   },
-                  child: Text(recorder.isRecording ? '끝내기' : '말하기'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 40,
+                    ),
+                    backgroundColor: Color(0xFFFFFAAC),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text(recorder.isRecording ? '끝내기' : '말하기', style: mapleText(20, FontWeight.w700, Colors.black)),
                 ),
               ],
             ),

@@ -31,7 +31,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/kids/bear',
-      builder: (context, state) => const BearScreen(),
+      builder: (context, state) => const BingoScreen(),
     ),
     GoRoute(
       path: '/kids/chick',

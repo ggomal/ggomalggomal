@@ -4,8 +4,6 @@ package com.ssafy.ggomalbe.chick.controller;
 import com.ssafy.ggomalbe.bear.service.RoomService;
 import com.ssafy.ggomalbe.chick.dto.*;
 import com.ssafy.ggomalbe.chick.service.ChickRecordService;
-import com.ssafy.ggomalbe.common.entity.BearRecordEntity;
-import com.ssafy.ggomalbe.common.entity.ChickRecordEntity;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.common.service.GameNumService;
 import com.ssafy.ggomalbe.member.kid.KidService;
@@ -43,13 +41,13 @@ public class ChickRecordController {
                     member[0] = MemberEntity.builder().memberId(memberId).build();
                     return chickRecordService.checkSentence(filePart, sentence);
                 })
-                .map(aBoolean ->
-                        ResponseEntity.ok(
-                                ChickEvaluationResponse.builder().msg(aBoolean ? "OK" : "TRY AGAIN").result(aBoolean).build())
-                )
-                .publishOn(Schedulers.boundedElastic())
-                .doOnNext(o -> {
-                    chickRecordService.addChickRecord(filePart, member[0].getMemberId(), Long.valueOf(gameNum), sentence).subscribe();
+                .flatMap(aBoolean -> {
+                    ResponseEntity<ChickEvaluationResponse> response = ResponseEntity.ok(
+                            ChickEvaluationResponse.builder().msg(aBoolean ? "OK" : "TRY AGAIN").result(aBoolean).build());
+                    return Mono.fromRunnable(() -> {
+                                chickRecordService.addChickRecord(filePart, member[0].getMemberId(), Long.valueOf(gameNum), sentence).subscribe();
+                            }).subscribeOn(Schedulers.boundedElastic())
+                            .thenReturn(response);
                 });
     }
 

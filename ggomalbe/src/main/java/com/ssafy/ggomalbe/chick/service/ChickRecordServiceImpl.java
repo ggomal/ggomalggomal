@@ -35,7 +35,10 @@ public class ChickRecordServiceImpl implements ChickRecordService{
     @Override
     public Mono<Boolean> checkSentence(FilePart filePart, String sentence) {
         return evaluationService.toText(filePart)
-                .flatMap(stt -> chickRecognitionRepository.existsByOriginTextAndRecognitionScope(sentence, stt));
+                .flatMap(stt -> {
+                    log.info(stt);
+                    return chickRecognitionRepository.existsByOriginTextAndRecognitionScope(sentence, stt);
+                });
         //우리의 기준대로 맞고 틀리고
         //넣어 -> 넣어, 너, 너어, 느어,
         //치워 -> 치워, 치어, 쳐, 츠어

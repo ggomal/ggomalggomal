@@ -38,7 +38,7 @@ public class EvaluationService{
                     Mono<String> sttResult = naverCloudClient.soundToText(buffer);
 
                     return sttResult
-                            .flatMap(pronunciation -> openApiClient.letterToScore(originText, buffer)
+                            .flatMap(pronunciation -> openApiClient.letterToScore(pronunciation, buffer)
                                     .map(openApiResponse -> {
                                         log.info("openApiResponse {}", openApiResponse);
                                         Map<String, String> returnObject = openApiResponse.getReturn_object();

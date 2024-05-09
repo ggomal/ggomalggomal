@@ -6,6 +6,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:ggomal/services/socket.dart';
+import 'package:go_router/go_router.dart';
+
 
 class BearScreen extends StatefulWidget {
   const BearScreen({super.key});
@@ -26,19 +29,20 @@ class _BearScreenState extends State<BearScreen> {
     connectToWebSocket();
   }
 
-  void connectToWebSocket() {
+  void connectToWebSocket() async{
+    var headers = await SocketDio.getWebSocketHeadersAsync();
     if (!isConnected) {
       channel = IOWebSocketChannel.connect(
-          Uri.parse('wss://k10e206.p.ssafy.io/api/v1/room'),
-          headers: {
-            "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IktJRCIsIm1lbWJlck5hbWUiOiLrp4jripjslYTsnbQiLCJtZW1iZXJJZCI6NCwic3ViIjoia2lkMSIsImlhdCI6MTcxNDkxMjg4MiwiZXhwIjoxMDE3MTQ5MTI4ODJ9.poP4jnnsdQhINLLD5RM9zDQNFcsJ_LQ57PDqB0exdJ8',
-            "name" : "kid"
-          });
+        Uri.parse(SocketDio.getWebSocketUrl()),
+        headers: headers,
+      );
       channel.stream.listen((response) {
         print('웹소켓 응답 : $response');
         Map<String, dynamic> message = jsonDecode(response);
-        String? roomId = message['roomId'];
-        print("수신된 룸 아이디 : $roomId");
+        if (message['type'] == 'bingoBoardSet') {
+          // Navigator.of(context).pushReplacementNamed('/kids/bear/bingo');
+          context.go('/kids/bear/bingo');
+        }
       }, onDone: () {
         print('연결 종료 ');
       }, onError: (error) {
@@ -47,7 +51,6 @@ class _BearScreenState extends State<BearScreen> {
       channel.sink.add(
           '{"type" : "createRoom"}'
       );
-      // print('소켓 연결이 처음 성공 시 출력 ');
       isConnected = true;
     }
   }

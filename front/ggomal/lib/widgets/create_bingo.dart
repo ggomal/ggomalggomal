@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ggomal/screens/kids/bingo.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:provider/provider.dart';
+import 'package:ggomal/services/socket.dart';
 
 class CreateBingoModal extends StatefulWidget {
   const CreateBingoModal({super.key});
@@ -61,18 +61,17 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
     _selectedFinality = finality.first;
   }
 
-  void connectToWebSocket() {
-      channel = IOWebSocketChannel.connect(
-          Uri.parse('wss://k10e206.p.ssafy.io/api/v1/room'),
-          headers: {
-            "authorization": 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IlRFQUNIRVIiLCJtZW1iZXJOYW1lIjoi66eI64qY7ISg7IOdIiwibWVtYmVySWQiOjMsInN1YiI6InRlYWNoZXIxIiwiaWF0IjoxNzE0OTEyOTg1LCJleHAiOjEwMTcxNDkxMjk4NX0.Jj5OMXnMEINnP0FteSWVzGtzsEPJWGhnML3HS849nSI',
-            "name" : "teacher"
-          });
-
+  void connectToWebSocket() async{
+    var headers = await SocketDio.getWebSocketHeadersAsync();
+    channel = IOWebSocketChannel.connect(
+      Uri.parse(SocketDio.getWebSocketUrl()),
+      headers: headers,
+    );
       streamController = StreamController();
       Stream broadcastStream = streamController.stream.asBroadcastStream();
 
       broadcastStream.listen((response) {
+        print('@@@@@@@ㄹ마ㅜ아리ㅜ미나루ㅏㅣㅁㅇ22@@@@@@@@@@@@@@');
         print('웹소켓 응답 : $response');
         if (response.toString().contains('200')) {
           setState(() {
@@ -89,7 +88,7 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
         print('소켓 통신에 실패했습니다. $error');
       });
       channel.sink.add(
-          '{"type" : "joinRoom"}'
+          '{"type" : "joinRoom","kidId" : "4"}',
       );
       isConnected = true;
   }
@@ -120,8 +119,14 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
     print('빙고 보내는 데이터 $_selectedInitials, $syllableCount, $finalityFlag');
     channel.stream.listen((response) {
       print('빙고 만들기 응답: $response');
+      var data = jsonDecode(response);
+      if (data['action'] == "SET_BINGO_BOARD") {
+        print('빙고 응답 성공인듯??');
+        channel.sink.add(jsonEncode({"type": "bingoBoardSet"}));
+        context.go('/kids/bear/bingo');
+      }
     }, onDone: () {
-      print('빙고 연결 종료');
+      print('빙고 만들기 모달 연결 종료');
     }, onError: (error) {
       print('빙고 통신 실패 ㅋㅋ $error');
     });

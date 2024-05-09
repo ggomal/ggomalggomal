@@ -43,8 +43,20 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         await loginStorage.setJwt(jwt);
         await loginStorage.setRole(role);
 
-        // 성공하면 시작 페이지로 이동하게 하기
-        context.go('/start');
+        // if (role == 'KID') {
+        // context.go('/start');
+        // } else if (role == 'TEACHER') {
+        //   context.go('/manager');
+        // } else {
+        //   print('role이 이상함');
+        // }
+
+        if (role == 'KID') {
+          context.go('/start');
+        } else {
+          context.go('/manager');
+        }
+
       } else {
         print('로그인 실패: ${response.statusCode}');
       }
@@ -109,10 +121,10 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     OutlinedButton(
-                      // onPressed: loginUser,
-                      onPressed: () {
-                        context.go('/start');
-                      },
+                      //이거 주석 풀면 아이/선생님 로그인 검사 들어감
+                      onPressed: loginUser,
+                      //이거 주석 풀면 로그인 없이 바로 키즈 페이지랑 관리자 접속됨
+                      // onPressed: () {context.go('/start');},
                       child: Text("로그인"),
                     ),
                     OutlinedButton(

@@ -3,6 +3,7 @@ import 'package:ggomal/services/dio.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 signUpKid(String name, DateTime kidBirthDT, String gender, kidImg,
     String kidNote, String parentName, String phone) async {
@@ -12,16 +13,6 @@ signUpKid(String name, DateTime kidBirthDT, String gender, kidImg,
       final bytes = File(kidImg!.path).readAsBytesSync();
       base64Image = base64Encode(bytes);
     }
-    print({
-      "name": name,
-      "gender": gender,
-      "phone": phone,
-      "kidImg": base64Image,
-      "kidBirthDT": DateFormat('yyyy-MM-dd').format(kidBirthDT),
-      "kidNote": kidNote,
-      "parentName": parentName
-    });
-
     Dio dio = await useDio();
     final response = await dio.post('/kid', data: {
       "name": name,
@@ -34,6 +25,7 @@ signUpKid(String name, DateTime kidBirthDT, String gender, kidImg,
     });
     print(response);
     return "${name} 아이 등록에 성공하였습니다.";
+
   } catch (error) {
     return "아이 등록에 실패하였습니다.";
   }

@@ -15,11 +15,10 @@ Future<Dio> useDio() async{
   final options = BaseOptions(
     baseUrl: 'https://k10e206.p.ssafy.io/api/v1',
     headers: {'Authorization': 'Bearer $loginJwt'},
-    connectTimeout: Duration(seconds: 5),
-    receiveTimeout: Duration(seconds: 3),
+    connectTimeout: Duration(seconds: 10),
+    receiveTimeout: Duration(seconds: 10),
   );
-  print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-  print(loginJwt);
+  
   return Dio(options);
 
 }

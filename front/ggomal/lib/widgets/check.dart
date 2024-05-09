@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
 
 class CheckModal extends StatelessWidget {
-  final String modalData;
+  final String? modalData;
   const CheckModal(this.modalData, {super.key});
 
   @override
@@ -37,7 +37,7 @@ class CheckModal extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(modalData,
+            Text(modalData ?? "알림장 작성이 취소되었습니다.",
                 style: nanumText(24, FontWeight.w700, Colors.black))
           ],
         ),

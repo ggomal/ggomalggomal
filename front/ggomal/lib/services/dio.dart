@@ -18,8 +18,6 @@ Future<Dio> useDio() async{
     connectTimeout: Duration(seconds: 5),
     receiveTimeout: Duration(seconds: 3),
   );
-  print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-  print(loginJwt);
   return Dio(options);
 
 }

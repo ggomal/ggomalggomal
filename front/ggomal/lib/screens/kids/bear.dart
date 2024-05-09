@@ -44,7 +44,7 @@
           Map<String, dynamic> message = jsonDecode(response);
           if (message['type'] == 'bingoBoardSet') {
             print('이게 보이나???쩨뱌ㅏㄹㅇㄹ만러ㅏㅣ어나럼나ㅣ러ㅣㅏㅓㅣ');
-            Navigator.of(context).pushReplacementNamed('/kids/bear/bingo');
+            // Navigator.of(context).pushReplacementNamed('/kids/bear/bingo');
             // context.go('/kids/bear/bingo');
           }
         }, onDone: () {

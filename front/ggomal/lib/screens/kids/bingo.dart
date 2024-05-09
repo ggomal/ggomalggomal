@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -9,7 +10,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
 class BingoScreen extends StatefulWidget {
-  const BingoScreen({super.key});
+  final List<List<Map<String, dynamic>>>? responseData;
+  const BingoScreen({super.key, this.responseData});
 
   @override
   State<BingoScreen> createState() => _BingoScreenState();
@@ -77,8 +79,52 @@ class _BingoScreenState extends State<BingoScreen> {
     recorder.closeRecorder();
   }
 
+  Widget buildBingoGrid(List<List<Map<String, dynamic>>> bingoBoard, bool shuffle, int seed) {
+    var flatList = bingoBoard.expand((row) => row).toList();
+    if (shuffle) {
+      flatList.shuffle(Random(seed));
+    }
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: 9,
+      itemBuilder: (context, index) {
+        int row = index ~/ 3;
+        int col = index % 3;
+        var cell = bingoBoard[row][col];
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 2),
+            image: DecorationImage(
+              image: NetworkImage(cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            cell['letter'],
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.black,
+                  offset: Offset(2.0, 2.0),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final responseData = widget.responseData;
     return Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -130,7 +176,7 @@ class _BingoScreenState extends State<BingoScreen> {
                       ),
                       Flexible(
                         flex: 4,
-                        child: Container(color: Colors.red),
+                        child: responseData != null ? buildBingoGrid(responseData, true, 1) : Container(color: Colors.red),
                       ),
                     ],
                   ),
@@ -165,8 +211,12 @@ class _BingoScreenState extends State<BingoScreen> {
                       ),
                     ),
                     Flexible(
+                      flex: 1,
+                      child: responseData != null ? buildBingoGrid(responseData, true, 3) : Container(color: Colors.yellow),
+                    ),
+                    Flexible(
                       flex: 4,
-                      child: Container(color: Colors.yellow),
+                      child: responseData != null ? buildBingoGrid(responseData, true, 3) : Container(color: Colors.yellow),
                     )
                   ]),
                 ),

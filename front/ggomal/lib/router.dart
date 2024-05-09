@@ -1,4 +1,5 @@
 //경로 관련
+import 'package:flutter/material.dart';
 import 'package:ggomal/screens/kids/chick_clean.dart';
 import 'package:ggomal/screens/kids/chick_pizza.dart';
 import 'package:ggomal/screens/manager/kid_detail.dart';
@@ -51,7 +52,10 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/kids/bear/bingo',
-      builder: (context, state) => const BingoScreen(),
+      pageBuilder: (context, state) => MaterialPage(
+        key: state.pageKey,
+        child: BingoScreen(responseData: state.extra as List<List<Map<String, dynamic>>>?),
+      ),
     ),
     GoRoute(
       path: '/kids/chick/clean',

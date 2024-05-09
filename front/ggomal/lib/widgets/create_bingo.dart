@@ -23,6 +23,7 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
   BingoScreen bingo = BingoScreen();
   String connectionStatus = '오프라인';
   Color textColor = Colors.transparent;
+  List<List<Map<String, dynamic>>> bingoBoardData = [];
 
   final List<String> words = [
     '1음절',
@@ -121,9 +122,16 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
       print('빙고 만들기 응답: $response');
       var data = jsonDecode(response);
       if (data['action'] == "SET_BINGO_BOARD") {
-        print('빙고 응답 성공인듯??');
-        channel.sink.add(jsonEncode({"type": "bingoBoardSet"}));
-        context.go('/kids/bear/bingo');
+        var boardData = data['bingoBoard']['board'] as List;
+        List<List<Map<String, dynamic>>> formattedData = boardData.map((row) {
+          return (row as List).map((item) => item as Map<String, dynamic>).toList();
+        }).toList();
+
+        setState(() {
+          bingoBoardData = formattedData;
+        });
+        print('인쇄!@!@!@!@!@@@@! $bingoBoardData');
+        GoRouter.of(context).go('/kids/bear/bingo', extra: bingoBoardData);
       }
     }, onDone: () {
       print('빙고 만들기 모달 연결 종료');

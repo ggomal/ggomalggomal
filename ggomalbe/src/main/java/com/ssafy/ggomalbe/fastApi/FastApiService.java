@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.fastApi;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
@@ -10,13 +11,16 @@ import reactor.core.publisher.Mono;
 public class FastApiService {
     private final WebClient webClient;
 
-    @Value("${fastApi.baseurl}")
+    @Value("${fastApi.baseUrl}")
     private String fastApiUrl;
 
     public FastApiService() {
-        this.webClient = WebClient.builder()
-                .baseUrl(fastApiUrl)
-                .build();
+        this.webClient = WebClient.builder().build();;
+    }
+
+    @PostConstruct
+    public void init(){
+        this.webClient.mutate().baseUrl(fastApiUrl);
     }
 
     public Mono<Boolean> getTongue(FilePart frogGameImg) {

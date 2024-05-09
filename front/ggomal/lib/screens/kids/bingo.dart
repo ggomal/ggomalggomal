@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -10,8 +11,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
 class BingoScreen extends StatefulWidget {
+  final WebSocketChannel channel;
   final List<List<Map<String, dynamic>>>? responseData;
-  const BingoScreen({super.key, this.responseData});
+
+  const BingoScreen({super.key, this.responseData, required this.channel});
 
   @override
   State<BingoScreen> createState() => _BingoScreenState();
@@ -27,6 +30,8 @@ class _BingoScreenState extends State<BingoScreen> {
   @override
   void initState() {
     super.initState();
+    channel = widget.channel;
+    isConnected = true;
     initRecorder();
   }
 
@@ -34,6 +39,7 @@ class _BingoScreenState extends State<BingoScreen> {
   Future initRecorder() async {
     var status = await Permission.speech.status;
     if (!status.isGranted) {
+      status = await Permission.speech.request();
       print('권한 허용안됨');
       throw '마이크 권한이 허용되지 않았습니다';
     }
@@ -79,24 +85,30 @@ class _BingoScreenState extends State<BingoScreen> {
     recorder.closeRecorder();
   }
 
-  Widget buildBingoGrid(List<List<Map<String, dynamic>>> bingoBoard, bool shuffle, int seed) {
+  Widget buildBingoGrid(List<List<Map<String, dynamic>>> bingoBoard, bool shuffle, [int? seed]) {
     var flatList = bingoBoard.expand((row) => row).toList();
     if (shuffle) {
-      flatList.shuffle(Random(seed));
+      seed ??= DateTime.now().millisecondsSinceEpoch;
+      var random = Random(seed);
+      flatList.shuffle(random);
     }
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: 1.0,
       ),
-      itemCount: 9,
+      itemCount: flatList.length,
       itemBuilder: (context, index) {
         int row = index ~/ 3;
         int col = index % 3;
-        var cell = bingoBoard[row][col];
-        return Container(
+        var cell = flatList[index];
+        return InkWell(
+          onTap: (){
+            sendWebSocketMessage(cell['letter']);
+          },
+          child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 2),
+            border: Border.all(color: Colors.black54, width: 2),
             image: DecorationImage(
               image: NetworkImage(cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
               fit: BoxFit.cover,
@@ -108,18 +120,28 @@ class _BingoScreenState extends State<BingoScreen> {
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  blurRadius: 10.0,
-                  color: Colors.black,
-                  offset: Offset(2.0, 2.0),
-                ),
-              ],
             ),
           ),
+        )
         );
       },
     );
+  }
+
+  Future<void> sendWebSocketMessage(String letter) async {
+      print('어디까지 실행되는지 보는 프린트문1');
+      print('이건 채널 출력중임 $channel');
+    if (channel != null && isConnected) {
+      print('어디까지 실행되는지 보는 프린트문2');
+      var message = jsonEncode({
+        'type': 'play',
+        'letter': letter,
+      });
+      channel.sink.add(message);
+      print('빙고 클릭 시 받는 웹소켓 응답입니단 $message');
+    } else {
+      print('빙고 클릭 했을 때 웹소켓 연결이 안됨 ㅅㄱ');
+    }
   }
 
   @override
@@ -141,10 +163,10 @@ class _BingoScreenState extends State<BingoScreen> {
               children: [
                 Flexible(
                   child: Container(),
-                  flex: 1,
+                  flex: 3,
                 ),
                 Flexible(
-                  flex: 3,
+                  flex: 9,
                   child: Column(
                     children: [
                       Flexible(
@@ -176,13 +198,17 @@ class _BingoScreenState extends State<BingoScreen> {
                       ),
                       Flexible(
                         flex: 4,
-                        child: responseData != null ? buildBingoGrid(responseData, true, 1) : Container(color: Colors.red),
+                        child: responseData != null ? buildBingoGrid(responseData, true, DateTime.now().millisecondsSinceEpoch) : Container(color: Colors.red),
                       ),
                     ],
                   ),
                 ),
                 Flexible(
-                  flex: 3,
+                  child: Container(),
+                  flex: 1,
+                ),
+                Flexible(
+                  flex: 9,
                   child: Column(children: [
                     Flexible(
                       child: Center(
@@ -211,23 +237,19 @@ class _BingoScreenState extends State<BingoScreen> {
                       ),
                     ),
                     Flexible(
-                      flex: 1,
-                      child: responseData != null ? buildBingoGrid(responseData, true, 3) : Container(color: Colors.yellow),
-                    ),
-                    Flexible(
                       flex: 4,
-                      child: responseData != null ? buildBingoGrid(responseData, true, 3) : Container(color: Colors.yellow),
+                      child: responseData != null ? buildBingoGrid(responseData, true, DateTime.now().millisecondsSinceEpoch+1) : Container(color: Colors.yellow),
                     )
                   ]),
                 ),
                 Flexible(
                   child: Container(),
-                  flex: 1,
+                  flex: 3,
                 )
               ],
             )),
             Positioned(
-              left: 0,
+              left: -20,
               bottom: 0,
               child: Image.asset(
                 'assets/images/bear/student.png',
@@ -236,7 +258,7 @@ class _BingoScreenState extends State<BingoScreen> {
               ),
             ),
             Positioned(
-              right: 0,
+              right: -20,
               bottom: 5,
               child: Image.asset(
                 'assets/images/bear/teacher.png',

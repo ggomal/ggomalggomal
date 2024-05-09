@@ -44,10 +44,15 @@ class _KidDetailState extends State<KidDetail> {
                     onTap: () {
                       context.go('/manager/kids');
                     },
-                    child: Text(
-                      "< 아이 목록",
-                      style: nanumText(30.0, FontWeight.w700, Colors.black),
-                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.navigate_before , color: Colors.black, size: 50,),
+                        Text(
+                          "아이 목록",
+                          style: nanumText(30.0, FontWeight.w700, Colors.black),
+                        ),
+                      ],
+                    )
                   ),
                 ],
               ),

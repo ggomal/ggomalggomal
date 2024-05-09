@@ -3,6 +3,9 @@ import 'package:ggomal/services/kid_manage_dio.dart';
 import 'package:ggomal/widgets/check.dart';
 import 'package:ggomal/widgets/enroll_kid.dart';
 import 'package:ggomal/widgets/kid_card.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../constants.dart';
 
 class KidsManageScreen extends StatefulWidget {
   const KidsManageScreen({super.key});
@@ -80,8 +83,22 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
               width: 250.0,
               'assets/images/logo.png',
             ),
-            SizedBox(
-              height: 50.0,
+            GestureDetector(
+              onTap: (){
+                context.go('/manager/kids');
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 100, bottom: 20),
+                child: Row(
+                  children: [
+                    Icon(Icons.navigate_before , color: Colors.black, size: 50,),
+                    Text(
+                      "홈으로",
+                      style: nanumText(30.0, FontWeight.w700, Colors.black),
+                    ),
+                  ],
+                ),
+              ),
             ),
             Center(
               child: SizedBox(

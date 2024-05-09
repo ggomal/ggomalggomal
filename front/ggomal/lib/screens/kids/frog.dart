@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:agora_uikit/agora_uikit.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
 
@@ -17,73 +17,15 @@ class FrogScreen extends StatefulWidget {
 }
 
 class _FrogScreenState extends State<FrogScreen> {
-  RtcEngine? engine;
-
-  int uid = 0;
-  int? remoteUid;
+  late final CameraDescription camera;
 
   Future<void> init() async {
-    final resp = await [Permission.camera].request();
-
-    final cameraPermission = resp[Permission.camera];
-
-    if (cameraPermission != PermissionStatus.granted) {
-      throw '카메라 권한이 없습니다.';
-    }
-
-    if (engine == null) {
-      engine = createAgoraRtcEngine();
-
-      await engine!.initialize(
-        RtcEngineContext(
-          appId: appId,
-        ),
-      );
-
-      // engine!.registerEventHandler(
-      //   RtcEngineEventHandler(
-      //     onJoinChannelSuccess: (
-      //         RtcConnection connection,
-      //         int elapsed,
-      //         ) {},
-      //     onLeaveChannel: (
-      //         RtcConnection connection,
-      //         RtcStats stats,
-      //         ) {},
-      //     onUserJoined: (
-      //         RtcConnection connection,
-      //         int remoteUid,
-      //         int elapsed,
-      //         ) {
-      //       print('---User Joined---');
-      //       setState(() {
-      //         this.remoteUid = remoteUid;
-      //       });
-      //     },
-      //     onUserOffline: (
-      //         RtcConnection connection,
-      //         int remoteUid,
-      //         UserOfflineReasonType reason,
-      //         ) {
-      //       setState(() {
-      //         this.remoteUid = null;
-      //       });
-      //     },
-      //   ),
-      // );
-
-      await engine!.enableVideo();
-      await engine!.startPreview();
-
-      ChannelMediaOptions options = ChannelMediaOptions();
-
-      await engine!.joinChannel(
-        token: token,
-        channelId: channelName,
-        uid: uid,
-        options: options,
-      );
-    }
+    WidgetsFlutterBinding.ensureInitialized();
+    final cameras = await availableCameras();
+    final frontCamera = cameras.firstWhere(
+          (camera) => camera.lensDirection == CameraLensDirection.front,
+    );
+    camera = frontCamera;
   }
 
   @override
@@ -106,27 +48,21 @@ class _FrogScreenState extends State<FrogScreen> {
           }
           return Stack(
             children: [
-              Image.asset(
-                "assets/images/frog/frog_screen.png",
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-              ),
-              FrogGame(),
+              // Image.asset(
+              //   "assets/images/frog/frog_screen.png",
+              //   fit: BoxFit.cover,
+              //   width: MediaQuery.of(context).size.width,
+              //   height: MediaQuery.of(context).size.height,
+              // ),
+
               Positioned(
-                bottom: 0,
+                // bottom: 0,
                   child: Container(
-                    width: 300,
-                    height: 300,
-                    child: AgoraVideoView(
-                      controller: VideoViewController(
-                        rtcEngine: engine!,
-                        canvas: VideoCanvas(
-                          uid: uid
-                        )
-                      ),
-                    ),
-                  ))
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: MirrorScreen(camera: camera),
+                  )),
+              FrogGame(),
             ],
           );
         }
@@ -229,23 +165,55 @@ class _FrogGameState extends State<FrogGame> {
   }
 }
 
-class CamScreen extends StatefulWidget {
-  const CamScreen({super.key});
+class MirrorScreen extends StatefulWidget {
+  final CameraDescription camera;
+
+  const MirrorScreen({Key? key, required this.camera}) : super(key: key);
 
   @override
-  State<CamScreen> createState() => _CamScreenState();
+  MirrorScreenState createState() => MirrorScreenState();
 }
 
-class _CamScreenState extends State<CamScreen> {
+class MirrorScreenState extends State<MirrorScreen> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = CameraController(
+      widget.camera,
+      ResolutionPreset.high,
+      enableAudio: false
+    );
+    _initializeControllerFuture = _controller.initialize();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width:300,
-      height:300,
-      color: Colors.red,);
+    return Scaffold(
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: CameraPreview(_controller)
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 }
-
 
 

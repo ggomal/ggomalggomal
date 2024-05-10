@@ -148,7 +148,8 @@ public class NaverCloudClient {
                             .bodyValue(fileContent)
                             .retrieve()
                             .bodyToMono(String.class)
-                            .map(this::getTextFromResponse);
+                            .map(this::getTextFromResponse)
+                            .doOnNext(sttText-> log.info("말한문장 [{}]", sttText));
                 });
     }
 

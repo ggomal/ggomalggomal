@@ -43,46 +43,65 @@ public class BingoSocketService {
 
 
     //해당 룸의 아이 빙고판
-    private Mono<List<BingoCard>> findBingoCard(WordCategoryResponse wordCategoryResponse) {
+    public Mono<List<BingoCard>> findBingoCard(WordCategoryResponse wordCategoryResponse) {
         List<String> initialList = wordCategoryResponse.getInitialList();
         Short syllable = wordCategoryResponse.getSyllable();
         boolean finalityFlag = wordCategoryResponse.isFinalityFlag();
 
+        Mono<List<BingoCard>> bingoCardsMono;
+
         if (syllable > 2) {
             log.info("advance");
-            if(finalityFlag){
-                return wordService.getAdvancedBingoFinalityIsNotNull(wordCategoryResponse);
-            }else {
-                return wordService.getAdvancedBingoFinalityIsNull(wordCategoryResponse);
+            if (finalityFlag) {
+                bingoCardsMono = wordService.getAdvancedBingoFinalityIsNotNull(wordCategoryResponse);
+            } else {
+                bingoCardsMono = wordService.getAdvancedBingoFinalityIsNull(wordCategoryResponse);
             }
         } else {
             log.info("basic");
-            if(finalityFlag){
-                return wordService.getBasicBingoFinalityIsNotNull(wordCategoryResponse);
-            }else {
-                return wordService.getBasicBingoFinalityIsNull(wordCategoryResponse);
+            if (finalityFlag) {
+                bingoCardsMono = wordService.getBasicBingoFinalityIsNotNull(wordCategoryResponse);
+            } else {
+                bingoCardsMono = wordService.getBasicBingoFinalityIsNull(wordCategoryResponse);
             }
         }
+
+        return bingoCardsMono
+                .map(bingoCards -> {
+                    Collections.shuffle(bingoCards);
+                    return bingoCards.subList(0, Math.min(9, bingoCards.size()));
+                });
     }
 
     //빙고판 생성
-    public Mono<BingoBoard> createBingoBoard(WordCategoryResponse wordCategoryResponse) {
-        Mono<List<BingoCard>> bingoCardList = findBingoCard(wordCategoryResponse);
-        return bingoCardList
-                .map(bingo->{
-                    log.info("createBingoBoard : {}", bingo);
-                    Collections.shuffle(bingo);
-                    BingoCard[][] bingoBoard = new BingoCard[BINGO_LINE][BINGO_LINE];
+//    public Mono<BingoBoard> createBingoBoard(WordCategoryResponse wordCategoryResponse, List<BingoCard> bingoCardList) {
+    public BingoBoard createBingoBoard(List<BingoCard> bingoCardList) {
+        log.info("createBingoBoard : {}", bingoCardList);
+        Collections.shuffle(bingoCardList);
+        BingoCard[][] bingoBoard = new BingoCard[BINGO_LINE][BINGO_LINE];
 
-                    int r = 0;
-                    for (int i = 0; i < LIMIT; i++) {
-                        if (i > 0 && i % BINGO_LINE == 0) {
-                            r++;
-                        }
-                        bingoBoard[r][i % BINGO_LINE] = bingo.get(i);
-                    }
-                    return new BingoBoard(bingoBoard, createBingoVisitBoard());
-                });
+        int r = 0;
+        for (int i = 0; i < LIMIT; i++) {
+            if (i > 0 && i % BINGO_LINE == 0) r++;
+            bingoBoard[r][i % BINGO_LINE] = bingoCardList.get(i);
+        }
+        return new BingoBoard(bingoBoard, createBingoVisitBoard());
+
+//        return bingoCardList
+//                .map(bingo->{
+//                    log.info("createBingoBoard : {}", bingo);
+//                    Collections.shuffle(bingo);
+//                    BingoCard[][] bingoBoard = new BingoCard[BINGO_LINE][BINGO_LINE];
+//
+//                    int r = 0;
+//                    for (int i = 0; i < LIMIT; i++) {
+//                        if (i > 0 && i % BINGO_LINE == 0) {
+//                            r++;
+//                        }
+//                        bingoBoard[r][i % BINGO_LINE] = bingo.get(i);
+//                    }
+//                    return new BingoBoard(bingoBoard, createBingoVisitBoard());
+//                });
 
     }
 

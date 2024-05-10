@@ -125,9 +125,9 @@ public class TeacherSocketService {
         Room room = roomService.findRoomByMemberId(session.getId());
 
         MarkingBingoResponse markingBingoResponse = new MarkingBingoResponse(SocketAction.FIND_LETTER, choiceLetter);
-        String response = objectMapper.writeValueAsString(markingBingoResponse);
-        room.sendKidRequest(response).subscribe();
-        return Mono.empty();
+//        String response = objectMapper.writeValueAsString(markingBingoResponse);
+        String response = gson.toJson(markingBingoResponse);
+        return room.sendKidRequest(response).then();
     }
 
 

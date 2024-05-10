@@ -78,7 +78,7 @@ public class KidServiceImpl implements KidService {
 
     @Override
     public Mono<CoinResponse> getOwnCoin(Long memberId) {
-        return kidRepository.findById(memberId)
+        return kidRepository.findByMemberId(memberId)
                 .map(member -> CoinResponse.builder().coin(member.getCoin()).build());
     }
 

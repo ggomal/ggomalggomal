@@ -15,4 +15,7 @@ public interface KidRepository extends R2dbcRepository<KidEntity, Long> {
     @Modifying
     @Query("UPDATE kid SET coin = coin + :coin where member_id = :memberId;")
     Mono<Integer> addCoin(Long memberId, Long coin);
+
+
+    Mono<KidEntity> findByMemberId(Long memberId);
 }

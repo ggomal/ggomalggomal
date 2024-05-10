@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @ToString
 public class KidEntity extends AbstractEntity {
-    @Id
+
     @Column("member_id")
     private final Long memberId;
 

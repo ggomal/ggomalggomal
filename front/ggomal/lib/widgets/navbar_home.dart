@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ggomal/get_storage.dart';
+import 'package:get/get.dart';
 import 'package:ggomal/widgets/kid_report.dart';
 
 import '../utils/notification_dialog.dart';
@@ -13,6 +15,8 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Get.put(CoinController());
     TextStyle baseText(double size, FontWeight weight) {
       return TextStyle(
         fontFamily: 'Maplestory',
@@ -131,10 +135,12 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               children: [
                 Image.asset('assets/images/reward.png'),
-                Text(
-                  'x 4  ',
-                  style: baseText(25.0, FontWeight.w800),
-                )
+                GetX<CoinController>(builder: (controller) {
+                  return Text(
+                    'x ${controller.coinCount.value}',
+                    style: baseText(30.0, FontWeight.w800),
+                  );
+                }),
               ],
             ),
           ),

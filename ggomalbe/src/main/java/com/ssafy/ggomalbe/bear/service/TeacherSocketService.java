@@ -3,6 +3,7 @@ package com.ssafy.ggomalbe.bear.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.ssafy.ggomalbe.bear.dto.CreateBingoResponse;
 import com.ssafy.ggomalbe.bear.dto.MarkingBingoResponse;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
@@ -28,6 +29,7 @@ import java.util.List;
 public class TeacherSocketService {
 
     private final ObjectMapper objectMapper;
+    private final Gson gson;
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;
     private final GameNumService gameNumService;
@@ -60,51 +62,43 @@ public class TeacherSocketService {
                 .build();
 
         return gameNumService.getIncrementGameCount()
-                .flatMap((gameNum) -> {
-                //다른 두 Mono가 작업이 완료되는 시점에 특정 동작을 하기 위한 zipWith
-                    return bingoSocketService.createBingoBoard(wordCategoryResponse)
-                            .zipWith(bingoSocketService.createBingoBoard(wordCategoryResponse))
-                            .publishOn(Schedulers.boundedElastic())
-                            .flatMap((tuple) -> {
-                                BingoBoard bingoBoardT = tuple.getT1();
-                                BingoBoard bingoBoardK = tuple.getT2();
+                .flatMap(gameNum -> bingoSocketService.findBingoCard(wordCategoryResponse)
+                        .flatMap(bingoCardList -> {
 
-                                log.info("bingoBoardK {}", bingoBoardK);
-                                log.info("bingoBoardT {}", bingoBoardT);
-                                Room room = roomService.findRoomByMemberId(session.getId());
+                            //방 찾기
+                            Room room = roomService.findRoomByMemberId(session.getId());
 
-                                CreateBingoResponse createBingoResponseT = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, gameNum, bingoBoardT);
-                                String responseT;
-                                try {
-                                    responseT = objectMapper.writeValueAsString(createBingoResponseT);
-                                } catch (JsonProcessingException e) {
-                                    return Mono.error(e);
-                                }
+                            //선생님, 아이 빙고 생성
+                            BingoBoard bingoBoardT = bingoSocketService.createBingoBoard(bingoCardList);
+                            BingoBoard bingoBoardK = bingoSocketService.createBingoBoard(bingoCardList);
 
-                                room.sendTeacherBingoBoard(responseT)
-                                        .doOnSuccess(v -> {
-                                            BingoPlayer bingoPlayerT = new BingoPlayer(session.getId(), session, bingoBoardT, MemberEntity.Role.TEACHER);
-                                            bingoSocketService.putBingoPlayer(bingoPlayerT);
-                                        })
-                                        .subscribe();
+                            log.info("bingoBoardK {}", bingoBoardK);
+                            log.info("bingoBoardT {}", bingoBoardT);
 
-                                WebSocketSession kidSocket = room.getKidSocket();
+                            //선생님에게 보내기
+                            CreateBingoResponse createBingoResponseT = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, gameNum, bingoBoardT);
+                            String responseT = gson.toJson(createBingoResponseT);
 
-                                CreateBingoResponse createBingoResponseK = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, gameNum, bingoBoardK);
-                                String responseK;
-                                try {
-                                    responseK = objectMapper.writeValueAsString(createBingoResponseK);
-                                } catch (JsonProcessingException e) {
-                                    return Mono.error(e);
-                                }
+                            CreateBingoResponse createBingoResponseK = new CreateBingoResponse(SocketAction.SET_BINGO_BOARD, gameNum, bingoBoardK);
+                            String responseK = gson.toJson(createBingoResponseK);
 
-                                BingoPlayer bingoPlayerK = new BingoPlayer(kidSocket.getId(), kidSocket, bingoBoardK, MemberEntity.Role.KID);
-                                bingoSocketService.putBingoPlayer(bingoPlayerK);
+                            Mono<Void> sendTeacherBoard = room.sendTeacherBingoBoard(responseT)
+                                    .doOnSuccess(v -> {
+                                        BingoPlayer bingoPlayerT = new BingoPlayer(session.getId(), session, bingoBoardT, MemberEntity.Role.TEACHER);
+                                        bingoSocketService.putBingoPlayer(bingoPlayerT);
+                                    });
 
-                                return room.sendKidBingoBoard(responseK);
-                            });
-                });
 
+                            Mono<Void> sendKidBoard = room.sendKidBingoBoard(responseK)
+                                    .doOnSuccess(v -> {
+                                        //아이에게 보내기, 방에서 아이 소켓 찾기
+                                        WebSocketSession kidSocket = room.getKidSocket();
+                                        BingoPlayer bingoPlayerK = new BingoPlayer(kidSocket.getId(), kidSocket, bingoBoardK, MemberEntity.Role.KID);
+                                        bingoSocketService.putBingoPlayer(bingoPlayerK);
+                                    });
+                            return Mono.when(sendTeacherBoard,sendKidBoard);
+                        })
+                );
     }
 
 

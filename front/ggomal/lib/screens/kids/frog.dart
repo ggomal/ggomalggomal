@@ -1,12 +1,14 @@
 import 'dart:async';
-
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:agora_uikit/agora_uikit.dart';
+import 'dart:io';
+import 'dart:math' as math;
 import 'package:camera/camera.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:ggomal/utils/navbar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../const/keys.dart';
+import '../../utils/navbar.dart';
 import '../../widgets/percent_bar.dart';
 
 class FrogScreen extends StatefulWidget {
@@ -170,6 +172,13 @@ class MirrorScreen extends StatefulWidget {
 class MirrorScreenState extends State<MirrorScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  Timer? _timer;
+  bool _isCapturing = false;
+  final Dio _dio = Dio(BaseOptions(
+    baseUrl: 'http://localhost:8080/api/images/upload',
+    connectTimeout: Duration(seconds: 10),
+    receiveTimeout: Duration(seconds: 10),
+  ));
 
   @override
   void initState() {
@@ -180,13 +189,60 @@ class MirrorScreenState extends State<MirrorScreen> {
       enableAudio: false
     );
     _initializeControllerFuture = _controller.initialize();
+    _startStreamingImages();
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }
+
+  void _startStreamingImages() {
+    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
+      if (_isCapturing) return;
+
+      _isCapturing = true;
+      try {
+        final image = await _captureAndSaveImage();
+        await _sendImageToServer(image);
+      } catch (e) {
+        print("Error capturing/sending image: $e");
+      } finally {
+        _isCapturing = false;
+      }
+    });
+  }
+
+  Future<File> _captureAndSaveImage() async {
+    final XFile imageFile = await _controller.takePicture();
+    final directory = await getApplicationDocumentsDirectory();
+    final String filePath = '${directory.path}/mirror_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final File image = File(filePath);
+    await imageFile.saveTo(filePath);
+
+    return image;
+  }
+
+
+  Future<void> _sendImageToServer(File imageFile) async {
+    try {
+      final formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(imageFile.path),
+      });
+      final response = await _dio.post('', data: formData);
+      if (response.statusCode == 200) {
+        print("Image sent successfully");
+      } else {
+        print("Failed to send image: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error sending image: $e");
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

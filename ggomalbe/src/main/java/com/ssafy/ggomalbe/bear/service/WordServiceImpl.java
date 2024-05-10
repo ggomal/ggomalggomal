@@ -68,6 +68,7 @@ public class WordServiceImpl implements WordService {
     @Override
     public Mono<List<BingoCard>> getBasicBingoFinalityIsNotNull(WordCategoryResponse wordCategoryResponse){
         return wordRepository.findByInitialInAndSyllableAndFinalityIsNotNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
+                .distinct(wordEntity -> wordEntity.getLetter())
                 .map(wordEntity -> BingoCard.builder()
                         .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
@@ -82,6 +83,7 @@ public class WordServiceImpl implements WordService {
     @Override
     public Mono<List<BingoCard>> getBasicBingoFinalityIsNull(WordCategoryResponse wordCategoryResponse){
         return wordRepository.findByInitialInAndSyllableAndFinalityIsNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
+                .distinct(wordEntity -> wordEntity.getLetter())
                 .map(wordEntity -> BingoCard.builder()
                         .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
@@ -95,6 +97,7 @@ public class WordServiceImpl implements WordService {
     @Override
     public Mono<List<BingoCard>> getAdvancedBingoFinalityIsNotNull(WordCategoryResponse wordCategoryResponse){
         return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityIsNotNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
+                .distinct(wordEntity -> wordEntity.getLetter())
                 .map(wordEntity -> BingoCard.builder()
                         .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())
@@ -108,6 +111,7 @@ public class WordServiceImpl implements WordService {
     @Override
     public Mono<List<BingoCard>> getAdvancedBingoFinalityIsNull(WordCategoryResponse wordCategoryResponse){
         return wordRepository.findByInitialInAndSyllableGreaterThanEqualAndFinalityIsNull(wordCategoryResponse.getInitialList(), wordCategoryResponse.getSyllable())
+                .distinct(wordEntity -> wordEntity.getLetter())
                 .map(wordEntity -> BingoCard.builder()
                         .Id(wordEntity.getWordId())
                         .letter(wordEntity.getLetter())

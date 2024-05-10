@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/get_storage.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class GameContinueDialog extends StatelessWidget {
@@ -12,6 +14,8 @@ class GameContinueDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.find<CoinController>().coin();
+
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;

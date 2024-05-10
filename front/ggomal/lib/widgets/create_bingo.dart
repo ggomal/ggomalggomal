@@ -130,7 +130,6 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
         setState(() {
           bingoBoardData = formattedData;
         });
-        print('인쇄!@!@!@!@!@@@@! $bingoBoardData');
         GoRouter.of(context).go('/kids/bear/bingo', extra: {'bingoBoardData': bingoBoardData, 'channel': channel});
       }
     }, onDone: () {
@@ -150,8 +149,6 @@ class _CreateBingoModalState extends State<CreateBingoModal> {
 
   @override
   void dispose() {
-    channel.sink.close();
-    streamController.close();
     super.dispose();
   }
 

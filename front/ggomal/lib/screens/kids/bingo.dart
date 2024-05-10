@@ -3,12 +3,15 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
+import 'package:ggomal/widgets/kid_bingo.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
+import 'package:ggomal/widgets/manager_bingo.dart';
+import 'package:ggomal/login_storage.dart';
 
 class BingoScreen extends StatefulWidget {
   final WebSocketChannel channel;
@@ -26,6 +29,50 @@ class _BingoScreenState extends State<BingoScreen> {
   String? roomId;
   int recordCount = 0;
   late String currentFilePath;
+  final LoginStorage storage = LoginStorage();
+
+
+  void BingoSelect(Map<String, dynamic> thing) async {
+    String? role = await storage.getRole();
+    if (role == 'KID') {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => KidBingoModal({
+          "gameNum": 1,
+          "wordId": "1",
+          "pronunciation": thing['pronunciation'],
+          "letter": thing['letter'],
+          "img": thing['letterImgUrl'],
+        }),
+      );
+    } else if (role == 'TEACHER') {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => ManagerBingoModal({
+          "gameNum": 1,
+          "wordId": "1",
+          "pronunciation": thing['pronunciation'],
+          "letter": thing['letter'],
+          "img": thing['letterImgUrl'],
+        }),
+      );
+    } else {
+      print('사용자 역할 가져오기 오류');
+    }
+  }
+
+  void ManagerSelect(Map<String, dynamic> thing) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ManagerBingoModal({
+        "gameNum": 1,
+        "wordId": "1",
+        "pronunciation": thing['pronunciation'],
+        "letter": thing['letter'],
+        "img": thing['letterImgUrl'],
+      }),
+    );
+  }
 
   @override
   void initState() {
@@ -36,6 +83,7 @@ class _BingoScreenState extends State<BingoScreen> {
   }
 
   final recorder = FlutterSoundRecorder();
+
   Future initRecorder() async {
     var status = await Permission.speech.status;
     if (!status.isGranted) {
@@ -55,6 +103,7 @@ class _BingoScreenState extends State<BingoScreen> {
     });
     print('녹음하기');
   }
+
   Future<void> stop() async {
     await recorder.stopRecorder();
     setState(() {
@@ -66,8 +115,10 @@ class _BingoScreenState extends State<BingoScreen> {
   Future<void> sendLastAudio() async {
     print(currentFilePath);
     if (currentFilePath.isNotEmpty) {
-      var request = http.MultipartRequest('POST', Uri.parse('https://k10e206.p.ssafy.io/api/v1/bear/evaluation'));
-      request.files.add(await http.MultipartFile.fromPath('files', currentFilePath));
+      var request = http.MultipartRequest('POST',
+          Uri.parse('https://k10e206.p.ssafy.io/api/v1/bear/evaluation'));
+      request.files
+          .add(await http.MultipartFile.fromPath('files', currentFilePath));
       var response = await request.send();
       if (response.statusCode == 200) {
         print('녹음 전송됨');
@@ -85,13 +136,9 @@ class _BingoScreenState extends State<BingoScreen> {
     recorder.closeRecorder();
   }
 
-  Widget buildBingoGrid(List<List<Map<String, dynamic>>> bingoBoard, bool shuffle, [int? seed]) {
+  Widget buildBingoGrid(List<List<Map<String, dynamic>>> bingoBoard) {
     var flatList = bingoBoard.expand((row) => row).toList();
-    if (shuffle) {
-      seed ??= DateTime.now().millisecondsSinceEpoch;
-      var random = Random(seed);
-      flatList.shuffle(random);
-    }
+
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -103,36 +150,34 @@ class _BingoScreenState extends State<BingoScreen> {
         int col = index % 3;
         var cell = flatList[index];
         return InkWell(
-          onTap: (){
-            sendWebSocketMessage(cell['letter']);
-          },
-          child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black54, width: 2),
-            image: DecorationImage(
-              image: NetworkImage(cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            cell['letter'],
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        )
-        );
+            onTap: () {
+              sendWebSocketMessage(cell['letter']);
+              BingoSelect(cell);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black54, width: 2),
+                image: DecorationImage(
+                  image: NetworkImage(
+                      cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                cell['letter'],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ));
       },
     );
   }
 
   Future<void> sendWebSocketMessage(String letter) async {
-      print('어디까지 실행되는지 보는 프린트문1');
-      print('이건 채널 출력중임 $channel');
     if (channel != null && isConnected) {
-      print('어디까지 실행되는지 보는 프린트문2');
       var message = jsonEncode({
         'type': 'play',
         'letter': letter,
@@ -147,6 +192,7 @@ class _BingoScreenState extends State<BingoScreen> {
   @override
   Widget build(BuildContext context) {
     final responseData = widget.responseData;
+
     return Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -165,44 +211,47 @@ class _BingoScreenState extends State<BingoScreen> {
                   child: Container(),
                   flex: 3,
                 ),
-                Flexible(
-                  flex: 9,
-                  child: Column(
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Center(
-                          child: Container(
-                            width: 200,
-                            height: 90,
-                            decoration: BoxDecoration(
-                              color: Color(0xffcfe4d1),
-                              borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 4,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              '이안이',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Maplestory',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 40,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                        flex: 4,
-                        child: responseData != null ? buildBingoGrid(responseData, true, DateTime.now().millisecondsSinceEpoch) : Container(color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ),
+                // Flexible(
+                //   flex: 9,
+                //   child: Column(
+                //     children: [
+                //       Flexible(
+                //         flex: 1,
+                //         child: Center(
+                //           child: Container(
+                //             width: 200,
+                //             height: 90,
+                //             decoration: BoxDecoration(
+                //               color: Color(0xffcfe4d1),
+                //               borderRadius: BorderRadius.circular(50),
+                //               border: Border.all(
+                //                 color: Colors.black54,
+                //                 width: 4,
+                //               ),
+                //             ),
+                //             alignment: Alignment.center,
+                //             child: Text(
+                //               '이안이',
+                //               style: TextStyle(
+                //                 color: Colors.black,
+                //                 fontFamily: 'Maplestory',
+                //                 fontWeight: FontWeight.bold,
+                //                 fontSize: 40,
+                //
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //       Flexible(
+                //         flex: 4,
+                //         child: responseData != null
+                //             ? buildBingoGrid(responseData)
+                //             : Container(color: Colors.red),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 Flexible(
                   child: Container(),
                   flex: 1,
@@ -219,7 +268,7 @@ class _BingoScreenState extends State<BingoScreen> {
                             color: Color(0xffcfe4d1),
                             borderRadius: BorderRadius.circular(50),
                             border: Border.all(
-                              color: Colors.black,
+                              color: Colors.black54,
                               width: 4,
                             ),
                           ),
@@ -238,7 +287,9 @@ class _BingoScreenState extends State<BingoScreen> {
                     ),
                     Flexible(
                       flex: 4,
-                      child: responseData != null ? buildBingoGrid(responseData, true, DateTime.now().millisecondsSinceEpoch+1) : Container(color: Colors.yellow),
+                      child: responseData != null
+                          ? buildBingoGrid(responseData)
+                          : Container(color: Colors.yellow),
                     )
                   ]),
                 ),
@@ -249,7 +300,7 @@ class _BingoScreenState extends State<BingoScreen> {
               ],
             )),
             Positioned(
-              left: -20,
+              left: 0,
               bottom: 0,
               child: Image.asset(
                 'assets/images/bear/student.png',
@@ -258,7 +309,7 @@ class _BingoScreenState extends State<BingoScreen> {
               ),
             ),
             Positioned(
-              right: -20,
+              right: 0,
               bottom: 5,
               child: Image.asset(
                 'assets/images/bear/teacher.png',
@@ -270,9 +321,9 @@ class _BingoScreenState extends State<BingoScreen> {
             // 임시 버튼
             Positioned(
               right: 0,
-              top : 100,
+              top: 100,
               child: ElevatedButton(
-                onPressed: () async{
+                onPressed: () async {
                   if (recorder.isRecording) {
                     await stop();
                   } else {
@@ -284,7 +335,7 @@ class _BingoScreenState extends State<BingoScreen> {
             ),
             Positioned(
               right: 0,
-              top : 200,
+              top: 200,
               child: ElevatedButton(
                 onPressed: sendLastAudio,
                 child: Text('통과'),

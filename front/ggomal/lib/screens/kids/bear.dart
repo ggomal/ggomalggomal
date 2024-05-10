@@ -23,6 +23,7 @@
     late final WebSocketChannel channel;
     bool isConnected = false;
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+    List<List<Map<String, dynamic>>> bingoBoardData = [];
 
 
     @override
@@ -42,13 +43,21 @@
         channel.stream.listen((response) {
           print('웹소켓 응답 : $response');
           Map<String, dynamic> message = jsonDecode(response);
-          if (message['type'] == 'bingoBoardSet') {
-            print('이게 보이나???쩨뱌ㅏㄹㅇㄹ만러ㅏㅣ어나럼나ㅣ러ㅣㅏㅓㅣ');
-            // Navigator.of(context).pushReplacementNamed('/kids/bear/bingo');
-            // context.go('/kids/bear/bingo');
+          if (message['action'] == "SET_BINGO_BOARD") {
+            var boardData = message['bingoBoard']['board'] as List;
+            List<List<Map<String, dynamic>>> formattedData = boardData.map((row) {
+              return (row as List).map((item) => item as Map<String, dynamic>).toList();
+            }).toList();
+
+            setState(() {
+              bingoBoardData = formattedData;
+            });
+            print('뭘로들어오려나 두근두근 ㅎㅎ');
+            GoRouter.of(context).go('/kids/bear/bingo', extra: {'bingoBoardData': bingoBoardData, 'channel': channel});
           }
         }, onDone: () {
           print('연결 종료 ');
+          context.go('/kids/bear/bingo');
         }, onError: (error) {
           print('소켓 통신에 실패했습니다. $error');
         });
@@ -61,7 +70,6 @@
 
     @override
     void dispose() {
-      channel.sink.close(status.goingAway);
       super.dispose();
     }
 

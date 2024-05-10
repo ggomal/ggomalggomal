@@ -1,8 +1,10 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'package:flutter/material.dart';
+import 'package:ggomal/services/whale_dio.dart';
+import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/percent_bar.dart';
+import 'package:noise_meter/noise_meter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class WhaleSea extends StatefulWidget {
   const WhaleSea({super.key});
@@ -12,132 +14,184 @@ class WhaleSea extends StatefulWidget {
 }
 
 class _WhaleSeaState extends State<WhaleSea> {
-  Alignment _alignment = Alignment.center;
-
-  late Timer _timer;
-
-  late int _fishCount = 0;
-
-  final List<Map<String, dynamic>> _fishLocation = [
-    {"x": -0.7, "y" : 0.7, "isVisible": true},
-    {"x": -0.4, "y" : -0.2, "isVisible": true},
-    {"x": -0.3, "y" : 0.2, "isVisible": true},
-    {"x": -0.2, "y" : -0.7, "isVisible": true},
-    {"x": -0.1, "y" : 0.6, "isVisible": true},
-    {"x": 0.1, "y" : -0.6, "isVisible": true},
-    {"x": 0.4, "y" : 0.2, "isVisible": true},
-    {"x": 0.5, "y" : 0.8, "isVisible": true},
-    {"x": 0.6, "y" : 0.5, "isVisible": true},
-    {"x": 0.7, "y" : -0.5, "isVisible": true},
+  Alignment _alignment = Alignment(-0.9, -0.8);
+  int directionCount = 0;
+  List<List<double>> direction = [
+    [0.1, 0],
+    [0, 0.1],
+    [-0.1, 0]
   ];
 
+  late int _fishCount = 0;
+  int seconds = 0;
 
-  void _startMove(List<double> direction) {
-    _timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
-      setState(
-        () {
-          double x = _alignment.x + direction[0];
-          double y = _alignment.y + direction[1];
-          if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
-            _alignment += Alignment(direction[0], direction[1]);
-            int fishIndex = _fishLocation.indexWhere((location) => x + 0.06 > location["x"]! && x - 0.16 < location["x"]! && y + 0.21 > location["y"]! && y - 0.21 < location["y"]!);
+  bool _isRecording = false;
 
-            if (fishIndex != -1 && _fishLocation[fishIndex]['isVisible']){
+  int startTime = 0;
+  int endTime = 0;
+
+  NoiseReading? _latestReading;
+  StreamSubscription<NoiseReading>? _noiseSubscription;
+  NoiseMeter? noiseMeter;
+
+  final List<Map<String, dynamic>> _fishLocation = [
+    {"x": -0.6, "y": -0.6, "isVisible": true},
+    {"x": -0.3, "y": -0.6, "isVisible": true},
+    {"x": -0.0, "y": -0.6, "isVisible": true},
+    {"x": 0.3, "y": -0.6, "isVisible": true},
+    {"x": 0.6, "y": -0.6, "isVisible": true},
+    {"x": -0.6, "y": 0.65, "isVisible": true},
+    {"x": -0.3, "y": 0.65, "isVisible": true},
+    {"x": 0.0, "y": 0.65, "isVisible": true},
+    {"x": 0.3, "y": 0.65, "isVisible": true},
+    {"x": 0.6, "y": 0.65, "isVisible": true},
+  ];
+
+  void onData(NoiseReading noiseReading) => setState(() {
+        _latestReading = noiseReading;
+        double x = _alignment.x + direction[directionCount][0];
+        double y = _alignment.y + direction[directionCount][1];
+
+        if (noiseReading.meanDecibel >= 75) {
+          if (x >= -0.8 && x <= 0.8 && y >= -1 && y <= 0.8) {
+            _alignment += Alignment(
+                direction[directionCount][0], direction[directionCount][1]);
+            int fishIndex = _fishLocation.indexWhere((location) =>
+                x + 0.06 > location["x"]! &&
+                x - 0.16 < location["x"]! &&
+                y + 0.21 > location["y"]! &&
+                y - 0.21 < location["y"]!);
+            if (fishIndex != -1 && _fishLocation[fishIndex]['isVisible']) {
               _eatFish(fishIndex);
             }
+          } else {
+            directionCount += 1;
           }
-        },
-      );
-    });
+        }
+      });
+
+  void onError(Object error) {
+    print(error);
+    stop();
   }
 
-  void _stopMove() {
-    _timer.cancel();
+  Future<bool> checkPermission() async => await Permission.microphone.isGranted;
+
+  Future<void> requestPermission() async =>
+      await Permission.microphone.request();
+
+  Future<void> start() async {
+    startTime = DateTime.now().millisecondsSinceEpoch;
+    noiseMeter ??= NoiseMeter();
+    if (!(await checkPermission())) await requestPermission();
+    _noiseSubscription = noiseMeter?.noise.listen(onData, onError: onError);
+    setState(() => _isRecording = true);
+  }
+
+  void stop() {
+    _noiseSubscription?.cancel();
+    setState(() => _isRecording = false);
   }
 
   void _eatFish(int fishIndex) {
-    setState(
-        (){
-          _fishCount += 1;
-          _fishLocation[fishIndex]['isVisible'] = false;
-        }
-    );
+    setState(() {
+      _fishCount += 1;
+      _fishLocation[fishIndex]['isVisible'] = false;
+
+      if (_fishCount == 10) {
+        endTime = DateTime.now().millisecondsSinceEpoch;
+        double gameTime = (endTime - startTime) / 1000;
+        whaleReword(gameTime);
+        Future.delayed(Duration(milliseconds: 500)).then((value) {
+        stop();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) =>
+                GameContinueDialog(continuePage: '/whale', count: 1),
+          );
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanCancel: () => _stopMove(),
-      child: Stack(
-        children: [
-          AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            alignment: _alignment,
-            child: Image.asset(
-              'assets/images/whale/whale_diver.png',
-              width: 200.0,
-            ),
+    return Stack(
+      children: [
+        AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          alignment: _alignment,
+          child: Image.asset(
+            'assets/images/whale/whale_diver.png',
+            width: 200.0,
           ),
-          ..._fishLocation.map(
-          (e) =>
-          e['isVisible'] ?
-          Align(
-            alignment: Alignment(e['x'] as double, e['y'] as double),
-            child: Image.asset(
-              "assets/images/whale/fish_pink.png",
-              width: 50,
-            ),
-          ) : Text(""),
-          ).toList(),
-          ...[
-            {
-              "direct": "top",
-              "coord": [0.0, -0.1],
-              "location": Alignment.topCenter,
-            },
-            {
-              "direct": "bottom",
-              "coord": [0.0, 0.1],
-              "location": Alignment.bottomCenter,
-            },
-            {
-              "direct": "left",
-              "coord": [-0.07, 0.0],
-              "location": Alignment.centerLeft,
-            },
-            {
-              "direct": "right",
-              "coord": [0.07, 0.0],
-              "location": Alignment.centerRight,
-            },
-          ]
-              .map(
-                (e) => Align(
-                  alignment: e['location'] as Alignment,
+        ),
+        ..._fishLocation
+            .map(
+              (e) => e['isVisible']
+                  ? Align(
+                      alignment: Alignment(e['x'] as double, e['y'] as double),
+                      child: Image.asset(
+                        "assets/images/whale/fish_pink.png",
+                        width: 50,
+                      ),
+                    )
+                  : Text(""),
+            )
+            .toList(),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Container(
+            width: MediaQuery.of(context).size.width / 2 - 200,
+            height: 80,
+            padding: const EdgeInsets.all(20),
+            child: PercentBar({
+              "count": _fishCount,
+              "barColor": Color(0xFFFF835C),
+              "imgUrl": "assets/images/whale/fish_pink.png"
+            }),
+          ),
+        ),
+        _isRecording
+            ? SizedBox.shrink()
+            : Container(
+                color: Colors.black.withOpacity(0.6),
+                child: Center(
                   child: GestureDetector(
-                    onTapDown: (_) => _startMove(e['coord'] as List<double>),
-                    onTapUp: (_) => _stopMove(),
-                    onTapCancel: () => _stopMove(),
+                    onTap: () => start(),
                     child: Image.asset(
-                      "assets/images/whale/button_${e['direct']}.png",
-                      width: 130,
+                      "assets/images/whale/start_button.png",
+                      width: 200,
                     ),
                   ),
+                  // children: [
+                  //   Container(
+                  //     child: Text(_isRecording ? "Mic: ON" : "Mic: OFF",
+                  //         style: TextStyle(fontSize: 25, color: Colors.blue)),
+                  //     margin: EdgeInsets.only(top: 20),
+                  //   ),
+                  //   Container(
+                  //     child: Text(
+                  //       'Noise: ${_latestReading?.meanDecibel.toStringAsFixed(2)} dB',
+                  //     ),
+                  //     margin: EdgeInsets.only(top: 20),
+                  //   ),
+                  //   Container(
+                  //     child: Text(
+                  //       'Max: ${_latestReading?.maxDecibel.toStringAsFixed(2)} dB',
+                  //     ),
+                  //   ),
+                  // ],
                 ),
-              )
-              .toList(),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              width: MediaQuery.of(context).size.width / 2 - 200,
-              height: 80,
-              padding: const EdgeInsets.all(20),
-              child: PercentBar({"count": _fishCount, "barColor": Color(0xFFFF835C) ,"imgUrl": "assets/images/whale/fish_pink.png"}),
-            ),
-          ),
-        ],
-      ),
+              ),
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    _noiseSubscription?.cancel();
+    super.dispose();
   }
 }

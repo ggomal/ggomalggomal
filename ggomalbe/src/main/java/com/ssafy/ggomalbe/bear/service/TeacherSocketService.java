@@ -93,6 +93,7 @@ public class TeacherSocketService {
                                     .doOnSuccess(v -> {
                                         //아이에게 보내기, 방에서 아이 소켓 찾기
                                         WebSocketSession kidSocket = room.getKidSocket();
+                                        log.info("setting kid? {}", kidSocket);
                                         BingoPlayer bingoPlayerK = new BingoPlayer(kidSocket.getId(), kidSocket, bingoBoardK, MemberEntity.Role.KID);
                                         bingoSocketService.putBingoPlayer(bingoPlayerK);
                                     });
@@ -133,7 +134,8 @@ public class TeacherSocketService {
 
     //선생님이 선택한 카드를 아이가 선택하면 아이와 선생님에게 평가 모달을 띄운다
     //변경 -> 소켓말고 controller로 평가진행
-    public Mono<Void> evaluation(WebSocketSession session, JsonNode jsonNode) throws JsonProcessingException {
+    public Mono<Void> evaluation(WebSocketSession session, JsonNode jsonNode) {
+        // JSON 노드에서 'letter' 필드가 없으면 빈 Mono를 반환
         if (jsonNode.get("letter") == null) return Mono.empty();
         String choiceLetter = jsonNode.get("letter").asText();
 
@@ -141,14 +143,16 @@ public class TeacherSocketService {
 
         //아이에게 단어카드 모달 띄워라고 요청(초기 빙고판을 보낼때 상세정보를보내기때문에 단어만 보낸다)
         MarkingBingoResponse markingBingoResponseK = new MarkingBingoResponse(SocketAction.DETAIL_BINGO_CARD, choiceLetter);
-        String responseK = objectMapper.writeValueAsString(markingBingoResponseK);
-        room.sendKidRequest(responseK).subscribe();
+        String responseK = gson.toJson(markingBingoResponseK);
+
+        Mono<Void> kidRequestMono = room.sendKidRequest(responseK);
 
         //선생님에게 평가모달 띄워라고 요청
         MarkingBingoResponse markingBingoResponseT = new MarkingBingoResponse(SocketAction.EVALUATION, choiceLetter);
-        String responseT = objectMapper.writeValueAsString(markingBingoResponseT);
-        room.sendTeacherRequest(responseT).subscribe();
-        return Mono.empty();
+        String responseT = gson.toJson(markingBingoResponseT);
+
+        Mono<Void> teacherRequestMono = room.sendTeacherRequest(responseT);
+        return Mono.when(kidRequestMono,teacherRequestMono);
     }
 
     //선생님이 아이한테 음성데이터 보내라고 요청(통과버튼 선택시)
@@ -161,9 +165,9 @@ public class TeacherSocketService {
         MarkingBingoResponse markingBingoResponse = new MarkingBingoResponse(SocketAction.REQ_VOICE, choiceLetter);
         String response = objectMapper.writeValueAsString(markingBingoResponse);
 
-        room.sendKidRequest(response).subscribe();
+        Mono<Void> sendKidRequestMono = room.sendKidRequest(response);
 
-        return markingBingoCard(session, jsonNode);
+        return markingBingoCard(session, jsonNode).then(sendKidRequestMono);
     }
 
     // 선생님이 O를 눌렀을때(아이의 발음을 api로 평가하고, 둘다 O표시를 하고, 빙고인지 판단하고 맞다면 게임종료)
@@ -184,13 +188,13 @@ public class TeacherSocketService {
         //모두에게 O를 보낸다
         MarkingBingoResponse markingBingoResponse = new MarkingBingoResponse(SocketAction.MARKING_BINGO, choiceLetter);
         String response = objectMapper.writeValueAsString(markingBingoResponse);
-        room.broadcastMarkBingo(response).subscribe();
+        Mono<Void> boardcastMarkingBingoMono = room.broadcastMarkBingo(response);
 
         //빙고인지아닌지 -> 나의 옵션(선생,아이)을 같이보내서 우선순위
         BingoPlayer bingoPlayer = bingoSocketService.getBingoPlayer(session.getId());
-        bingoSocketService.isBingo(room, bingoPlayer.getRole()).subscribe();
+        Mono<Void> bingoMono = bingoSocketService.isBingo(room, bingoPlayer.getRole());
 
-        return Mono.empty();
+        return Mono.when(boardcastMarkingBingoMono,bingoMono);
     }
 
 //

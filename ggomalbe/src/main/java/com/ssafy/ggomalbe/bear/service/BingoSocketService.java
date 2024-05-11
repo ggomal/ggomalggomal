@@ -110,6 +110,8 @@ public class BingoSocketService {
         log.info("choiceBingoCard {} ", bingoPlayerMap.size());
         BingoPlayer bingoPlayerT = bingoPlayerMap.get(room.getTeacherSocket().getId());
         BingoPlayer bingoPlayerK = bingoPlayerMap.get(room.getKidSocket().getId());
+        log.info("teacher {}", bingoPlayerT);
+        log.info("kid {}", bingoPlayerK);
 
         boolean result1 = markBingoBoard(bingoPlayerT, choiceLetter);
         boolean result2 = markBingoBoard(bingoPlayerK, choiceLetter);

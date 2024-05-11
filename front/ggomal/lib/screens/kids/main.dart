@@ -77,7 +77,7 @@ class MainScreen extends StatelessWidget {
                               builder: (builder) {
                                 return GameDialog(
                                   gameTitle : '개구리 게임',
-                                  gameDescription: '혀를 길게 내밀면 개구리가 간식을 먹어요! 개구리가 배부를 수 있도록 모든 간식을 먹어봅시다!',
+                                  gameDescription: '혀를 길게 내밀면 개구리가 파리를 먹어요! 개구리의 신호에 맞춰서 혀를 내밀어 봅시다 !',
                                   gameImage: 'assets/images/frog/mini_frog.png',
                                   gamePath: '/kids/frog',
                                 );

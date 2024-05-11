@@ -22,7 +22,6 @@ class FrogScreen extends StatefulWidget {
 class _FrogScreenState extends State<FrogScreen> {
   late FlutterVision vision;
   Options option = Options.none;
-  late final GlobalKey<_FrogGameState> frogGameStateKey;
 
   @override
   void initState() {
@@ -31,7 +30,6 @@ class _FrogScreenState extends State<FrogScreen> {
 
     super.initState();
     vision = FlutterVision();
-    frogGameStateKey = GlobalKey<_FrogGameState>();
   }
 
   @override
@@ -46,117 +44,24 @@ class _FrogScreenState extends State<FrogScreen> {
     return Scaffold(
       appBar: NavBar(),
       body:
-          Stack(
-            children: [
-              Positioned(
-                // bottom: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: YoloVideo(
-                      vision: vision
-                    ),
-                  )),
-              //FrogGame(key: frogGameStateKey),
-            ],
-          ),
+      Stack(
+        children: [
+          Positioned(
+            // bottom: 0,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: YoloVideo(
+                    vision: vision
+                ),
+              )),
+          //FrogGame(key: frogGameStateKey),
+        ],
+      ),
     );
   }
 }
 
-class FrogGame extends StatefulWidget {
-  const FrogGame({Key? key}) : super(key: key);
-
-  @override
-  State<FrogGame> createState() => _FrogGameState();
-}
-
-class _FrogGameState extends State<FrogGame> {
-  late int _fishCount = 0;
-
-  Random random = Random();
-  final List<Map<String, dynamic>> _fishLocation = [
-    {"x": -0.7, "y": -0.7, "isVisible": true, "width" : 50},
-    {"x": -0.4, "y": -0.2, "isVisible": true, "width" : 55},
-    {"x": -0.3, "y": 0.2, "isVisible": true, "width" : 60},
-    {"x": -0.2, "y": -0.4, "isVisible": true, "width" : 70},
-    {"x": -0.1, "y": -0.6, "isVisible": true, "width" : 65},
-    {"x": 0.1, "y": -0.5, "isVisible": true, "width" : 69},
-    {"x": 0.4, "y": 0.2, "isVisible": true, "width" : 65},
-    {"x": 0.5, "y": -0.4, "isVisible": true, "width" : 55},
-    {"x": -0.6, "y": 0.3, "isVisible": true, "width" : 53},
-    {"x": 0.7, "y": -0.5, "isVisible": true, "width" : 72},
-  ];
-
-  void _eatFish() {
-    setState(() {
-      _fishCount += 1;
-    });
-  }
-
-  void _eatItem(int index) {
-    setState(() {
-      _fishCount += 1;
-      _fishLocation[index]['isVisible'] = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ..._fishLocation.asMap().entries.map((entry) {
-          final int index = entry.key;
-          final Map<String, dynamic> fish = entry.value;
-
-          return fish['isVisible']
-              ? Positioned(
-            left: (fish['x'] as double) * MediaQuery.of(context).size.width / 2 + MediaQuery.of(context).size.width / 2,
-            top: (fish['y'] as double) * MediaQuery.of(context).size.height / 2 + MediaQuery.of(context).size.height / 2,
-            child: GestureDetector(
-              onTap: () => _eatItem(index),
-              child: Image.asset(
-                "assets/images/frog/flyfly.png",
-                width: fish['width'] / 1.0
-              ),
-            ),
-          )
-              : Container();
-        }).toList(),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: ElevatedButton(
-              onPressed: _eatFish,
-              child: Text('Eat Fish'),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Text("Fish count: $_fishCount"),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            width: MediaQuery.of(context).size.width / 2 - 200,
-            height: 80,
-            padding: const EdgeInsets.all(20),
-            child: PercentBar({
-              "count": _fishCount,
-              "barColor": Color(0xFFFF835C),
-              "imgUrl": "assets/images/frog/flyfly.png"
-            }),
-          ),
-        )
-      ],
-    );
-  }
-}
 
 class YoloVideo extends StatefulWidget {
   final FlutterVision vision;
@@ -187,10 +92,44 @@ class _YoloVideoState extends State<YoloVideo> {
 
   List<int> _availableIndexes = [0,1,2,3,4,5,6,7,8,9]; // 사용 가능한 인덱스 리스트
 
-  void _eatFish() {
-    setState(() {
-      _fishCount += 1;
-    });
+  void _showCompletionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // 다이얼로그 바깥을 터치해도 닫히지 않도록 설정
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+          child: Container(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Text('축하합니다!',
+                    style: TextStyle(fontSize: 24.0),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Text('모든 물고기를 먹었습니다!',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+                Padding(padding: EdgeInsets.only(top: 20.0)),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                    _restartGame();  // 게임 재시작 함수 호출
+                  },
+                  child: Text('다시하기', style: TextStyle(color: Colors.purple, fontSize: 18.0)),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _eatItem(int index) {
@@ -198,6 +137,19 @@ class _YoloVideoState extends State<YoloVideo> {
       _fishCount += 1;
       _fishLocation[index]['isVisible'] = false;
       _availableIndexes.remove(index); // 인덱스 사용 후 제거
+
+      if(_fishCount == 10){
+        _showCompletionDialog();
+      }
+    });
+  }
+
+  void _restartGame() {
+    setState(() {
+      _fishCount = 0;
+      _fishLocation.forEach((fish) => fish['isVisible'] = true);  // 모든 물고기를 다시 보이게 설정
+      _availableIndexes = List.generate(_fishLocation.length, (index) => index);  // 인덱스 리스트 재설정
+      startDetection();  // 감지 재시작
     });
   }
   //
@@ -206,6 +158,7 @@ class _YoloVideoState extends State<YoloVideo> {
   CameraImage? cameraImage;
   bool isLoaded = false;
   bool isDetecting = false;
+
 
   @override
   void initState() {
@@ -223,14 +176,16 @@ class _YoloVideoState extends State<YoloVideo> {
         ResolutionPreset.ultraHigh
     );
     controller.initialize().then((value) {
-      loadYoloModel().then((value) {
+      loadYoloModel().then((value) async {
         setState(() {
           isLoaded = true;
           // isDetecting = false; <------------여기
           yoloResults = [];
         });
+        await startDetection();
       });
     });
+
   }
 
   @override
@@ -261,35 +216,46 @@ class _YoloVideoState extends State<YoloVideo> {
         //...displayBoxesAroundRecognizedObjects(size),
         Positioned(
           bottom: 75,
-          width: MediaQuery.of(context).size.width,
+          width: 250,
           child: Container(
-            height: 80,
+            height: 60,
             width: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                  width: 5, color: Colors.white, style: BorderStyle.solid),
-            ),
             child: isDetecting
-                ? IconButton(
-              onPressed: () async {
-                stopDetection();
-              },
-              icon: const Icon(
-                Icons.stop,
-                color: Colors.red,
+                ? GestureDetector(
+              onTap: () {},
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color(0xFFFE5757),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black, width: 2)
+                ),
+                child: Center(
+                  child: Text("혀를 내밀어봐요 !", style: TextStyle(
+                      fontFamily: 'Maplestory',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30
+                  ),),
+                ),
               ),
-              iconSize: 50,
             )
-                : IconButton(
-              onPressed: () async {
+                : GestureDetector(
+              onTap: () async {
                 await startDetection();
               },
-              icon: const Icon(
-                Icons.play_arrow,
-                color: Colors.white,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color(0xFFFE5757),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black, width: 2)
+                ),
+                child: Center(
+                  child: Text("냠냠", style: TextStyle(
+                      fontFamily: 'Maplestory',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30
+                  ),),
+                ),
               ),
-              iconSize: 50,
             ),
           ),
         ),
@@ -311,23 +277,6 @@ class _YoloVideoState extends State<YoloVideo> {
           )
               : Container();
         }).toList(),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: ElevatedButton(
-              onPressed: _eatFish,
-              child: Text('Eat Fish'),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Text("Fish count: $_fishCount"),
-          ),
-        ),
         Align(
           alignment: Alignment.topCenter,
           child: Container(
@@ -359,6 +308,8 @@ class _YoloVideoState extends State<YoloVideo> {
   }
 
   Future<void> yoloOnFrame(CameraImage cameraImage) async {
+    // if(isDetecting) return;
+
     final result = await widget.vision.yoloOnFrame(
       bytesList: cameraImage.planes.map((plane) => plane.bytes).toList(),
       imageHeight: cameraImage.height,
@@ -370,27 +321,25 @@ class _YoloVideoState extends State<YoloVideo> {
 
     if (result.isNotEmpty) {
       setState(() {
-        yoloResults = result;
+        // yoloResults = result;
         print("============================= 혀임 !!!!!!!!!!");
-        print(result);
-
-        // 감지를 일시 중지합니다.
+        //print(result);
         isDetecting = false;
-        yoloResults.clear();
-        controller.stopImageStream();
+      });
 
-        int randomIndex = _availableIndexes[random.nextInt(_availableIndexes.length)];
-        _eatItem(randomIndex);
+      int randomIndex = _availableIndexes[random.nextInt(_availableIndexes.length)];
+      _eatItem(randomIndex);
 
-        // 2초 후에 다시 감지 시작
-        Future.delayed(Duration(seconds: 5), () {
-          startDetection();
+      Future.delayed(Duration(seconds: 3), () {
+        setState(() {
+          isDetecting = true;
         });
       });
     }
   }
 
   Future<void> startDetection() async {
+    print("#######################################");
     setState(() {
       isDetecting = true;
     });
@@ -413,5 +362,4 @@ class _YoloVideoState extends State<YoloVideo> {
   }
 
 }
-
 

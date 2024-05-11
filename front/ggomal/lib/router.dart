@@ -1,4 +1,6 @@
 //경로 관련
+import 'package:flutter/material.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ggomal/screens/kids/chick_clean.dart';
 import 'package:ggomal/screens/kids/chick_pizza.dart';
 import 'package:ggomal/screens/manager/kid_detail.dart';
@@ -31,7 +33,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/kids/bear',
-      builder: (context, state) => const BingoScreen(),
+      builder: (context, state) => const BearScreen(),
     ),
     GoRoute(
       path: '/kids/chick',
@@ -49,10 +51,31 @@ final router = GoRouter(
       path: '/kids/home',
       builder: (context, state) => const HomeScreen(),
     ),
+
     GoRoute(
       path: '/kids/bear/bingo',
-      builder: (context, state) => const BingoScreen(),
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        if (extra == null) {
+          throw Exception('No data passed to route');
+        }
+        final channel = extra['channel'] as WebSocketChannel?;
+        final responseData = extra['bingoBoardData'] as List<List<Map<String, dynamic>>>?;
+
+        if (channel == null) {
+          throw Exception('WebSocketChannel is required for BingoScreen');
+        }
+
+        return MaterialPage(
+          key: state.pageKey,
+          child: BingoScreen(
+            responseData: responseData,
+            channel: channel,
+          ),
+        );
+      },
     ),
+
     GoRoute(
       path: '/kids/chick/clean',
       builder: (context, state) => const ChickCleanScreen(),

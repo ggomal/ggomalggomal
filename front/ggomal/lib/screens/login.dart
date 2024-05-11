@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_background/animated_background.dart';
+import 'package:flutter/widgets.dart';
+import 'package:ggomal/constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 import 'package:ggomal/login_storage.dart';
@@ -10,6 +13,7 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreen();
 }
+
 class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
   final Dio dio = Dio();
   final LoginStorage loginStorage = LoginStorage();
@@ -56,7 +60,6 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         } else {
           context.go('/manager');
         }
-
       } else {
         print('로그인 실패: ${response.statusCode}');
       }
@@ -64,7 +67,24 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
       print('네트워크 에러: $e');
     }
   }
-  
+
+  InputDecoration inputStyle(String text) {
+    return InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.brown, width: 3),
+          borderRadius: BorderRadius.circular(50),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.brown, width: 3),
+          borderRadius: BorderRadius.circular(50),
+        ),
+        border: InputBorder.none,
+        hintText: text,
+        hintStyle: mapleText(14.0, FontWeight.bold, Colors.grey.shade400));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,29 +111,62 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 100,
                   ),
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Text("아이디"),
-                          Expanded(
-                            child: TextField(
-                              controller: idController,
+                      SizedBox(
+                        width: 400,
+                        height: 120,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                    width: 90,
+                                    child: Text("아이디",
+                                        style: mapleText(20, FontWeight.w700,
+                                            Colors.brown))),
+                                SizedBox(
+                                  width: 300,
+                                  height: 45,
+                                  child: TextField(
+                                    controller: idController,
+                                    decoration: inputStyle("아이디를 입력해주세요."),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text("비밀번호"),
-                          Expanded(
-                            child: TextField(
-                              controller: passwordController,
-                              // obscureText: true,
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                SizedBox(
+                                    width: 90,
+                                    child: Text("비밀번호",
+                                        style: mapleText(20, FontWeight.w700,
+                                            Colors.brown))),
+                                SizedBox(
+                                  width: 300,
+                                  height: 45,
+                                  child: TextField(
+                                    controller: passwordController,
+                                    decoration: inputStyle("비밀번호를 입력해주세요."),
+                                    // obscureText: true,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      GestureDetector(
+                        onTap: loginUser,
+                        child: Image.asset(
+                          'assets/images/login_button.png',
+                          height: 100,
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -122,9 +175,9 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                   children: [
                     OutlinedButton(
                       //이거 주석 풀면 아이/선생님 로그인 검사 들어감
-                      onPressed: loginUser,
+                      // onPressed: loginUser,
                       //이거 주석 풀면 로그인 없이 바로 키즈 페이지랑 관리자 접속됨
-                      // onPressed: () {context.go('/start');},
+                      onPressed: () {context.go('/start');},
                       child: Text("로그인"),
                     ),
                     OutlinedButton(
@@ -135,6 +188,25 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                     ),
                   ],
                 )
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     OutlinedButton(
+                //       //이거 주석 풀면 아이/선생님 로그인 검사 들어감
+                //       onPressed: loginUser,
+                //       //이거 주석 풀면 로그인 없이 바로 키즈 페이지랑 관리자 접속됨
+                //       // onPressed: () {context.go('/start');},
+                //       child: Text("로그인"),
+                //     ),
+                //     OutlinedButton(
+                //       onPressed: () {
+                //         context.go('/manager');
+                //       },
+                //       child: Text("관리자"),
+                //     ),
+                //
+                //   ],
+                // )
               ],
             ),
           ),

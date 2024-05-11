@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
@@ -6,16 +7,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
-class ChickSpeechModal extends StatefulWidget {
-  final Map<String, dynamic> speechData;
+class KidBingoModal extends StatefulWidget {
+  final Map<String, dynamic> selectData;
 
-  const ChickSpeechModal(this.speechData, {super.key});
+  const KidBingoModal(this.selectData, {super.key});
 
   @override
-  State<ChickSpeechModal> createState() => _ChickSpeechModalState();
+  State<KidBingoModal> createState() => _KidBingoModalState();
 }
 
-class _ChickSpeechModalState extends State<ChickSpeechModal> {
+class _KidBingoModalState extends State<KidBingoModal> {
   late String currentFilePath;
   int recordCount = 0;
   final recorder = FlutterSoundRecorder();
@@ -42,8 +43,8 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
       String m4a = filePath.replaceAll('.aac', '.m4a');
       await audioFile.rename(m4a);
       final response = await checkAudio(1,
-          "${widget.speechData['name']} ${widget.speechData['ending']}", m4a);
-      if(response['result'] || recordCount == 3){
+          "${widget.selectData['letter']} ${widget.selectData['wordId']}", m4a);
+      if (response['result'] || recordCount == 3) {
         Navigator.pop(context, true);
       }
     } else {
@@ -72,7 +73,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> speechData = widget.speechData;
+    Map<String, dynamic> speechData = widget.selectData;
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
@@ -91,25 +92,28 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
               children: [
                 SizedBox(
                   child: Row(children: [
+                    Flexible(flex: 1, child: Container()),
                     Flexible(
-                        flex: 1,
+                        flex: 4,
                         child: SizedBox(
-                          height: 250,
+                          height: 230,
                           child: Center(
-                            child: Image.asset(
-                                "assets/images/chick/${speechData['game']}_thing_${speechData['img']}.png"),
-                          ),
+                              child: Image(
+                            image: NetworkImage(widget.selectData['img']),
+                          )),
                         )),
                     Flexible(
-                      flex: 2,
+                      flex: 4,
                       child: Center(
-                          child: Text(
-                              "${speechData['name']} ${speechData['ending']}",
+                          child: Text("${speechData['letter']}",
                               style: mapleText(
-                                  48, FontWeight.w700, Colors.black))),
+                                  120, FontWeight.w700, Colors.black))),
                     ),
+                    Flexible(flex: 1, child: Container()),
                   ]),
                 ),
+                Text("단어를 듣고 따라 말해봅시다~!",
+                    style: mapleText(23, FontWeight.w300, Colors.black54)),
                 ElevatedButton(
                   onPressed: () async {
                     if (recorder.isRecording) {
@@ -126,7 +130,8 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
                   ),
-                  child: Text(recorder.isRecording ? '끝내기' : '말하기', style: mapleText(20, FontWeight.w700, Colors.black)),
+                  child: Text(recorder.isRecording ? '끝내기' : '말하기',
+                      style: mapleText(20, FontWeight.w700, Colors.black)),
                 ),
               ],
             ),

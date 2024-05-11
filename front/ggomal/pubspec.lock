@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  audio_streamer:
+    dependency: transitive
+    description:
+      name: audio_streamer
+      sha256: ddf5f56d3866a9faa466db96c3c003ec4a5933c5bb107135f6712c9212aa4012
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
   audioplayers:
     dependency: "direct main"
     description:
@@ -400,6 +408,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      sha256: e4e7335ede17452b391ed3b2ede016545706c01a02292a6c97619705e7d2a85e
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.6.6"
   get_it:
     dependency: "direct main"
     description:
@@ -648,6 +664,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  noise_meter:
+    dependency: "direct main"
+    description:
+      name: noise_meter
+      sha256: "1eab67e5023c24c43757fa2b6b1b8bc43277e9cc6a7b0fb1c6f6537cc0e3116c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.2"
   path:
     dependency: "direct main"
     description:

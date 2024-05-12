@@ -39,6 +39,6 @@ public class FurnitureServiceImpl implements FurnitureService{
                 .flatMap(entity ->
                             furnitureRepository.findById(entity.getFurnitureId()))
                 .map(entity ->
-                        new FurnitureAddResponse(entity.getFurnitureName()));
+                        new FurnitureAddResponse(entity.getFurnitureId()));
     }
 }

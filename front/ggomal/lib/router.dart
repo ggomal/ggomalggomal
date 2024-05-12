@@ -13,7 +13,7 @@ import 'package:ggomal/screens/login.dart';
 import 'package:ggomal/screens/start.dart';
 import 'package:ggomal/screens/kids/main.dart';
 import 'package:ggomal/screens/kids/bear.dart';
-import 'package:ggomal/screens/kids/frog.dart';
+import 'package:ggomal/widgets/frog_game.dart';
 import 'package:ggomal/screens/kids/chick.dart';
 import 'package:ggomal/screens/kids/home.dart';
 import 'package:ggomal/screens/kids/bingo.dart';
@@ -45,7 +45,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/kids/frog',
-      builder: (context, state) => const FrogScreen(),
+      builder: (context, state) => const FrogTown(),
     ),
     GoRoute(
       path: '/kids/home',

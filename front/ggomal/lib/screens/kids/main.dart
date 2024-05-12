@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ggomal/screens/kids/frog.dart';
+import 'package:ggomal/widgets/frog_game.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/utils/navbar.dart';
 

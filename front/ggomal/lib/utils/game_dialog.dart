@@ -118,6 +118,9 @@ class GameDialog extends StatelessWidget {
                                             child: Center(
                                               child: ElevatedButton(
                                                 onPressed: (){
+                                                  print("===============");
+                                                  print("게임모달창 이동!!!");
+                                                  print("===============");
                                                   context.go(gamePath);
                                                 },
                                                 child: Padding(

@@ -10,6 +10,7 @@ import 'package:ggomal/screens/manager/const/color.dart';
 import 'package:ggomal/screens/manager/model/Schedule.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../services/dio.dart';
 import '../../utils/navbar_manager.dart';
 
 class ManagerCalendarScreen extends StatefulWidget {
@@ -26,48 +27,43 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
     DateTime.now().day,
   );
 
-  Map<DateTime, List<Schedule>> schedules = {
-    DateTime.utc(2024, 5, 8): [
-      Schedule(
-        id: 1,
-        startTime: 11,
-        endTime: 12,
-        content: '플러터 공부하기',
-        date: DateTime.utc(2024, 5, 8),
-        color: categoryColors[0],
+  Map<DateTime, List<Schedule>> schedules = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSchedules();
+  }
+
+  void fetchSchedules() async {
+    var dio = await useDio();
+    var response = await dio.get('/schedule?kidId=4&year=2024&month=5');
+    var data = response.data as List;
+
+    Map<DateTime, List<Schedule>> newSchedules = {};
+
+    for (var item in data) {
+      DateTime startTime = DateTime.parse(item['startTime']);
+      Schedule schedule = Schedule(
+        id: item['kidId'], // 임시로 kidId를 id로 사용
+        startTime: startTime.hour,
+        endTime: startTime.hour + 1, // 예시로 1시간 후를 종료 시간으로 설정
+        content: item['kidName'],
+        date: DateTime.utc(startTime.year, startTime.month, startTime.day),
+        color: categoryColors[0], // 임의로 색상 설정
         createdAt: DateTime.now().toUtc(),
-      ),
-      Schedule(
-        id: 2,
-        startTime: 14,
-        endTime: 16,
-        content: 'NestJS 공부하기',
-        date: DateTime.utc(2024, 5, 8),
-        color: categoryColors[3],
-        createdAt: DateTime.now().toUtc(),
-      ),
-    ],
-    DateTime.utc(2024, 5, 10): [
-      Schedule(
-        id: 1,
-        startTime: 11,
-        endTime: 12,
-        content: '플러터 공부하기',
-        date: DateTime.utc(2024, 5, 8),
-        color: categoryColors[0],
-        createdAt: DateTime.now().toUtc(),
-      ),
-      Schedule(
-        id: 2,
-        startTime: 14,
-        endTime: 16,
-        content: 'NestJS 공부하기',
-        date: DateTime.utc(2024, 5, 8),
-        color: categoryColors[3],
-        createdAt: DateTime.now().toUtc(),
-      ),
-    ]
-  };
+      );
+
+      if (!newSchedules.containsKey(schedule.date)) {
+        newSchedules[schedule.date] = [];
+      }
+      newSchedules[schedule.date]!.add(schedule);
+    }
+
+    setState(() {
+      schedules = newSchedules;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

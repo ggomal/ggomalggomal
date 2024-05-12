@@ -84,7 +84,8 @@ public class TeacherSocketService {
 
                             Mono<Void> sendTeacherBoard = room.sendTeacherBingoBoard(responseT)
                                     .doOnSuccess(v -> {
-                                        BingoPlayer bingoPlayerT = new BingoPlayer(session.getId(), session, bingoBoardT, MemberEntity.Role.TEACHER);
+                                        WebSocketSession teacherSocket = room.getTeacherSocket();
+                                        BingoPlayer bingoPlayerT = new BingoPlayer(teacherSocket.getId(), teacherSocket, bingoBoardT, MemberEntity.Role.TEACHER);
                                         bingoSocketService.putBingoPlayer(bingoPlayerT);
                                     });
 

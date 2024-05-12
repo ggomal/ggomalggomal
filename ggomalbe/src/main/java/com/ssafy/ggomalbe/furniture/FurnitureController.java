@@ -54,12 +54,17 @@ public class FurnitureController {
                                         .build());
                             } else {
                                 // 코인이 충분한 경우, 가구 추가
-                                return kidService.minusCoin(kidId, 2L)
-                                        .then(furnitureService.addFurniture(kidId, request)) // 코인 감소 후 가구 추가
-                                        .map(furniture -> FurnitureAddResponse.builder()
-                                                .furnitureId(furniture.getFurnitureId())
-                                                .isDone(true)
-                                                .build());
+                                return furnitureService.addFurniture(kidId, request)
+                                        .flatMap(entity -> {
+                                            if (entity.getIsDone())
+                                                return kidService.minusCoin(kidId, 2L)
+                                                        .map(furniture -> FurnitureAddResponse.builder()
+                                                                .furnitureId(request.getFurnitureId())
+                                                                .isDone(true)
+                                                                .build());
+                                            else
+                                                return Mono.just(entity);
+                                        });
                             }
                         })
         );

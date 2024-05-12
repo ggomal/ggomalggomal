@@ -72,17 +72,18 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
       appBar: ManagerNavBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModalBottomSheet(
+          showDialog(
               context: context,
-              builder: (_) {
-                return ScheduleBottomSheet();
-              });
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: ScheduleBottomSheet(selectedDay: selectedDay, fetchSchedules: fetchSchedules,),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                );
+              }
+          );
         },
         backgroundColor: primaryColor,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: Icon(Icons.add, color: Colors.white),
       ),
       body: SafeArea(
         child: Center( // Center를 사용해 전체를 중앙에 배치

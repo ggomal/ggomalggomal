@@ -19,4 +19,5 @@ public interface BearRecordService {
 
 
     Mono<BearRecordResponse> addBearRecord(FilePart filePart, Long memberId, Long gameNum, Long wordId, String letter, Short pronCount);
+    Mono<BearRecordResponse> addBearRecordV2(FilePart filePart, Long memberId, Long gameNum, Long wordId, String letter, Short pronCount);
 }

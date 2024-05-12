@@ -1,35 +1,37 @@
-package com.ssafy.ggomalbe.bear.controller;
+package com.ssafy.ggomalbe.common.service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.ssafy.ggomalbe.common.dto.SpeechDto;
+import com.ssafy.ggomalbe.common.dto.superspeech.PronunciationResDto;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.security.MessageDigest;
-import java.util.Map;
 
-@RestController
-@RequestMapping("/super")
-public class SuperSpeechController {
+@Service
+public class SpeechSuperService {
 
-    //    appKey/applicationId: 17153308990002fe
-//    secretKey:3b848e012b72b120898b2ceb934ac83d
-    public static final String baseUrl = "https://api.speechsuper.com/";
-    public static final String appKey = "17153308990002fe";
-    public static final String secretKey = "3b848e012b72b120898b2ceb934ac83d";
+    @Value("${speechsuper.baseUrl}")
+    private String baseUrl;
 
+    @Value("${speechsuper.appKey}")
+    private String appKey;
 
-    public static Mono<String> HttpAPI(FilePart file, String audioType, String audioSampleRate, String refText, String coreType) {
+    @Value("${speechsuper.secretKey}")
+    private String secretKey;
+
+    @Value("${speechsuper.charString}")
+    private String charString;
+
+    private Mono<String> HttpAPI(FilePart file, String audioType, String audioSampleRate, String refText, String coreType) {
         String url = baseUrl + coreType;
         String userId = getRandomString(5);
 
@@ -40,18 +42,17 @@ public class SuperSpeechController {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("text", params);
         body.add("audio", file);
-        System.out.println(body.get("audio"));
 
         return webClient.post()
                 .uri(url)
-//                                .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                 .header("Request-Index", "0")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(body))
                 .retrieve()
                 .bodyToMono(String.class);
     }
 
-    private static String buildParam(String appkey, String secretKey, String userId, String audioType, String audioSampleRate, String refText, String coreType) {
+    private String buildParam(String appkey, String secretKey, String userId, String audioType, String audioSampleRate, String refText, String coreType) {
 
         MessageDigest digest = DigestUtils.getSha1Digest();
 
@@ -97,7 +98,8 @@ public class SuperSpeechController {
                 + "\"request\":{"
                 + "\"tokenId\":\"tokenId\","
                 + "\"refText\":\"" + refText + "\","
-                + "\"coreType\":\"" + coreType + "\""
+                + "\"coreType\":\"" + coreType + "\","
+                + "\"slack\":0.5"
                 + "}"
                 + "}"
                 + "}"
@@ -106,13 +108,11 @@ public class SuperSpeechController {
     }
 
 
-    private static int getRandom(int count) {
+    private int getRandom(int count) {
         return (int) Math.round(Math.random() * (count));
     }
 
-    private static final String charString = "abcdefghijklmnopqrstuvwxyz123456789";
-
-    private static String getRandomString(int length) {
+    private String getRandomString(int length) {
         StringBuffer sb = new StringBuffer();
         int len = charString.length();
         for (int i = 0; i < length; i++) {
@@ -121,22 +121,21 @@ public class SuperSpeechController {
         return sb.toString();
     }
 
-    @PostMapping
-    public Mono<Void> superSpeech(@RequestPart("file") FilePart file) {
-        System.out.println("api호출시작");
+    public Mono<PronunciationResDto> evaluation(FilePart file, String refText) {
         String coreType = "sent.eval.kr"; // Change the coreType according to your needs.
-        String refText = "피망 넣어주세요"; // Change the reference text according to your needs.
-        String audioPath = "src/main/resources/audio/InsertTomato.mp3"; // Change the audio path corresponding to the reference text.
         String audioType = "mp3"; // Change the audio type corresponding to the audio file.
         String audioSampleRate = "16000";
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
 
         return HttpAPI(file, audioType, audioSampleRate, refText, coreType)
-                .doOnNext(result->{
-                    System.out.println(result);
-                }).then();
+                .map(result -> new Gson().fromJson(result, PronunciationResDto.class));
+    }
 
+    private Mono<PronunciationResDto> speechSuperWord(FilePart file, String refText) {
+        String coreType = "word.eval.kr."; // Change the coreType according to your needs.
+        String audioType = "mp3"; // Change the audio type corresponding to the audio file.
+        String audioSampleRate = "16000";
+
+        return HttpAPI(file, audioType, audioSampleRate, refText, coreType)
+                .map(result -> new Gson().fromJson(result, PronunciationResDto.class));
     }
 }

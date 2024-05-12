@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public interface ScheduleRepository extends R2dbcRepository<ScheduleEntity, Long> {
 
-    @Query("SELECT tk.kid_id as kid_id, m.name as kid_name, s.start_time as start_time, s.status as status " +
+    @Query("SELECT tk.kid_id as kid_id, m.name as kid_name, s.start_time as start_time, s.status as status, s.content as content " +
             "FROM schedule s " +
             "LEFT OUTER JOIN teacher_kid tk " +
             "ON s.teacher_kid_id = tk.teacher_kid_id " +

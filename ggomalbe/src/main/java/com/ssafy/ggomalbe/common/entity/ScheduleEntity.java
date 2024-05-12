@@ -28,6 +28,9 @@ public class ScheduleEntity extends AbstractEntity {
     @Column("status")
     private ScheduleEntity.Status status;
 
+    @Column("content")
+    private String content;
+
     @Getter
     @RequiredArgsConstructor
     public enum Status {

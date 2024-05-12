@@ -12,4 +12,5 @@ import java.time.LocalDateTime;
 public class ScheduleAddRequest {
     private Long kidId;
     private LocalDateTime startTime;
+    private String content;
 }

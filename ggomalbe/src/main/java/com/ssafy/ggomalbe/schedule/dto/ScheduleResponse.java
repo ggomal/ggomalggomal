@@ -19,5 +19,6 @@ public class ScheduleResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startTime;
     private ScheduleEntity.Status status;
+    private String content;
     private String msg;
 }

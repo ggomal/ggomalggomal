@@ -19,6 +19,7 @@ public class ScheduleMapper {
                 .kidId(kidId)
                 .startTime(entity.getStartTime())
                 .status(entity.getStatus())
+                .content(entity.getContent())
                 .build();
 
     }
@@ -28,6 +29,7 @@ public class ScheduleMapper {
                 .teacherKidId(teacherKidId)
                 .startTime(req.getStartTime())
                 .status(ScheduleEntity.Status.TODO)
+                .content(req.getContent())
                 .build();
     }
 }

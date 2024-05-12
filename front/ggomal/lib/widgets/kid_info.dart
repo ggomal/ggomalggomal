@@ -120,7 +120,10 @@ class _KidInfoState extends State<KidInfo> {
                 ElevatedButton(
                   onPressed: () => showDialog(
                     context: context,
-                    builder: (BuildContext context) => CreateBingoModal(),
+                    builder: (BuildContext context) => CreateBingoModal(
+                      name: snapshot.data!["name"],
+                      kidId: snapshot.data!["id"],
+                    ),
                   ),
                   child: Text("아이와 게임하기"),
                   style: ElevatedButton.styleFrom(

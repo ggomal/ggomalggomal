@@ -57,13 +57,12 @@ final router = GoRouter(
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         if (extra == null) {
-          throw Exception('No data passed to route');
+          throw Exception('route 추가 사항 에러');
         }
         final channel = extra['channel'] as WebSocketChannel?;
         final responseData = extra['bingoBoardData'] as List<List<Map<String, dynamic>>>?;
-
         if (channel == null) {
-          throw Exception('WebSocketChannel is required for BingoScreen');
+          throw Exception('빙고로 넘어가려는데 웹소켓 끊겨있으면 나는 에러');
         }
 
         return MaterialPage(

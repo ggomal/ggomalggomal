@@ -47,6 +47,26 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
         createdAt: DateTime.now().toUtc(),
       ),
     ],
+    DateTime.utc(2024, 5, 10): [
+      Schedule(
+        id: 1,
+        startTime: 11,
+        endTime: 12,
+        content: '플러터 공부하기',
+        date: DateTime.utc(2024, 5, 8),
+        color: categoryColors[0],
+        createdAt: DateTime.now().toUtc(),
+      ),
+      Schedule(
+        id: 2,
+        startTime: 14,
+        endTime: 16,
+        content: 'NestJS 공부하기',
+        date: DateTime.utc(2024, 5, 8),
+        color: categoryColors[3],
+        createdAt: DateTime.now().toUtc(),
+      ),
+    ]
   };
 
   @override

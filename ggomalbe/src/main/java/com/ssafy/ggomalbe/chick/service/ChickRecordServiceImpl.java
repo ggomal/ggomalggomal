@@ -59,6 +59,7 @@ public class ChickRecordServiceImpl implements ChickRecordService{
                         words.add(wrd.getScores().getPronunciation() >= 70);
                         overResult &= words.get(words.size()-1);
                     }
+                    log.info("chick_record result : " + words.toString());
                     return ChickEvaluationResponse.builder()
                             .refWord(sentence)
                             .overResult(overResult)

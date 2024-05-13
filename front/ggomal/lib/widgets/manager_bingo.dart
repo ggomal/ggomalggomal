@@ -1,73 +1,25 @@
-import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
-import 'package:ggomal/services/chick_dio.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ManagerBingoModal extends StatefulWidget {
   final Map<String, dynamic> selectData;
+  final WebSocketChannel channel;
 
-  const ManagerBingoModal(this.selectData, {super.key});
+  const ManagerBingoModal(this.selectData, {super.key, required this.channel});
 
   @override
   State<ManagerBingoModal> createState() => _ManagerBingoModalState();
 }
 
 class _ManagerBingoModalState extends State<ManagerBingoModal> {
-  late String currentFilePath;
   int recordCount = 0;
-  final recorder = FlutterSoundRecorder();
-  String filePath = '';
 
   @override
   void initState() {
     super.initState();
-    initRecorder();
-  }
-
-  Future initRecorder() async {
-    var status = await Permission.speech.status;
-    if (!status.isGranted) {
-      print('권한 허용안됨');
-      throw '마이크 권한이 허용되지 않았습니다';
-    }
-    await recorder.openRecorder();
-  }
-
-  void postAudio() async {
-    File audioFile = File(filePath);
-    if (await audioFile.exists()) {
-      String m4a = filePath.replaceAll('.aac', '.m4a');
-      await audioFile.rename(m4a);
-      final response = await checkAudio(1,
-          "${widget.selectData['letter']} ${widget.selectData['wordId']}", m4a);
-      if (response['result'] || recordCount == 3) {
-        Navigator.pop(context, true);
-      }
-    } else {
-      print("파일이 존재하지 않습니다.");
-    }
-  }
-
-  Future<void> record() async {
-    Directory tempDir = await getTemporaryDirectory();
-    filePath = '${tempDir.path}/chick_audio_$recordCount.aac';
-
-    await recorder.startRecorder(toFile: filePath);
-
-    setState(() {
-      currentFilePath = filePath;
-    });
-  }
-
-  Future<void> stop() async {
-    await recorder.stopRecorder();
-    postAudio();
-    setState(() {
-      recordCount++;
-    });
+    recordCount = 0;
   }
 
   @override
@@ -119,7 +71,14 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                     Column(
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            var message = json.encode({
+                              "type": "requestVoice",
+                              "letter": widget.selectData['letter']
+                            });
+                            print('통과버튼 누르면 $message');
+                            widget.channel.sink.add(message);
+                          },
                           child: Image.asset(
                             'assets/images/manager/pass_button.png',
                             height: 80,
@@ -129,32 +88,18 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                             style: mapleText(30, FontWeight.w200, Colors.black))
                       ],
                     ),
-                    // ElevatedButton(
-                    //   onPressed: () async {
-                    //     if (recorder.isRecording) {
-                    //       await stop();
-                    //     } else {
-                    //       await record();
-                    //     }
-                    //   },
-                    //   style: ElevatedButton.styleFrom(
-                    //     padding: const EdgeInsets.symmetric(
-                    //       vertical: 20,
-                    //       horizontal: 40,
-                    //     ),
-                    //     backgroundColor: Color(0xFFFFFAAC),
-                    //     foregroundColor: Colors.white,
-                    //   ),
-                    //   child: Text('다시하기',
-                    //       style: mapleText(30, FontWeight.w700, Colors.black)),
-                    // ),
                     SizedBox(
                       width: 50,
                     ),
                     Column(
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              recordCount += 1;
+                            });
+                            print('아이 연습 단어랑 횟수 ${speechData['letter']}, $recordCount');
+                          },
                           child: Image.asset(
                             'assets/images/manager/retry_button.png',
                             height: 80,
@@ -164,25 +109,6 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                             style: mapleText(30, FontWeight.w200, Colors.black))
                       ],
                     ),
-                    // ElevatedButton(
-                    //   onPressed: () async {
-                    //     if (recorder.isRecording) {
-                    //       await stop();
-                    //     } else {
-                    //       await record();
-                    //     }
-                    //   },
-                    //   style: ElevatedButton.styleFrom(
-                    //     padding: const EdgeInsets.symmetric(
-                    //       vertical: 20,
-                    //       horizontal: 40,
-                    //     ),
-                    //     backgroundColor: Color(0xFFFFFAAC),
-                    //     foregroundColor: Colors.white,
-                    //   ),
-                    //   child: Text('통과',
-                    //       style: mapleText(30, FontWeight.w700, Colors.black)),
-                    // ),
                   ],
                 ),
               ],

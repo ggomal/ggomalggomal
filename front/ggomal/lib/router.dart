@@ -16,7 +16,7 @@ import 'package:ggomal/screens/kids/bear.dart';
 import 'package:ggomal/screens/kids/frog.dart';
 import 'package:ggomal/screens/kids/chick.dart';
 import 'package:ggomal/screens/kids/home.dart';
-import 'package:ggomal/screens/kids/bingo.dart';
+// import 'package:ggomal/screens/kids/bingo.dart';
 import 'package:ggomal/screens/manager/create_bingo.dart';
 import 'package:ggomal/widgets/kid_report.dart';
 
@@ -54,28 +54,28 @@ final router = GoRouter(
     ),
 
 
-    GoRoute(
-      path: '/kids/bear/bingo',
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        if (extra == null) {
-          throw Exception('route 추가 사항 에러');
-        }
-        final channel = extra['channel'] as WebSocketChannel?;
-        final responseData = extra['bingoBoardData'] as List<List<Map<String, dynamic>>>?;
-        if (channel == null) {
-          throw Exception('빙고로 넘어가려는데 웹소켓 끊겨있으면 나는 에러');
-        }
-
-        return MaterialPage(
-          key: state.pageKey,
-          child: BingoScreen(
-            responseData: responseData,
-            channel: channel,
-          ),
-        );
-      },
-    ),
+    // GoRoute(
+    //   path: '/kids/bear/bingo',
+    //   pageBuilder: (context, state) {
+    //     final extra = state.extra as Map<String, dynamic>?;
+    //     if (extra == null) {
+    //       throw Exception('route 추가 사항 에러');
+    //     }
+    //     final channel = extra['channel'] as WebSocketChannel?;
+    //     final responseData = extra['bingoBoardData'] as List<List<Map<String, dynamic>>>?;
+    //     if (channel == null) {
+    //       throw Exception('빙고로 넘어가려는데 웹소켓 끊겨있으면 나는 에러');
+    //     }
+    //
+    //     return MaterialPage(
+    //       key: state.pageKey,
+    //       child: BingoScreen(
+    //         responseData: responseData,
+    //         channel: channel,
+    //       ),
+    //     );
+    //   },
+    // ),
 
     GoRoute(
       path: '/kids/chick/clean',

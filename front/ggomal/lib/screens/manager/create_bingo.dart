@@ -1,13 +1,22 @@
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
+import 'package:ggomal/widgets/manager_bingo.dart';
 import 'package:ggomal/screens/kids/bingo.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ggomal/services/socket.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:ggomal/widgets/navbar_teacher.dart';
+import 'package:web_socket_channel/status.dart' as status;
+import 'package:http/http.dart' as http;
+import 'package:ggomal/login_storage.dart';
 
 class CreateBingo extends StatefulWidget {
   final String name;
@@ -19,18 +28,19 @@ class CreateBingo extends StatefulWidget {
 }
 
 class _CreateBingoModalState extends State<CreateBingo> {
-
   late final WebSocketChannel channel;
   late final Stream broadcastStream;
   late StreamController streamController;
   bool isConnected = false;
-  BingoScreen? bingo;
   String connectionStatus = '오프라인';
   Color textColor = Colors.transparent;
   List<List<Map<String, dynamic>>> bingoBoardData = [];
   bool showBingo = false;
+  int recordCount = 0;
+  late String currentFilePath;
+  final LoginStorage storage = LoginStorage();
 
-  final List<String> words = ['1음절', '2음절', '3음절 이상'];
+  final List<String> words = ['2음절', '3음절 이상'];
   final List<String> initials = ['ㅍ,ㅁ,ㅇ', 'ㄷ,ㅌ,ㄴ', 'ㄱ,ㅋ,ㅈ,ㅊ', 'ㅅ', 'ㄹ'];
   final List<String> finality = ['받침 있는 단어', '받침 없는 단어'];
   String? _selectedInitials;
@@ -67,15 +77,18 @@ class _CreateBingoModalState extends State<CreateBingo> {
     broadcastStream.listen((response) {
       print('빙고 만드는페이지에서 들어오는 수신 찍어보기 $response');
       Map<String, dynamic> message = jsonDecode(response);
-      if (message['action'] == 'JOIN_ROOM') {
-        setState(() {
-          connectionStatus = '온라인';
-        });
-      } else {
-        setState(() {
-          connectionStatus = '오프라인';
-        });
+      switch (message['action']) {
+        case 'JOIN_ROOM':
+          setState(() => connectionStatus = '온라인');
+          break;
+        case 'EVALUATION':
+          print('평가하라는 요청 들어오긴 들어와씀');
+          BingoSelect(message['letter']);
+          break;
+        case 'MARKING_BINGO':
+
       }
+
     }, onDone: () {
       print('연결 종료 ');
     }, onError: (error) {
@@ -86,6 +99,8 @@ class _CreateBingoModalState extends State<CreateBingo> {
     );
     isConnected = true;
   }
+
+
 
   void setBingoBoard() {
     int syllableCount = 1;
@@ -121,11 +136,11 @@ class _CreateBingoModalState extends State<CreateBingo> {
               .map((item) => item as Map<String, dynamic>)
               .toList();
         }).toList();
+        print('formatdata 어케 출력되는지 보자 $formattedData');
         setState(() {
           bingoBoardData = formattedData;
         });
-        GoRouter.of(context).go('/kids/bear/bingo',
-            extra: {'bingoBoardData': bingoBoardData, 'channel': channel});
+        showBingo = true;
       }
     }, onDone: () {
       print('빙고 만들기 모달 연결 종료');
@@ -139,6 +154,101 @@ class _CreateBingoModalState extends State<CreateBingo> {
       "syllable": syllableCount,
       "finalityFlag": finalityFlag
     }));
+  }
+
+  final recorder = FlutterSoundRecorder();
+
+  Future initRecorder() async {
+    var status = await Permission.speech.status;
+    if (!status.isGranted) {
+      status = await Permission.speech.request();
+      print('권한 허용안됨');
+      throw '마이크 권한이 허용되지 않았습니다';
+    }
+    await recorder.openRecorder();
+  }
+
+  Future<void> record() async {
+    Directory tempDir = await getTemporaryDirectory();
+    String filePath = '${tempDir.path}/audio_$recordCount.aac';
+    await recorder.startRecorder(toFile: filePath);
+    setState(() {
+      currentFilePath = filePath;
+    });
+    print('녹음하기');
+  }
+
+  Future<void> stop() async {
+    await recorder.stopRecorder();
+    setState(() {
+      recordCount++;
+    });
+    print('녹음종료됨');
+  }
+
+  Future<void> sendLastAudio() async {
+    print(currentFilePath);
+    if (currentFilePath.isNotEmpty) {
+      var request = http.MultipartRequest('POST',
+          Uri.parse('https://k10e206.p.ssafy.io/api/v1/bear/evaluation'));
+      request.files
+          .add(await http.MultipartFile.fromPath('files', currentFilePath));
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        print('녹음 전송됨');
+      } else {
+        var httpResponse = await http.Response.fromStream(response);
+        print('녹음 전송 실패: ${httpResponse.body}');
+      }
+    }
+  }
+
+  void BingoSelect(String letter) {
+    print('선택된 레터: $letter');
+    var foundItem = bingoBoardData.expand((e) => e).firstWhere(
+          (item) => item['letter'] == letter,
+      orElse: () => {},
+    );
+    print('찾은 아이템: $foundItem');
+    if (foundItem.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => ManagerBingoModal({
+          "letter": foundItem['letter'],
+          "pronunciation": foundItem['pronunciation'],
+          "img": foundItem['letterImgUrl'],
+          "sound": foundItem['soundUrl'],
+          "id": foundItem['id'],
+        }, channel: channel),
+      );
+    } else {
+      print('해당 레터에 대한 정보를 찾을 수 없습니다.');
+    }
+  }
+
+  Future<void> sendWebSocketMessage(String letter) async {
+    if (channel != null && isConnected) {
+      var message = jsonEncode({
+        'type': 'play',
+        'letter': letter,
+      });
+      channel.sink.add(message);
+      print('빙고 클릭 시 받는 웹소켓 응답입니다 선생님 페이진 $message');
+    } else {
+      print('빙고 클릭 했을 때 웹소켓 연결이 안됨 ㅅㄱ');
+    }
+  }
+
+  void ManagerSelect(Map<String, dynamic> thing) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ManagerBingoModal({
+        "id":thing['id'],
+        "pronunciation": thing['pronunciation'],
+        "letter": thing['letter'],
+        "img": thing['letterImgUrl'],
+      }, channel: channel,),
+    );
   }
 
   @override
@@ -465,96 +575,132 @@ class _CreateBingoModalState extends State<CreateBingo> {
     );
   }
 
+  Widget buildBingoGrid(List<List<Map<String, dynamic>>> bingoBoard) {
+    var flatList = bingoBoard.expand((row) => row).toList();
+
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: flatList.length,
+      itemBuilder: (context, index) {
+        var cell = flatList[index];
+        return InkWell(
+            onTap: () {
+              BingoSelect(cell['letter']);
+              sendWebSocketMessage(cell['letter']);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black54, width: 2),
+                image: DecorationImage(
+                  image: NetworkImage(
+                      cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                cell['letter'],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ));
+      },
+    );
+  }
+
   @override
   Widget BingoWidget() {
-  //   final responseData = widget.responseData;
-  //   return FutureBuilder(
-  //     future: storage.getRole(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.done) {
-  //         if (snapshot.data == 'KID') {
-  //         }
-  //
-  //         return Container(
-  //             decoration: BoxDecoration(
-  //               image: DecorationImage(
-  //                 image: AssetImage("assets/images/bear/bingo_bg.png"),
-  //                 fit: BoxFit.cover,
-  //               ),
-  //             ),
-  //             child: Scaffold(
-  //               backgroundColor: Colors.transparent,
-  //               appBar: NavBarTeacher(),
-  //               body: Stack(children: [
-  //                 Container(
-  //                     child: Row(
-  //                       children: [
-  //                         Flexible(
-  //                           child: Container(),
-  //                           flex: 3,
-  //                         ),
-  //                         Flexible(
-  //                           flex: 5,
-  //                           child: Padding(
-  //                             padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
-  //                             child: responseData != null
-  //                                 ? buildBingoGrid(responseData)
-  //                                 : Container(color: Colors.yellow),
-  //                           ),
-  //                         ),
-  //                         Flexible(
-  //                           child: Container(),
-  //                           flex: 3,
-  //                         )
-  //                       ],
-  //                     )),
-  //                 Positioned(
-  //                   left: 30,
-  //                   bottom: 0,
-  //                   child: Image.asset(
-  //                     'assets/images/bear/student.png',
-  //                     width: 250,
-  //                   ),
-  //                 ),
-  //                 Positioned(
-  //                   right: 30,
-  //                   bottom: 5,
-  //                   child: Image.asset(
-  //                     'assets/images/bear/teacher.png',
-  //                     width: 250,
-  //                   ),
-  //                 ),
-  //
-  //                 // 임시 버튼
-  //                 Positioned(
-  //                   right: 0,
-  //                   top: 100,
-  //                   child: ElevatedButton(
-  //                     onPressed: () async {
-  //                       if (recorder.isRecording) {
-  //                         await stop();
-  //                       } else {
-  //                         await record();
-  //                       }
-  //                     },
-  //                     child: Text(recorder.isRecording ? '녹음종료' : '녹음하기'),
-  //                   ),
-  //                 ),
-  //                 Positioned(
-  //                   right: 0,
-  //                   top: 200,
-  //                   child: ElevatedButton(
-  //                     onPressed: sendLastAudio,
-  //                     child: Text('통과'),
-  //                   ),
-  //                 ),
-  //               ]),
-  //             ));
-  //       } else {
-  //         return CircularProgressIndicator();
-  //       }
-  //     },
-  //   );
+    return FutureBuilder(
+      future: storage.getRole(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data == 'KID') {
+          }
+          return Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/bear/bingo_bg.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: NavBarTeacher(),
+                body: Stack(children: [
+                  Container(
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Container(),
+                            flex: 3,
+                          ),
+                          Flexible(
+                            flex: 5,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                              child: bingoBoardData != null
+                                  ? buildBingoGrid(bingoBoardData)
+                                  : Container(color: Colors.yellow),
+                            ),
+                          ),
+                          Flexible(
+                            child: Container(),
+                            flex: 3,
+                          )
+                        ],
+                      )),
+                  Positioned(
+                    left: 30,
+                    bottom: 0,
+                    child: Image.asset(
+                      'assets/images/bear/student.png',
+                      width: 250,
+                    ),
+                  ),
+                  Positioned(
+                    right: 30,
+                    bottom: 5,
+                    child: Image.asset(
+                      'assets/images/bear/teacher.png',
+                      width: 250,
+                    ),
+                  ),
+
+                  // 임시 버튼
+                  // Positioned(
+                  //   right: 0,
+                  //   top: 100,
+                  //   child: ElevatedButton(
+                  //     onPressed: () async {
+                  //       if (recorder.isRecording) {
+                  //         await stop();
+                  //       } else {
+                  //         await record();
+                  //       }
+                  //     },
+                  //     child: Text(recorder.isRecording ? '녹음종료' : '녹음하기'),
+                  //   ),
+                  // ),
+                  // Positioned(
+                  //   right: 0,
+                  //   top: 200,
+                  //   child: ElevatedButton(
+                  //     onPressed: sendLastAudio,
+                  //     child: Text('통과'),
+                  //   ),
+                  // ),
+                ]),
+              ));
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    );
   }
 
   @override

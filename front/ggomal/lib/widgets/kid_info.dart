@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/services/kid_manage_dio.dart';
-import 'package:ggomal/widgets/create_bingo.dart';
+import 'package:ggomal/screens/manager/create_bingo.dart';
 import 'package:ggomal/constants.dart';
+import 'package:go_router/go_router.dart';
 
 class KidInfo extends StatefulWidget {
   final String? kidId;
+
   const KidInfo(this.kidId, {super.key});
 
   @override
@@ -24,7 +26,6 @@ class _KidInfoState extends State<KidInfo> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget textLine(Map<String, String> text) {
       return Flexible(
         flex: 1,
@@ -67,8 +68,7 @@ class _KidInfoState extends State<KidInfo> {
           ),
         ],
       ),
-      child:
-      FutureBuilder (
+      child: FutureBuilder(
         future: _kidFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -97,7 +97,10 @@ class _KidInfoState extends State<KidInfo> {
                   {"field": "나이", "data": "만 ${snapshot.data!["age"]}세"},
                   {"field": "아이디", "data": "${snapshot.data!["id"]}"},
                   {"field": "비밀번호", "data": "${snapshot.data!["password"]}"},
-                  {"field": "보호자 연락처", "data": "${snapshot.data!["parentPhone"]}"},
+                  {
+                    "field": "보호자 연락처",
+                    "data": "${snapshot.data!["parentPhone"]}"
+                  },
                 ].map((e) => textLine(e)),
                 Container(
                   width: double.infinity,
@@ -112,19 +115,29 @@ class _KidInfoState extends State<KidInfo> {
                   height: 50,
                   child: Text(
                     "${snapshot.data!['kidNote']}",
-                    maxLines:3,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: nanumText(12.0, FontWeight.w500, Colors.black),
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) => CreateBingoModal(
-                      name: snapshot.data!["name"],
-                      kidId: snapshot.data!["id"],
-                    ),
-                  ),
+                  // onPressed: () => showDialog(
+                  //   context: context,
+                  //   builder: (BuildContext context) => CreateBingoModal(
+                  //     name: snapshot.data!["name"],
+                  //     kidId: snapshot.data!["id"],
+                  //   ),
+
+                  onPressed: () {
+                    final name = snapshot.data!["name"];
+                    final kidId = snapshot.data!["id"];
+
+                    GoRouter.of(context).go(
+                        '/manager/bingo/$kidId',
+                        extra: {'name': name, 'id': kidId}
+                    );
+                  },
+
                   child: Text("아이와 게임하기"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFAA8D),
@@ -136,9 +149,6 @@ class _KidInfoState extends State<KidInfo> {
           }
         },
       ),
-
-
-
     );
   }
 }

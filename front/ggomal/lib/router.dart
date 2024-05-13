@@ -17,6 +17,7 @@ import 'package:ggomal/screens/kids/frog.dart';
 import 'package:ggomal/screens/kids/chick.dart';
 import 'package:ggomal/screens/kids/home.dart';
 import 'package:ggomal/screens/kids/bingo.dart';
+import 'package:ggomal/screens/manager/create_bingo.dart';
 import 'package:ggomal/widgets/kid_report.dart';
 
 final router = GoRouter(
@@ -51,6 +52,7 @@ final router = GoRouter(
       path: '/kids/home',
       builder: (context, state) => const HomeScreen(),
     ),
+
 
     GoRoute(
       path: '/kids/bear/bingo',
@@ -93,6 +95,16 @@ final router = GoRouter(
       builder: (context, state) {
         return KidDetail(state.pathParameters['id']);
         // return KidDetail();
+      },
+    ),
+    GoRoute(
+      path: '/manager/bingo/:id',
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        final name = data['name'];
+        final kidId = data['id'];
+
+        return CreateBingo(name: name, kidId: kidId);
       },
     ),
     GoRoute(

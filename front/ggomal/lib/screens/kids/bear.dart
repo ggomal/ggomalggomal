@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/utils/navbar.dart';
@@ -23,6 +24,7 @@ class _BearScreenState extends State<BearScreen> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   List<List<Map<String, dynamic>>> bingoBoardData = [];
   late final Stream broadcastStream;
+  StreamSubscription? subscription;
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _BearScreenState extends State<BearScreen> {
         Uri.parse(SocketDio.getWebSocketUrl()),
         headers: headers,
       );
+
 
       broadcastStream = channel.stream.asBroadcastStream();
       broadcastStream.listen((response) {
@@ -55,6 +58,9 @@ class _BearScreenState extends State<BearScreen> {
             bingoBoardData = formattedData;
           });
           print('뭘로들어오려나 두근두근 ㅎㅎ');
+
+          subscription?.cancel();
+          subscription = null;
           GoRouter.of(context).go('/kids/bear/bingo',
               extra: {'bingoBoardData': bingoBoardData, 'channel': channel});
         }

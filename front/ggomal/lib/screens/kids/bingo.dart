@@ -87,7 +87,7 @@ class _BingoScreenState extends State<BingoScreen> {
   }
 
   final recorder = FlutterSoundRecorder();
-
+  
   void listenWebSocket() {
     print('이거 도아가기는 하는거닞?');
     channelSubscription = broadcastStream?.listen((data) {
@@ -246,41 +246,13 @@ class _BingoScreenState extends State<BingoScreen> {
                             flex: 3,
                           ),
                           Flexible(
-                            flex: 4,
-                            child: Column(children: [
-                              Flexible(
-                                child: Center(
-                                  child: Container(
-                                    width: 200,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffcfe4d1),
-                                      borderRadius: BorderRadius.circular(50),
-                                      border: Border.all(
-                                        color: Colors.black54,
-                                        width: 4,
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '이름출력',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: 'Maplestory',
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 40,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                flex: 4,
-                                child: responseData != null
-                                    ? buildBingoGrid(responseData)
-                                    : Container(color: Colors.yellow),
-                              )
-                            ]),
+                            flex: 5,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                              child: responseData != null
+                                  ? buildBingoGrid(responseData)
+                                  : Container(color: Colors.yellow),
+                            ),
                           ),
                           Flexible(
                             child: Container(),

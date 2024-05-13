@@ -42,18 +42,33 @@ public class TeacherSocketService {
     //통과버튼 누르기 -> 아이창에 해당 단어 O표시, 발음평가api결과 저장
 
     //게임창 만들기 -> 게임판을 만들면 아이에게도 게임판을 주고 게임시작된다
+
+    //=====receive=====
+    //평가 모달띄우기
+    //
+
+    //아이가 칸을 터치한다
+    // 선생님 창에 [다시듣기 통과] 모달이 띄워진다
+
+    //다시듣기버튼을 터치한다
+    //아이 창에 모달이 다시 띄워지면서 [소리듣기 발음]진행
+
+    //통과버튼을 터치한다
+    //아이의 창에서 해당 단어 칸이 O처리가 된다.
+
+    //선생님이 칸을 터치한다
+    //아이한테 그걸 찾으라는 말이 나온다
     public Mono<Void> setBingoBoard(WebSocketSession session, JsonNode jsonNode) throws JsonProcessingException {
 //        String messageType = jsonNode.get("type").asText();
-
-        log.info("parsing...");
+        log.info("setBingoBoard parsing...");
         List<String> initialList = Arrays.asList(jsonNode.get("initial").asText().split(","));
         short syllable = Short.parseShort(jsonNode.get("syllable").asText());
         boolean finalityFlag = jsonNode.get("finalityFlag").asBoolean();
 
-        log.info("complete");
         log.info("initialList = {}", initialList);
         log.info("syllable = {}", syllable);
         log.info("finalityFlag = {}", finalityFlag);
+        log.info("setBingoBoard parsing complete");
 
         WordCategoryResponse wordCategoryResponse = WordCategoryResponse.builder()
                 .initialList(initialList)
@@ -197,23 +212,4 @@ public class TeacherSocketService {
 
         return Mono.when(boardcastMarkingBingoMono,bingoMono);
     }
-
-//
-    //=====receive=====
-    //평가 모달띄우기
-    //
-
-    //아이가 칸을 터치한다
-    // 선생님 창에 [다시듣기 통과] 모달이 띄워진다
-
-    //다시듣기버튼을 터치한다
-    //아이 창에 모달이 다시 띄워지면서 [소리듣기 발음]진행
-
-    //통과버튼을 터치한다
-    //아이의 창에서 해당 단어 칸이 O처리가 된다.
-
-    //선생님이 칸을 터치한다
-    //아이한테 그걸 찾으라는 말이 나온다
-
-
 }

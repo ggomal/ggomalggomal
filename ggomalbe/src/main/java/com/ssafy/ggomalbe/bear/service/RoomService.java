@@ -58,8 +58,8 @@ public class RoomService {
                     //세션아이디 -> 멤버아이디
                     //멤버아이디 -> 세션아이디
                     String memberIdStr = String.valueOf(memberId);
-                    memberIdSession.put(memberIdStr,session);
-                    sessionIdMember.put(session.getId(),memberIdStr);
+                    memberIdSession.put(memberIdStr, session);
+                    sessionIdMember.put(session.getId(), memberIdStr);
                     log.info("create session Id : {}", session.getId());
 
                     if (!rooms.containsKey(roomId)) {
@@ -96,14 +96,14 @@ public class RoomService {
                     //선생님이 방에 참가하기위해서는 kidId가 session에 있어야한다.
                     //선생님이 방에 참가하기위해 아이의 아이디로 세션을 찾아온후, 세션이 참가하고있는 방의 아이디를 준다
 
-                    if(!isExistsStr(jsonNode, "kidId")) return Mono.empty();
+                    if (!isExistsStr(jsonNode, "kidId")) return Mono.empty();
                     String kidId = jsonNode.get("kidId").asText();
 
 
                     //memberId와 session을 mapping
                     String memberIdStr = String.valueOf(memberId);
-                    memberIdSession.put(memberIdStr,session);
-                    sessionIdMember.put(session.getId(),memberIdStr);
+                    memberIdSession.put(memberIdStr, session);
+                    sessionIdMember.put(session.getId(), memberIdStr);
                     log.info("joinRoom memberId: {}", memberId);
 
                     //kidId로 세션을 가져와서 룸을 찾는다. 
@@ -113,16 +113,16 @@ public class RoomService {
 
                     if (room != null) {
                         room.addParticipant(session, memberRole);
-                        memberRoom.put(session.getId(),room);
+                        memberRoom.put(session.getId(), room);
                         //WebSocket 세션을 통해 메시지를 클라이언트에게 보내는 작업 수행
                         //비동기적으로 실행되며, 클라이언트에게 메시지를 성공적으로 보내면 Mono<Void>를 반환
 
-                        CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.JOIN_ROOM,kidId);
+                        CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.JOIN_ROOM, kidId);
                         String response = new Gson().toJson(createRoomResponse);
 
                         return session.send(Mono.just(session.textMessage(response)));
                     } else {
-                        ErrorResponse errorResponse = new ErrorResponse(SocketAction.ERROR,"방이 존재하지 않습니다.");
+                        ErrorResponse errorResponse = new ErrorResponse(SocketAction.ERROR, "방이 존재하지 않습니다.");
                         String response = new Gson().toJson(errorResponse);
 //                        String response = objectMapper.writeValueAsString(errorResponse);
                         return session.send(Mono.just(session.textMessage(response)));
@@ -136,7 +136,7 @@ public class RoomService {
         if (room == null) {
             return Mono.empty();
         }
-        if(!isExistsStr(jsonNode, "message")) return Mono.empty();
+        if (!isExistsStr(jsonNode, "message")) return Mono.empty();
         String message = jsonNode.get("message").asText();
 
         //메시지를 보낼때 내가 그 방에 참가 하고 있어야 보낼수 있다.
@@ -166,15 +166,13 @@ public class RoomService {
                 .then(Mono.fromRunnable(() -> {
                     rooms.entrySet().removeIf(entry -> entry.getValue().getParticipants().isEmpty());
                 }));
-//        rooms.values().forEach(room -> room.removeParticipant(session));
-//        rooms.entrySet().removeIf(entry -> entry.getValue().getParticipants().isEmpty());
     }
 
     public String createRoomNumber() {
         return UUID.randomUUID().toString();
     }
 
-    public boolean isExistsStr(JsonNode jsonNode, String str){
+    public boolean isExistsStr(JsonNode jsonNode, String str) {
         if (jsonNode.get(str) == null) {
             log.info("null {}", str);
             return false;

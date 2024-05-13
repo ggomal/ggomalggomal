@@ -12,6 +12,7 @@ class Notice extends StatefulWidget {
 class _NoticeState extends State<Notice> {
   @override
   Widget build(BuildContext context) {
+
     TextStyle baseText(double size, FontWeight weight) {
       return TextStyle(
         fontFamily: 'NanumS',
@@ -25,7 +26,7 @@ class _NoticeState extends State<Notice> {
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.symmetric(
-        vertical: 20,
+        vertical: 10,
         horizontal: 10,
       ),
       width: 200,
@@ -43,8 +44,10 @@ class _NoticeState extends State<Notice> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 30,
+          child: Center(child: Text("${widget.notice['date']}", style: baseText(18, FontWeight.w900)))),
           SizedBox(
-            height: 140,
+            height: 110,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -35,12 +35,12 @@ public class OpenApiClient {
                 .build();
     }
 
-    public Mono<OpenApiResponse> letterToScore(String letter, ByteBuffer file) {
+    public Mono<OpenApiResponse> letterToScore(String originText, ByteBuffer file) {
 //        String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/Pronunciation"; // 영어
         String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor";   //한국어
 
-        String languageCode = "english";     // 언어 코드
-        String script = letter;    // 평가 대본
+        String languageCode = "korean";     // 언어 코드
+        String script = originText;    // 평가 대본
         WebClient webClient = WebClient.builder().build();
 
         Map<String, Object> request = new HashMap<>();
@@ -56,7 +56,8 @@ public class OpenApiClient {
                     dataBuffer.get(byteArray); // ByteBuffer의 데이터를 바이트 배열에 복사
 
                     String audioContents = Base64.getEncoder().encodeToString(byteArray);
-                    log.info("script {}", script);
+
+                    log.info("말해야하는 문장 [{}]", script);
 //                    log.info("audioContents {}", audioContents);
 
                     argument.put("language_code", languageCode);

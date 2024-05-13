@@ -34,11 +34,15 @@ public class NoticeServiceImpl implements NoticeService {
                         .map(notice::setHomeworks));
     }
 
-//    @Override
-//    public Mono<NoticeResponse> getNotice(Long noticeId) {
-//        return noticeRepository.findByNoticeId(noticeId)
-//                .map(NoticeMapper::toNoticeResponse);
-//    }
+    @Override
+    public Mono<NoticeResponse> getNotice(Long noticeId) {
+        return noticeRepository.findByNoticeId(noticeId)
+                .map(NoticeMapper::toNoticeResponse)
+                .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
+                        .map(HomeworkMapper::toHomeworkResponse)
+                        .collectList()
+                        .map(notice::setHomeworks));
+    }
 
     @Override
     public Mono<NoticeAddResponse> addNotice(Long memberId, NoticeAddRequest request) {

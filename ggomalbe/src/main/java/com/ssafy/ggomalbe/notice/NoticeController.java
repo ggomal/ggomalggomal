@@ -28,6 +28,11 @@ public class NoticeController {
                         .collectList());
     }
 
+    @GetMapping
+    public Mono<NoticeResponse> getNotice(@RequestParam Long noticeId){
+        return noticeService.getNotice(noticeId);
+    }
+
     @PostMapping
     public Mono<NoticeAddResponse> addNotice(@RequestBody NoticeAddRequest request) {
         return ReactiveSecurityContextHolder.getContext()

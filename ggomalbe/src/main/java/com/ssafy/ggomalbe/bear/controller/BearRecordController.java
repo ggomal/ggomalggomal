@@ -32,4 +32,18 @@ public class BearRecordController {
                     return bearRecordService.addBearRecord(filePart, memberId,gameNumL,wordIdL,letter,pronCountS);
                 });
     }
+
+    @PostMapping("/evaluationV2")
+    public Mono<BearRecordResponse> evaluationV2(@RequestPart("kidVoice") FilePart filePart, @RequestPart("gameNum") String gameNum, @RequestPart("wordId") String wordId, @RequestPart("letter") String letter, @RequestPart("pronCount") String pronCount){
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext ->
+                        (Long) securityContext.getAuthentication().getDetails())
+                .flatMap( memberId -> {
+                    Long gameNumL = Long.parseLong(gameNum);
+                    Long wordIdL = Long.parseLong(wordId);
+                    Short pronCountS = Short.parseShort(pronCount);
+
+                    return bearRecordService.addBearRecordV2(filePart, memberId,gameNumL,wordIdL,letter,pronCountS);
+                });
+    }
 }

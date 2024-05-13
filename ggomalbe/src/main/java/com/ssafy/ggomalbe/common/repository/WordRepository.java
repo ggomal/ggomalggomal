@@ -33,10 +33,9 @@ public interface WordRepository extends R2dbcRepository<WordEntity,Long> {
     @Query("SELECT * FROM word WHERE syllable > :syllable AND initial IN (:initialList) AND finality IS NOT NULL")
     Flux<WordEntity> findByInitialInAndSyllableGreaterThanEqualAndFinalityIsNotNull(List<String> initialList, Short syllable);
 
-
-
     @Query("update word set sound_url = :soundUrl where letter = :letter and sound_url = '';")
     Flux<WordEntity> updateSoundUrlByLetter(String letter, String soundUrl);
+
 
 }
 

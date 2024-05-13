@@ -10,4 +10,6 @@ public interface KidFurnitureRepository extends R2dbcRepository<KidFurnitureEnti
 
     @Override
     Mono<KidFurnitureEntity> save(KidFurnitureEntity entity);
+
+    Mono<Boolean> existsByMemberIdAndFurnitureId(Long memberId, Long furnitureId);
 }

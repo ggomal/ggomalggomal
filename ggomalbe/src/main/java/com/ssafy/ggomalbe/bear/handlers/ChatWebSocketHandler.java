@@ -17,9 +17,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     private final ChatService chatService;
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-//        String iam = (String) session.getAttributes().get("iam");
         System.out.println("name " + session.getHandshakeInfo().getHeaders().get("name").get(0));
-//        String iam = session.getId();
         String iam = session.getHandshakeInfo().getHeaders().get("name").get(0);
 
         //A에서 B한테 보낼때 보낼수있는 방법이 있는가

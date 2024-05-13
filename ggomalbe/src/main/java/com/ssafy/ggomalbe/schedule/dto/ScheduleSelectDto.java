@@ -14,6 +14,7 @@ public class ScheduleSelectDto {
     private final Long scheduleId;
     private final Long teacherKidId;
     private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
     private final ScheduleEntity.Status status;
     private final Long kidId;
     private final Long teacherId;

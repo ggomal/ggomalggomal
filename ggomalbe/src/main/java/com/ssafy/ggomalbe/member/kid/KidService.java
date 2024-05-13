@@ -19,4 +19,7 @@ public interface KidService {
     Mono<Integer> setCoin(Long memberId, Long coin);
 
     Mono<Integer> addCoin(Long memberId, Long coin);
+
+    Mono<Integer> minusCoin(Long memberId, Long coin);
+
 }

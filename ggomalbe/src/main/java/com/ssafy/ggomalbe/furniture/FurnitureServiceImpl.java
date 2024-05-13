@@ -31,14 +31,26 @@ public class FurnitureServiceImpl implements FurnitureService{
     public Mono<FurnitureAddResponse> addFurniture(Long memberId, FurnitureAddRequest request) {
         Long furnitureId = request.getFurnitureId();
 
-        return kidFurnitureRepository.save(
-                        KidFurnitureEntity.builder()
-                                .memberId(memberId)
-                                .furnitureId(furnitureId)
-                                .build())
-                .flatMap(entity ->
-                            furnitureRepository.findById(entity.getFurnitureId()))
-                .map(entity ->
-                        new FurnitureAddResponse(entity.getFurnitureName()));
+        return kidFurnitureRepository.existsByMemberIdAndFurnitureId(memberId, furnitureId)
+                .flatMap(exists -> {
+                    if (exists) {
+                        return Mono.just(FurnitureAddResponse.builder()
+                                .furnitureId(request.getFurnitureId())
+                                .isDone(false)
+                                .build());
+                    } else {
+                        // 가구 구매 로직 수행
+                        return kidFurnitureRepository.save(
+                                        KidFurnitureEntity.builder()
+                                                .memberId(memberId)
+                                                .furnitureId(furnitureId)
+                                                .build())
+                                .flatMap(entity ->
+                                        furnitureRepository.findById(entity.getFurnitureId()))
+                                .map(entity ->
+                                        new FurnitureAddResponse(entity.getFurnitureId()));
+                    }
+                });
     }
+
 }

@@ -5,5 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface FrogService {
 
-    public Mono<Boolean> setFrogGameRecord(Long memberId, FrogGameEndRequest request);
+    Mono<Boolean> setFrogGameRecord(Long memberId, FrogGameEndRequest request);
 }

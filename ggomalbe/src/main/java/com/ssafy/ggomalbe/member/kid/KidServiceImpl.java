@@ -70,7 +70,7 @@ public class KidServiceImpl implements KidService {
 
     @Override
     public Mono<CoinResponse> getOwnCoin(Long memberId) {
-        return kidRepository.findById(memberId)
+        return kidRepository.findByMemberId(memberId)
                 .map(member -> CoinResponse.builder().coin(member.getCoin()).build());
     }
 
@@ -78,6 +78,13 @@ public class KidServiceImpl implements KidService {
     public Mono<Integer> setCoin(Long memberId, Long coin) {
         return kidRepository.setCoin(memberId, coin);
     }
+
+    public Mono<Integer> minusCoin(Long memberId, Long coin){
+        if (coin == null)
+            return Mono.empty();
+        return kidRepository.minusCoin(memberId, coin);
+    }
+
 
     @Override
     public Mono<Integer> addCoin(Long memberId, Long coin) {

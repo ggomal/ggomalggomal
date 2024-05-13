@@ -11,6 +11,7 @@ public class ScheduleMapper {
         return ScheduleResponse.builder()
                 .kidId(dto.getKidId())
                 .startTime(dto.getStartTime())
+                .endTime(dto.getEndTime())
                 .status(dto.getStatus())
                 .build();
     }
@@ -18,7 +19,9 @@ public class ScheduleMapper {
         return ScheduleResponse.builder()
                 .kidId(kidId)
                 .startTime(entity.getStartTime())
+                .endTime(entity.getEndTime())
                 .status(entity.getStatus())
+                .content(entity.getContent())
                 .build();
 
     }
@@ -27,7 +30,9 @@ public class ScheduleMapper {
         return ScheduleEntity.builder()
                 .teacherKidId(teacherKidId)
                 .startTime(req.getStartTime())
+                .endTime(req.getEndTime())
                 .status(ScheduleEntity.Status.TODO)
+                .content(req.getContent())
                 .build();
     }
 }

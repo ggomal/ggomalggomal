@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 @ToString
 public class KidEntity extends AbstractEntity {
+
     @Column("member_id")
     private final Long memberId;
 

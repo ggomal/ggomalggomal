@@ -1,6 +1,7 @@
 package com.ssafy.ggomalbe.chick.service;
 
 import com.ssafy.ggomalbe.chick.dto.ChickEvaluationResponse;
+import com.ssafy.ggomalbe.chick.dto.ChickEvaluationResponseCommand;
 import com.ssafy.ggomalbe.chick.dto.ChickListResponse;
 import com.ssafy.ggomalbe.common.dto.superspeech.PronunciationResDto;
 import com.ssafy.ggomalbe.common.dto.superspeech.WordResDto;
@@ -49,21 +50,28 @@ public class ChickRecordServiceImpl implements ChickRecordService{
     }
 
     @Override
-    public Mono<ChickEvaluationResponse> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
+    public Mono<ChickEvaluationResponseCommand> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
         return speechSuperService.evaluation(filePart,sentence)
                 .map(PronunciationResDto::getResult)
                 .map(result -> {
                     Boolean overResult = true;
+                    Integer score = 0;
                     List<Boolean> words = new ArrayList<>();
                     for (WordResDto wrd : result.getWords()){
                         words.add(wrd.getScores().getPronunciation() >= 70);
                         overResult &= words.get(words.size()-1);
+                        score += wrd.getScores().getPronunciation();
                     }
+                    Float scoreF = (float) score / words.size();
                     log.info("chick_record result : " + words.toString());
-                    return ChickEvaluationResponse.builder()
+                    return ChickEvaluationResponseCommand.builder()
                             .refWord(sentence)
                             .overResult(overResult)
                             .words(words)
+                            .memberId(memberId)
+                            .gameNum(gameNum)
+                            .pronunciation(sentence)
+                            .score(scoreF)
                             .build();
                 });
     }

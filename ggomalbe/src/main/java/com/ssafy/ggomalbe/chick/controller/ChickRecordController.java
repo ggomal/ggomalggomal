@@ -31,13 +31,17 @@ public class ChickRecordController {
 
     @PostMapping("/evaluation")
     public Mono<ChickEvaluationResponse> evaluation(@RequestPart("kidVoice") FilePart filePart,
-                                                                    @RequestPart("gameNum") String gameNum,
-                                                                    @RequestPart("sentence") String sentence) {
+                                                    @RequestPart("gameNum") String gameNum,
+                                                    @RequestPart("sentence") String sentence) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(memberId -> {
-                    return chickRecordService.addChickRecord(filePart, memberId, Long.valueOf(gameNum), sentence);
+                .flatMap(memberId -> chickRecordService.addChickRecord(filePart, memberId, Long.valueOf(gameNum), sentence))
+                .flatMap(resC -> {
+                    return Mono.fromRunnable(() -> {
+                                chickRecordService.setChickGameRecord(resC.toEntity()).subscribe();
+                            }).subscribeOn(Schedulers.boundedElastic())
+                            .thenReturn(resC.toResponse());
                 });
     }
 

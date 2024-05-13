@@ -1,12 +1,10 @@
 import 'dart:io';
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 class ChickSpeechModal extends StatefulWidget {
   final Map<String, dynamic> speechData;

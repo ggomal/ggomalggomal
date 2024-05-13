@@ -47,7 +47,7 @@ public class ChickRecordServiceImpl implements ChickRecordService{
 
     @Override
     public Mono<ChickEvaluationResponse> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
-
+            return null;
 //        return speechSuperService.evaluation(filePart,sentence)
 //                .map(PronunciationResDto::getResult)
 //                .map(result -> {

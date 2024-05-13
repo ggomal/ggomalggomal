@@ -44,3 +44,12 @@ Future getKid(String kidId) async {
 
   return response.data;
 }
+
+getStatistics(String kidId) async {
+  Dio dio = await useDio();
+  final response = await dio.get('/statistics', queryParameters: {
+    "kidId": kidId,
+  });
+  print(response.data);
+  return response.data;
+}

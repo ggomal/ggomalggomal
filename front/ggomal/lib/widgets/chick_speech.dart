@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+
 
 class ChickSpeechModal extends StatefulWidget {
   final Map<String, dynamic> speechData;
@@ -39,10 +42,10 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   void postAudio() async {
     File audioFile = File(filePath);
     if (await audioFile.exists()) {
-      String m4a = filePath.replaceAll('.aac', '.m4a');
-      await audioFile.rename(m4a);
+      // String m4a = filePath.replaceAll('.aac', '.m4a');
+      // await audioFile.rename(m4a);
       final response = await checkAudio(1,
-          "${widget.speechData['name']} ${widget.speechData['ending']}", m4a);
+          "${widget.speechData['name']} ${widget.speechData['ending']}", filePath);
       if(response['result'] || recordCount == 3){
         Navigator.pop(context, true);
       }
@@ -53,10 +56,8 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
 
   Future<void> record() async {
     Directory tempDir = await getTemporaryDirectory();
-    filePath = '${tempDir.path}/chick_audio_$recordCount.aac';
-
-    await recorder.startRecorder(toFile: filePath);
-
+    filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
+    await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
     setState(() {
       currentFilePath = filePath;
     });

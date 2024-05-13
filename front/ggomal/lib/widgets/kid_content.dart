@@ -50,7 +50,7 @@ class _KidContentState extends State<KidContent> with SingleTickerProviderStateM
                 child: TabBarView(
                   controller: tabController,
                   children: [
-                    KidReport(),
+                    KidReport(widget.kidId),
                     KidNote(widget.kidId),
                   ],
                 ),

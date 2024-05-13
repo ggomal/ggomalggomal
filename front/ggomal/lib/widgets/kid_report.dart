@@ -1,71 +1,67 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
+import 'package:ggomal/services/kid_manage_dio.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:intl/intl.dart';
 
 class KidReport extends StatefulWidget {
-  const KidReport({super.key});
+  final String? kidId;
+
+  const KidReport(this.kidId, {super.key});
 
   @override
   State<KidReport> createState() => _KidReportState();
 }
 
 class _KidReportState extends State<KidReport> {
-  String? selectedWord = "ㄱ, ㅋ";
+  Map<String, dynamic> reportData = {};
+  List<TimeData> wordData = [];
+  List<TimeData> whaleData = [];
+  List<TimeData> chickData = [];
+  List<MeanData> wordMeanData = [];
+  List<dynamic> mostUsedWord = [
+    {"word": "", "count": 0}
+  ];
 
-  // 단어 리스트로 바꾸기 !
+  @override
+  void initState() {
+    super.initState();
+    loadReportData();
+  }
 
-  List<String> wordList = ["ㄱ, ㅋ", "ㄴ", "ㄷ, ㅌ", "ㄹ", "ㅁ"];
+  String? selectedWord = "ㄱ, ㅋ, ㅈ, ㅊ";
+  List<String> wordList = ["ㄱ, ㅋ, ㅈ, ㅊ", "ㅍ, ㅁ, ㅇ"];
 
-  Map reportData = {
-    "wordAccuracyMean": {
-      "ㅁ": 0.825148,
-      "ㄱ, ㅋ": 3.22583,
-      "ㄴ": 3.22583,
-      "ㄷ, ㅌ": 3.22583,
-      "ㄹ": 3.22583
-    },
-    "wordAccuracy": {
-      "ㅁ": [
-        {"date": "2024-05-07", "accuracyMean": 0.712574},
-        {"date": "2024-05-09", "accuracyMean": 0.937722}
-      ],
-      "ㄱ, ㅋ": [
-        {"date": "2024-05-06", "accuracyMean": 3.93264},
-        {"date": "2024-05-07", "accuracyMean": 2.51902}
-      ],
-      "ㄴ": [
-        {"date": "2024-05-06", "accuracyMean": 3.93264},
-        {"date": "2024-05-07", "accuracyMean": 2.51902}
-      ],
-      "ㄷ, ㅌ": [
-        {"date": "2024-05-06", "accuracyMean": 3.93264},
-        {"date": "2024-05-07", "accuracyMean": 2.51902}
-      ],
-      "ㄹ": [
-        {"date": "2024-05-06", "accuracyMean": 3.93264},
-        {"date": "2024-05-07", "accuracyMean": 2.51902}
-      ],
-    },
-    "whaleMaxTime": [
-      {"date": "2024-05-09", "meanMaxTime": 2.3},
-      {"date": "2024-05-10", "meanMaxTime": 7.25},
-      {"date": "2024-05-11", "meanMaxTime": 4.25},
-      {"date": "2024-05-12", "meanMaxTime": 1.25},
-      {"date": "2024-05-13", "meanMaxTime": 2.25}
-    ],
-    "mostUsedWord": ["String", "String", "String"],
-    "chickAccuracy": [
-      {"date": "2024-05-04", "meanMaxTime": 2.3},
-      {"date": "2024-05-05", "meanMaxTime": 2.3},
-      {"date": "2024-05-08", "meanMaxTime": 2.3},
-      {"date": "2024-05-09", "meanMaxTime": 2.3},
-      {"date": "2024-05-11", "meanMaxTime": 4.25},
-      {"date": "2024-05-12", "meanMaxTime": 1.25},
-      {"date": "2024-05-13", "meanMaxTime": 2.25}
-    ]
-  };
+  Future<void> loadReportData() async {
+    reportData = await getStatistics(widget.kidId as String);
+    print(reportData);
+    wordMeanData = wordList
+        .map((e) => MeanData(e, reportData['wordAccuracyMean'][e]))
+        .toList();
+    wordData = [
+      ...reportData['wordAccuracy'][selectedWord]
+          .map((e) => TimeData(e['date'], e['accuracyMean']))
+          .toList()
+    ];
+
+    whaleData = [
+      ...reportData['whaleMaxTime']
+          .map((e) => TimeData(e['date'], e['meanMaxTime']))
+          .toList()
+    ];
+
+    chickData = [
+      ...reportData['chickAccuracy']
+          .map((e) => TimeData(e['date'], e['accuracyMean']))
+          .toList()
+    ];
+
+    setState(() {
+      [wordData, whaleData, chickData].map((data) =>
+          data = data.length < 5 ? data : data.sublist(wordData.length - 5));
+      mostUsedWord = reportData['mostUsedWord'];
+    });
+  }
 
   Container graphBox(Widget graph) {
     return Container(
@@ -90,37 +86,6 @@ class _KidReportState extends State<KidReport> {
 
   @override
   Widget build(BuildContext context) {
-    List<MeanData> wordMeanData = wordList
-        .map((e) => MeanData(e, reportData['wordAccuracyMean'][e]))
-        .toList();
-
-    List<TimeData> wordData = [
-      ...reportData['wordAccuracy'][selectedWord]
-          .map((e) => TimeData(e['date'], e['accuracyMean']))
-          .toList()
-    ];
-
-    List<TimeData> whaleData = [
-      ...reportData['whaleMaxTime']
-          .map((e) => TimeData(e['date'], e['meanMaxTime']))
-          .toList()
-    ];
-
-    List<TimeData> chickData = [
-      ...reportData['chickAccuracy']
-          .map((e) => TimeData(e['date'], e['meanMaxTime']))
-          .toList()
-    ];
-
-    wordData =
-        wordData.length < 5 ? wordData : wordData.sublist(wordData.length - 5);
-    whaleData = whaleData.length < 5
-        ? whaleData
-        : whaleData.sublist(whaleData.length - 5);
-    chickData = chickData.length < 5
-        ? chickData
-        : chickData.sublist(chickData.length - 5);
-
     return Container(
       color: Colors.white,
       child: ListView(scrollDirection: Axis.vertical, children: [
@@ -193,8 +158,7 @@ class _KidReportState extends State<KidReport> {
                     height: 220,
                     child: SfCartesianChart(
                         primaryXAxis: CategoryAxis(),
-                        primaryYAxis:
-                            NumericAxis(minimum: 0, maximum: 5),
+                        primaryYAxis: NumericAxis(minimum: 0, maximum: 5),
                         series: <CartesianSeries<MeanData, String>>[
                           ColumnSeries<MeanData, String>(
                               dataSource: wordMeanData,
@@ -246,17 +210,19 @@ class _KidReportState extends State<KidReport> {
                 ],
               ),
             ),
-            graphBox( Column(
+            graphBox(
+              Column(
                 children: [
                   Text('많이 연습한 단어',
                       style: nanumText(24, FontWeight.w900, Colors.black)),
-                  SizedBox(
+                  Container(
                       width: double.infinity,
                       height: 220,
+                      padding: const EdgeInsets.all(30),
                       child: Column(
                         children: [
-                          ...reportData['mostUsedWord']
-                              .map((e) => Text(e,
+                          ...mostUsedWord
+                              .map((e) => Text("${e['word']} : ${e['count']} 회",
                                   style: nanumText(
                                       30, FontWeight.w900, Colors.black)))
                               .toList()

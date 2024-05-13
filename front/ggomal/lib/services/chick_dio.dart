@@ -13,6 +13,7 @@ checkAudio(int gameNum, String sentence, String audio) async {
     "sentence": sentence,
     "kidVoice": await MultipartFile.fromFile(audio),
   });
+
   Dio dio = await useDio();
   final response = await dio.post('/chick/evaluation', data: formData);
   return response.data;

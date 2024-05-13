@@ -97,10 +97,6 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/kids/report',
-      builder: (context, state) => const KidReport(),
-    ),
-    GoRoute(
       path: '/manager/calender',
       builder: (context, state) => const ManagerCalendarScreen(),
     ),

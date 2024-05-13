@@ -31,7 +31,7 @@ class _KidReportState extends State<KidReport> {
 
   String? selectedWord = "ㄱ, ㅋ, ㅈ, ㅊ";
   List<String> wordList = ["ㄱ, ㅋ, ㅈ, ㅊ", "ㅍ, ㅁ, ㅇ"];
-
+  // ['ㅍ,ㅁ,ㅇ', 'ㄷ,ㅌ,ㄴ', 'ㄱ,ㅋ,ㅈ,ㅊ', 'ㅅ', 'ㄹ']
   Future<void> loadReportData() async {
     reportData = await getStatistics(widget.kidId as String);
     print(reportData);
@@ -98,7 +98,7 @@ class _KidReportState extends State<KidReport> {
                     top: 0,
                     right: 10,
                     child: Container(
-                      width: 100,
+                      width: 130,
                       height: 30,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(

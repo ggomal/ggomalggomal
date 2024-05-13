@@ -57,7 +57,7 @@ public class ChickRecordServiceImpl implements ChickRecordService{
                     List<Boolean> words = new ArrayList<>();
                     for (WordResDto wrd : result.getWords()){
                         words.add(wrd.getScores().getPronunciation() >= 70);
-                        overResult &= words.getLast();
+                        overResult &= words.get(words.size()-1);
                     }
                     return ChickEvaluationResponse.builder()
                             .refWord(sentence)

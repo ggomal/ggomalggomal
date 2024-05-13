@@ -1,14 +1,13 @@
 package com.ssafy.ggomalbe.statistics;
 
 import com.ssafy.ggomalbe.common.repository.BearRecordRepository;
+import com.ssafy.ggomalbe.common.repository.ChickRecordRepository;
 import com.ssafy.ggomalbe.common.repository.WhaleRecordRepository;
 import com.ssafy.ggomalbe.statistics.dto.StatisticResponse;
-import com.ssafy.ggomalbe.statistics.dto.WordAccuracyResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -16,6 +15,7 @@ import java.util.Set;
 public class StatisticsServiceImpl implements StatisticsService {
     private final WhaleRecordRepository whaleRecordRepository;
     private final BearRecordRepository bearRecordRepository;
+    private final ChickRecordRepository chickRecordRepository;
 
     @Override
     public Mono<StatisticResponse> getStatistic(Long kidId) {
@@ -26,9 +26,23 @@ public class StatisticsServiceImpl implements StatisticsService {
                             statisticResponse.setWhaleMaxTime(whaleStatisticResults);
                             return statisticResponse;
                         }))
-                .flatMap(res -> addInitial(kidId, "ㄱ, ㅋ", res))
-                .flatMap(res -> addInitial(kidId, "ㅈ, ㅊ", res))
-                .flatMap(res -> addInitial(kidId, "ㅁ", res))
+                .flatMap(res -> addInitial(kidId, "ㄹ", res))
+                .flatMap(res -> addInitial(kidId, "ㅅ", res))
+                .flatMap(res -> addInitial(kidId, "ㄱ, ㅋ, ㅈ, ㅊ", res))
+                .flatMap(res -> addInitial(kidId, "ㄷ, ㅌ, ㄴ", res))
+                .flatMap(res -> addInitial(kidId, "ㅍ, ㅁ, ㅇ", res))
+                .flatMap(statisticResponse -> bearRecordRepository.findMostUsedByKidId(kidId)
+                        .collectList()
+                        .map(wordMostResults -> {
+                            statisticResponse.setMostUsedWord(wordMostResults);
+                            return statisticResponse;
+                        }))
+                .flatMap(statisticResponse -> chickRecordRepository.findAccuracyDateByKidId(kidId)
+                        .collectList()
+                        .map(chickAccuracyResults -> {
+                            statisticResponse.setChickAccuracy(chickAccuracyResults);
+                            return statisticResponse;
+                        }))
                 ;
 
     }

@@ -17,9 +17,9 @@ public class StatisticResponse {
     // 고래게임 최대 발성 길이 변화 그래프
     private List<WhaleStatisticResult> whaleMaxTime;
     // 빙고에서 많이 말한 단어 랭킹
-    private List<String> mostUsedWord;
+    private List<WordMostResult> mostUsedWord;
     // 병아리 게임에서 측정한 정확도 변화
-    private List<Float> chickAccuracy;
+    private List<ChickAccuracyResult> chickAccuracy;
 
     public StatisticResponse() {
         this.wordAccuracyMean = new HashMap<>();

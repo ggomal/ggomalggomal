@@ -25,6 +25,10 @@ public class ScheduleEntity extends AbstractEntity {
     @Column("start_time")
     private LocalDateTime startTime;
 
+    @Setter
+    @Column("end_time")
+    private LocalDateTime endTime;
+
     @Column("status")
     private ScheduleEntity.Status status;
 

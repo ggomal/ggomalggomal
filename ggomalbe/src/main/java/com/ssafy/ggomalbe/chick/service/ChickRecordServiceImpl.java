@@ -1,6 +1,8 @@
 package com.ssafy.ggomalbe.chick.service;
 
+import com.ssafy.ggomalbe.chick.dto.ChickEvaluationResponse;
 import com.ssafy.ggomalbe.chick.dto.ChickListResponse;
+import com.ssafy.ggomalbe.common.dto.superspeech.PronunciationResDto;
 import com.ssafy.ggomalbe.common.entity.SituationKidEntity;
 import com.ssafy.ggomalbe.common.repository.ChickRecognitionRepository;
 import com.ssafy.ggomalbe.common.repository.SituationKidRepository;
@@ -44,20 +46,13 @@ public class ChickRecordServiceImpl implements ChickRecordService{
     }
 
     @Override
-    public Mono<ChickRecordEntity> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
-        return evaluationService.evaluation(filePart, sentence)
-                .flatMap((evaluateResult) -> {
-                    float score = evaluateResult.getScore();
-                    String pronunciation = evaluateResult.getPronunciation();
+    public Mono<ChickEvaluationResponse> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
 
-                    ChickRecordEntity chickRecordEntity = ChickRecordEntity.builder()
-                            .memberId(memberId)
-                            .gameNum(gameNum)
-                            .pronunciation(pronunciation)
-                            .score(score)
-                            .build();
-                    return chickRecordRepository.save(chickRecordEntity);
-                }).doOnNext(data -> log.info("save {}", data.toString()));
+//        return speechSuperService.evaluation(filePart,sentence)
+//                .map(PronunciationResDto::getResult)
+//                .map(result -> {
+//                    if (result.getOverall())
+//                });
     }
 
     @Override

@@ -122,9 +122,12 @@ class _WhaleSeaState extends State<WhaleSea> {
           duration: Duration(milliseconds: 200),
           curve: Curves.easeInOut,
           alignment: _alignment,
-          child: Image.asset(
-            'assets/images/whale/whale_diver.png',
-            width: 200.0,
+          child: RotatedBox(
+            quarterTurns: (directionCount + 2) % 4,
+            child: Image.asset(
+              'assets/images/whale/whale_diver.png',
+              width: 200.0,
+            ),
           ),
         ),
         ..._fishLocation

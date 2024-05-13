@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/kid_manage_dio.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import "package:flutter_podium/flutter_podium.dart";
 
 class KidReport extends StatefulWidget {
   final String? kidId;
@@ -20,7 +21,9 @@ class _KidReportState extends State<KidReport> {
   List<TimeData> chickData = [];
   List<MeanData> wordMeanData = [];
   List<dynamic> mostUsedWord = [
-    {"word": "", "count": 0}
+    {"word": "", "count": 0},
+    {"word": "", "count": 0},
+    {"word": "", "count": 0},
   ];
 
   @override
@@ -59,6 +62,11 @@ class _KidReportState extends State<KidReport> {
       [wordData, whaleData, chickData].map((data) =>
           data = data.length < 5 ? data : data.sublist(wordData.length - 5));
       mostUsedWord = reportData['mostUsedWord'];
+      while (mostUsedWord.length < 3){
+        mostUsedWord.add({"word": "경찰차", "count": 0});
+        mostUsedWord.add({"word": "가방", "count": 0});
+        mostUsedWord.add({"word": "가로등", "count": 0});
+      }
     });
   }
 
@@ -218,15 +226,23 @@ class _KidReportState extends State<KidReport> {
                       width: double.infinity,
                       height: 220,
                       padding: const EdgeInsets.all(30),
-                      child: Column(
-                        children: [
-                          ...mostUsedWord
-                              .map((e) => Text("${e['word']} : ${e['count']} 회",
-                                  style: nanumText(
-                                      30, FontWeight.w900, Colors.black)))
-                              .toList()
-                        ],
-                      )),
+                      child: Podium(
+                        height: 100,
+                        width: 100,
+                        color: Color(0xFFFF9191),
+                        horizontalSpacing: 50,
+                        hideRanking: true,
+                        firstPosition: Text(
+                          "${mostUsedWord[0]['word']} / ${mostUsedWord[0]['count']}회",
+                        ),
+                        secondPosition: Text(
+                          "${mostUsedWord[1]['word']} / ${mostUsedWord[1]['count']}회",
+                        ),
+                        thirdPosition: Text(
+                          "${mostUsedWord[2]['word']} / ${mostUsedWord[2]['count']}회",
+                        ),
+                      ),
+                  ),
                 ],
               ),
             ),
@@ -240,13 +256,13 @@ class _KidReportState extends State<KidReport> {
 class TimeData {
   TimeData(this.day, this.data);
 
-  final String day;
-  final double data;
+  final String? day;
+  final double? data;
 }
 
 class MeanData {
   MeanData(this.word, this.data);
 
-  final String word;
-  final double data;
+  final String? word;
+  final double? data;
 }

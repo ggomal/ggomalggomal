@@ -30,24 +30,14 @@ public class ChickRecordController {
     private final RoomService roomService;
 
     @PostMapping("/evaluation")
-    public Mono<ResponseEntity<ChickEvaluationResponse>> evaluation(@RequestPart("kidVoice") FilePart filePart,
+    public Mono<ChickEvaluationResponse> evaluation(@RequestPart("kidVoice") FilePart filePart,
                                                                     @RequestPart("gameNum") String gameNum,
                                                                     @RequestPart("sentence") String sentence) {
-        final MemberEntity[] member = new MemberEntity[1];
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
                 .flatMap(memberId -> {
-                    member[0] = MemberEntity.builder().memberId(memberId).build();
-                    return chickRecordService.checkSentence(filePart, sentence);
-                })
-                .flatMap(aBoolean -> {
-                    ResponseEntity<ChickEvaluationResponse> response = ResponseEntity.ok(
-                            ChickEvaluationResponse.builder().msg(aBoolean ? "OK" : "TRY AGAIN").result(aBoolean).build());
-                    return Mono.fromRunnable(() -> {
-                                chickRecordService.addChickRecord(filePart, member[0].getMemberId(), Long.valueOf(gameNum), sentence).subscribe();
-                            }).subscribeOn(Schedulers.boundedElastic())
-                            .thenReturn(response);
+                    return chickRecordService.addChickRecord(filePart, memberId, Long.valueOf(gameNum), sentence);
                 });
     }
 

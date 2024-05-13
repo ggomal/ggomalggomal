@@ -3,6 +3,7 @@ package com.ssafy.ggomalbe.chick.service;
 import com.ssafy.ggomalbe.chick.dto.ChickEvaluationResponse;
 import com.ssafy.ggomalbe.chick.dto.ChickListResponse;
 import com.ssafy.ggomalbe.common.dto.superspeech.PronunciationResDto;
+import com.ssafy.ggomalbe.common.dto.superspeech.WordResDto;
 import com.ssafy.ggomalbe.common.entity.SituationKidEntity;
 import com.ssafy.ggomalbe.common.repository.ChickRecognitionRepository;
 import com.ssafy.ggomalbe.common.repository.SituationKidRepository;
@@ -21,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -47,12 +50,21 @@ public class ChickRecordServiceImpl implements ChickRecordService{
 
     @Override
     public Mono<ChickEvaluationResponse> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
-            return null;
-//        return speechSuperService.evaluation(filePart,sentence)
-//                .map(PronunciationResDto::getResult)
-//                .map(result -> {
-//                    if (result.getOverall())
-//                });
+        return speechSuperService.evaluation(filePart,sentence)
+                .map(PronunciationResDto::getResult)
+                .map(result -> {
+                    Boolean overResult = true;
+                    List<Boolean> words = new ArrayList<>();
+                    for (WordResDto wrd : result.getWords()){
+                        words.add(wrd.getScores().getPronunciation() >= 70);
+                        overResult &= words.getLast();
+                    }
+                    return ChickEvaluationResponse.builder()
+                            .refWord(sentence)
+                            .overResult(overResult)
+                            .words(words)
+                            .build();
+                });
     }
 
     @Override

@@ -25,7 +25,6 @@ signUpKid(String name, DateTime kidBirthDT, String gender, kidImg,
     });
     print(response);
     return "${name} 아이 등록에 성공하였습니다.";
-
   } catch (error) {
     return "아이 등록에 실패하였습니다.";
   }
@@ -38,7 +37,6 @@ Future<List> getKidList() async {
 }
 
 Future getKid(String kidId) async {
-  
   Dio dio = await useDio();
   final response = await dio.get('/kid/$kidId');
 
@@ -47,9 +45,13 @@ Future getKid(String kidId) async {
 
 getStatistics(String kidId) async {
   Dio dio = await useDio();
-  final response = await dio.get('/statistics', queryParameters: {
-    "kidId": kidId,
-  });
-  print(response.data);
+  final response;
+  if (kidId == '0') {
+    response = await dio.get('/statistics');
+  } else {
+    response = await dio.get('/statistics', queryParameters: {
+      "kidId": kidId,
+    });
+  }
   return response.data;
 }

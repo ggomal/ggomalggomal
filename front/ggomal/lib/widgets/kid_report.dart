@@ -34,7 +34,6 @@ class _KidReportState extends State<KidReport> {
   // ['ㅍ,ㅁ,ㅇ', 'ㄷ,ㅌ,ㄴ', 'ㄱ,ㅋ,ㅈ,ㅊ', 'ㅅ', 'ㄹ']
   Future<void> loadReportData() async {
     reportData = await getStatistics(widget.kidId as String);
-    print(reportData);
     wordMeanData = wordList
         .map((e) => MeanData(e, reportData['wordAccuracyMean'][e]))
         .toList();

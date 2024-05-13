@@ -100,4 +100,10 @@ public class KidServiceImpl implements KidService {
             return Mono.empty();
         return kidRepository.addCoin(memberId, coin);
     }
+
+    @Override
+    public Flux<TeacherKidEntity> findByKidId(Long kidId){
+        return teacherKidRepository.findByKidId(kidId)
+                .doOnNext(n-> System.out.println(n.getTeacherId()));
+    }
 }

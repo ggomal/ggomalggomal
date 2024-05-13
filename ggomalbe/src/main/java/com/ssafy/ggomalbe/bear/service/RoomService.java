@@ -10,6 +10,7 @@ import com.ssafy.ggomalbe.bear.entity.Room;
 import com.ssafy.ggomalbe.bear.entity.SocketAction;
 import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.member.kid.KidService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -30,7 +31,7 @@ public class RoomService {
     // roomId와 Room mapping
     private static final Map<String, Room> rooms = new ConcurrentHashMap<>();
 
-    // 세션아이디가 어떤 Room에 있는지(sessionId 를  memberId로 변경해야함)
+    // 세션아이디가 어떤 Room에 있는지 알기 위함(memberIdSession으로 세션을 찾아서 방을 찾는다)
     private static final Map<String, Room> memberRoom = new ConcurrentHashMap<>();
 
     //멤버 아이디와 세션아이디를 매핑
@@ -38,6 +39,8 @@ public class RoomService {
 
     //해당 세션을 가지고 있는 멤버아이디 -> doFinally때 메모리에서 삭제하기위함
     private static final Map<String, String> sessionIdMember = new ConcurrentHashMap<>();
+
+    private final KidService kidService;
 
 
     // 멤버의 아이디로 멤버가 참하고 있는 방을 return
@@ -51,6 +54,9 @@ public class RoomService {
                 .flatMap(authentication -> {
                     Long memberId = authentication.getDetails();
                     MemberEntity.Role memberRole = authentication.getRole();
+
+                    //now 선생님 들고 와서 다 보내기
+                    kidService.findByKidId(memberId).subscribe();
 
                     log.info("createRoom memberId: {}", memberId);
                     String roomId = createRoomNumber();
@@ -149,7 +155,7 @@ public class RoomService {
         }
     }
 
-    public Mono<Void> deleteRoom(JsonNode jsonNode, WebSocketSession webSocketSession) {
+    public Mono<Void> deleteRoom(WebSocketSession webSocketSession) {
         return Mono.fromRunnable(() -> {
             String id = memberRoom.get(webSocketSession.getId()).getRoomId();
             rooms.remove(id);
@@ -165,7 +171,21 @@ public class RoomService {
                 .flatMap(room -> room.removeParticipantAsync(session))
                 .then(Mono.fromRunnable(() -> {
                     rooms.entrySet().removeIf(entry -> entry.getValue().getParticipants().isEmpty());
+                    memberRoom.remove(session.getId());
                 }));
+    }
+
+    public Mono<Void> countRoomMember(WebSocketSession session) {
+        Room room = memberRoom.get(session.getId());
+        if (room == null) {log.info("no Room"); return Mono.empty();}
+        log.info("room member count {}",room.getParticipants().size());
+        return Mono.empty();
+    }
+
+    public Mono<Void> countRoom() {
+        log.info("rooms count {}", rooms.size());
+        log.info("memberRoom count {}", memberRoom.size());
+        return Mono.empty();
     }
 
     public String createRoomNumber() {

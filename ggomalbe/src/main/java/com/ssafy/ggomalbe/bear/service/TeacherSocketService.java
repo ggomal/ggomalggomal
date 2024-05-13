@@ -13,6 +13,7 @@ import com.ssafy.ggomalbe.bear.entity.Room;
 import com.ssafy.ggomalbe.bear.entity.SocketAction;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.common.service.GameNumService;
+import com.ssafy.ggomalbe.member.kid.KidService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeacherSocketService {
 
+    //애가 먼저 방만들고 선생이 들어올떄
+    //맵 get해서 애가 있는지 본다 -> 아이가 방
+
+    //선생님 먼저 들어오고 애가 방만들떄
+    //애가 들어오거나 나갈때 선생님에게 요청 보낸다 -> 디비에서 담당선생님을 꺼내와서 맵에 들어있는 사람만 보낸다.
+    //애가 나갔다가 다시 들얼오면 joinRoom한다.  -> 이거 하는지..
     private final ObjectMapper objectMapper;
     private final Gson gson;
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;
     private final GameNumService gameNumService;
-
 
     //todo -> 단어 칸 누르기, 다시 버튼, 통과버튼
 
@@ -59,6 +65,10 @@ public class TeacherSocketService {
     //선생님이 칸을 터치한다
     //아이한테 그걸 찾으라는 말이 나온다
     public Mono<Void> setBingoBoard(WebSocketSession session, JsonNode jsonNode) throws JsonProcessingException {
+        //방 찾기
+        Room room = roomService.findRoomByMemberId(session.getId());
+        if(room == null || room.getParticipants().size() <2) {return Mono.empty();}
+
 //        String messageType = jsonNode.get("type").asText();
         log.info("setBingoBoard parsing...");
         List<String> initialList = Arrays.asList(jsonNode.get("initial").asText().split(","));
@@ -79,9 +89,6 @@ public class TeacherSocketService {
         return gameNumService.getIncrementGameCount()
                 .flatMap(gameNum -> bingoSocketService.findBingoCard(wordCategoryResponse)
                         .flatMap(bingoCardList -> {
-
-                            //방 찾기
-                            Room room = roomService.findRoomByMemberId(session.getId());
 
                             //선생님, 아이 빙고 생성
                             BingoBoard bingoBoardT = bingoSocketService.createBingoBoard(bingoCardList);
@@ -138,7 +145,7 @@ public class TeacherSocketService {
     }
 
     //선생님이 빙고카드를 선택하면 아이에게 찾으라고 보낸다
-    public Mono<Void> choiceBingoCardKid(WebSocketSession session, String choiceLetter) throws JsonProcessingException {
+    public Mono<Void> choiceBingoCardKid(WebSocketSession session, String choiceLetter){
         Room room = roomService.findRoomByMemberId(session.getId());
 
         MarkingBingoResponse markingBingoResponse = new MarkingBingoResponse(SocketAction.FIND_LETTER, choiceLetter);

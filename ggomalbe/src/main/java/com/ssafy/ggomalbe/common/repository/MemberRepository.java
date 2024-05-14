@@ -21,6 +21,7 @@ public interface MemberRepository extends R2dbcRepository<MemberEntity, Long> {
                            m.password as password,
                            m.name as name,
                            m.phone as parent_phone,
+                           k.gender as gender,
                            k.kid_img_url as kid_img_url,
                            TIMESTAMPDIFF(year, k.kid_birth_DT, now()) as age,
                            k.kid_note as kid_note,

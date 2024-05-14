@@ -19,6 +19,8 @@ public class MemberKidResponse {
     private String name;
     private String parentPhone; // phone(연락처)
 
+    private KidEntity.Gender gender;
+
     private String kidImgUrl;
 //    private LocalDate kidBirthDT;
     private Integer age;    // kidBirthDT(생년월일)로 계산 -> 시간관련 함수 포함한 Query로 가져오기

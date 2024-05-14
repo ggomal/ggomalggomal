@@ -15,6 +15,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
@@ -23,7 +24,7 @@ public class BingoSocketService {
     private static final int BINGO_LINE = 3;
     private static final long rewardCoin = 2;
     private static final int LIMIT = (int) Math.pow(BINGO_LINE, 2);
-    private static final Map<String, BingoPlayer> bingoPlayerMap = new HashMap<>();
+    private static final Map<String, BingoPlayer> bingoPlayerMap = new ConcurrentHashMap<>();
 
     private final RoomService roomService;
     private final ObjectMapper objectMapper;

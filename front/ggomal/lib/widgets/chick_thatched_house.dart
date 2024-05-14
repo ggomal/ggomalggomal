@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
 import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/chick_speech.dart';
@@ -27,7 +28,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
         "game": "clean",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "정리 해주세요"
+        "ending": "정리해주세요"
       }),
     ).then((value) => {
           if (value)
@@ -70,10 +71,20 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                     (e) => e["isVisible"]
                         ? GestureDetector(
                             onTap: () => handleCleanThing(e),
-                            child: Image.asset(
-                              width: 190.0,
-                              height: 150.0,
-                              'assets/images/chick/clean_thing_${e["img"]}.png',
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  width: 192.0,
+                                  padding: const EdgeInsets.fromLTRB(11, 0, 11, 0),
+                                  child: Image.asset(
+                                    width: 170.0,
+                                    height: 150.0,
+                                    'assets/images/chick/clean_thing_${e["img"]}.png',
+                                  ),
+                                ),
+                                SizedBox(height: 40, child: Text(e["name"], style: mapleText(30, FontWeight.normal, Colors.black))),
+                              ],
                             ),
                           )
                         : SizedBox(

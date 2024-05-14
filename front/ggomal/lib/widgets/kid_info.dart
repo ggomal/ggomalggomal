@@ -122,11 +122,11 @@ class _KidInfoState extends State<KidInfo> {
                     context: context,
                     builder: (BuildContext context) => CreateBingoModal(),
                   ),
-                  child: Text("아이와 게임하기"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFAA8D),
                     foregroundColor: Colors.white,
                   ),
+                  child: Text("아이와 게임하기"),
                 ),
               ],
             );

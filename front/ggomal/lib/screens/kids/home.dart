@@ -3,7 +3,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:ggomal/services/dio.dart';
-import 'package:ggomal/services/kid_home_dio.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../get_storage.dart';
@@ -267,7 +266,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
 
-    Get.put(CoinController());
+    Get.find<CoinController>().coin();
     TextStyle baseText(double size, FontWeight weight) {
       return TextStyle(
         fontFamily: 'Maplestory',
@@ -411,12 +410,6 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        InkWell(
-          onTap: () {
-            context.go('/kids/report');
-          },
-          child: Text('학습현황 만드는중'),
-        ),
         GestureDetector(
           onTap: (
               ){

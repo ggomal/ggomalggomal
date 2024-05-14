@@ -32,6 +32,7 @@ public class AuthController {
                                             .msg("Success")
                                             .jwt(jwtUtil.generateToken((CustomUserDetails) u))
                                             .role(((CustomUserDetails) u).getRole())
+                                            .name(((CustomUserDetails) u).getMemberName())
                                             .build()
                             );
                         }

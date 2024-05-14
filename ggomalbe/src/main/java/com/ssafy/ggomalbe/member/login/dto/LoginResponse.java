@@ -10,4 +10,5 @@ public class LoginResponse {
     private final String msg;
     private final String jwt;
     private final MemberEntity.Role role;
+    private final String name;
 }

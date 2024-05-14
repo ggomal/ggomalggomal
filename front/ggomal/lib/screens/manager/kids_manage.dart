@@ -15,6 +15,7 @@ class KidsManageScreen extends StatefulWidget {
 
 class _KidsManageScreenState extends State<KidsManageScreen> {
   late Future<List> _kidListFuture;
+
   @override
   void initState() {
     super.initState();
@@ -23,27 +24,27 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
 
-    GestureDetector enrollButton () {
+    GestureDetector enrollButton() {
       return GestureDetector(
         onTap: () => showDialog(
           context: context,
           builder: (BuildContext context) => EnrollKidModal(),
         ).then((response) => {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) =>
-                CheckModal(response),
-          ).then((value) => {
-            setState((){
-
-              _kidListFuture = getKidList();
-            })
-          }),
-        }),
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => CheckModal(response),
+              ).then((value) => {
+                    setState(() {
+                      _kidListFuture = getKidList();
+                    })
+                  }),
+            }),
         child: Container(
-          width: 300.0,
-          height: 160.0,
+          width: width * 0.25,
+          height: height * 0.2,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -51,8 +52,7 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
               BoxShadow(
                 color: Colors.grey.withOpacity(0.7),
                 blurRadius: 5.0,
-                offset:
-                Offset(3, 3), // changes position of shadow
+                offset: Offset(3, 3), // changes position of shadow
               ),
             ],
           ),
@@ -70,7 +70,6 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
       );
     }
 
-
     return Scaffold(
       backgroundColor: Color(0xFFF9F9F9),
       body: SingleChildScrollView(
@@ -78,18 +77,22 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              width: 250.0,
+              width: width * 0.25,
               'assets/images/logo.png',
             ),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 context.go('/manager/kids');
               },
               child: Container(
                 margin: EdgeInsets.only(left: 100, bottom: 20),
                 child: Row(
                   children: [
-                    Icon(Icons.navigate_before , color: Colors.black, size: 50,),
+                    Icon(
+                      Icons.navigate_before,
+                      color: Colors.black,
+                      size: 50,
+                    ),
                     Text(
                       "홈으로",
                       style: nanumText(30.0, FontWeight.w700, Colors.black),
@@ -100,26 +103,26 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
             ),
             Center(
               child: SizedBox(
-                width: 1000,
+                width: width * 0.8,
                 child: FutureBuilder<List<dynamic>>(
                   future: _kidListFuture,
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Text('학생 정보 로딩 실패');
                     } else {
                       return SingleChildScrollView(
-                        padding: const EdgeInsets.only(bottom:100),
+                        padding: const EdgeInsets.only(bottom: 100),
                         child: Wrap(
                           spacing: 40,
                           runSpacing: 20,
-                          children: [enrollButton(),
-                          ...List.generate(
-                            snapshot.data!.length,
-                            (index) => KidCard(snapshot.data![index]),
-                          ),
+                          children: [
+                            enrollButton(),
+                            ...List.generate(
+                              snapshot.data!.length,
+                              (index) => KidCard(snapshot.data![index]),
+                            ),
                           ],
                         ),
                       );

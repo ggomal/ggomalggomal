@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
 import 'package:ggomal/widgets/chick_game.dart';
 import 'package:ggomal/utils/navbar.dart';
@@ -42,6 +43,8 @@ class _ChickScreenState extends State<ChickScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -92,12 +95,12 @@ class _ChickScreenState extends State<ChickScreen> {
                                     );
                                   },
                                   child: Image.asset(
-                                    width: 150.0,
+                                    width: width * 0.13,
                                     'assets/images/chick/${gameInfoList[index]['img']}.png',
                                   ),
                                 )
                               : Image.asset(
-                                  width: 150.0,
+                                  width: width * 0.13,
                                   'assets/images/chick/egg.png',
                                 ),
                         ),

@@ -24,24 +24,24 @@ class _PizzaPlateState extends State<PizzaPlate> {
   ];
 
   List<Map<String, dynamic>> toppings = [
-    {'img': 0, 'top': 80.0, 'left': 120.0, 'isVisible': true},
-    {'img': 0, 'top': 230.0, 'left': 150.0, 'isVisible': true},
-    {'img': 0, 'top': 130.0, 'left': 340.0, 'isVisible': true},
-    {'img': 0, 'top': 110.0, 'left': 190.0, 'isVisible': true},
-    {'img': 0, 'top': 100.0, 'left': 300.0, 'isVisible': true},
-    {'img': 0, 'top': 240.0, 'left': 270.0, 'isVisible': true},
+    {'img': 0, 'top': 150.0, 'left': 150.0, 'isVisible': true},
+    {'img': 0, 'top': 270.0, 'left': 270.0, 'isVisible': true},
+    {'img': 0, 'top': 210.0, 'left': 340.0, 'isVisible': true},
+    {'img': 0, 'top': 130.0, 'left': 220.0, 'isVisible': true},
+    {'img': 0, 'top': 190.0, 'left': 110.0, 'isVisible': true},
+    {'img': 0, 'top': 310.0, 'left': 180.0, 'isVisible': true},
+    {'img': 0, 'top': 200.0, 'left': 420.0, 'isVisible': true},
+    {'img': 0, 'top': 330.0, 'left': 350.0, 'isVisible': true},
     {'img': 0, 'top': 250.0, 'left': 200.0, 'isVisible': true},
-    {'img': 0, 'top': 60.0, 'left': 260.0, 'isVisible': true},
-    {'img': 0, 'top': 200.0, 'left': 100.0, 'isVisible': true},
-    {'img': 0, 'top': 180.0, 'left': 180.0, 'isVisible': true},
-    {'img': 0, 'top': 150.0, 'left': 80.0, 'isVisible': true},
-    {'img': 0, 'top': 165.0, 'left': 295.0, 'isVisible': true},
-    {'img': 0, 'top': 150.0, 'left': 220.0, 'isVisible': true},
-    {'img': 0, 'top': 195.0, 'left': 345.0, 'isVisible': true},
-    {'img': 0, 'top': 70.0, 'left': 200.0, 'isVisible': true},
-    {'img': 0, 'top': 200.0, 'left': 250.0, 'isVisible': true},
-    {'img': 0, 'top': 135.0, 'left': 260.0, 'isVisible': true},
-    {'img': 0, 'top': 140.0, 'left': 140.0, 'isVisible': true},
+    {'img': 0, 'top': 185.0, 'left': 260.0, 'isVisible': true},
+    {'img': 0, 'top': 335.0, 'left': 280.0, 'isVisible': true},
+    {'img': 0, 'top': 305.0, 'left': 420.0, 'isVisible': true},
+    {'img': 0, 'top': 130.0, 'left': 300.0, 'isVisible': true},
+    {'img': 0, 'top': 265.0, 'left': 345.0, 'isVisible': true},
+    {'img': 0, 'top': 255.0, 'left': 120.0, 'isVisible': true},
+    {'img': 0, 'top': 140.0, 'left': 385.0, 'isVisible': true},
+    {'img': 0, 'top': 260.0, 'left': 440.0, 'isVisible': true},
+    {'img': 0, 'top': 200.0, 'left': 200.0, 'isVisible': true},
   ];
 
   void handleTopping(Map<String, dynamic> thing) {
@@ -78,6 +78,9 @@ class _PizzaPlateState extends State<PizzaPlate> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -86,7 +89,8 @@ class _PizzaPlateState extends State<PizzaPlate> {
           child: Stack(
             children: [
               Image.asset(
-                height: 500.0,
+                width: width * 0.35,
+                height: height * 0.7,
                 'assets/images/chick/pizza_dough.png',
               ),
               ...toppings.map(
@@ -96,7 +100,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
                         left: e['left'] as double,
                         child: Image.asset(
                           "assets/images/chick/pizza_thing_${e['img']}.png",
-                          width: 40,
+                          width:  width * 0.03,
                         ),
                       )
                     : SizedBox.shrink(),
@@ -109,13 +113,14 @@ class _PizzaPlateState extends State<PizzaPlate> {
             child: Stack(
               children: [
                 Image.asset(
-                  height: 500.0,
+                  width: width * 0.3,
+                  height: height * 0.65,
                   'assets/images/chick/pizza_plate.png',
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 40.0,
-                    horizontal: 30.0,
+                    vertical: 45.0,
+                    horizontal: 40.0,
                   ),
                   child: Wrap(
                     children: pizzaThingList
@@ -125,15 +130,16 @@ class _PizzaPlateState extends State<PizzaPlate> {
                               handleTopping(e);
                             },
                             child: Container(
+                              height: height * 0.18,
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 25.0,
-                                vertical: 3.0,
+                                horizontal: 20.0,
+                                vertical: 20.0,
                               ),
                               child: Column(
                                 children: [
                                   Image.asset(
-                                    height: 90,
-                                    width: 90,
+                                    height: height * 0.1,
+                                    width: width * 0.1,
                                     'assets/images/chick/pizza_thing_${e['img']}.png',
                                   ),
                                   Text(

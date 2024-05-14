@@ -19,6 +19,7 @@ class _ManagerMainScreenState extends State<ManagerMainScreen> {
     {"memberId": 0, "name": "등록", "age": 0, "id": "2stu3IS1hhp", "password": "20240507"},
   ];
 
+
   getUserName() async {
     LoginStorage storage = await LoginStorage();
     String? loginName = await storage.getName();
@@ -43,6 +44,9 @@ class _ManagerMainScreenState extends State<ManagerMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
+
     return Scaffold(
         backgroundColor: Color(0xFFF9F9F9),
         appBar: ManagerNavBar(),
@@ -68,8 +72,8 @@ class _ManagerMainScreenState extends State<ManagerMainScreen> {
                   vertical: 10.0,
                 ),
                 margin: const EdgeInsets.only(bottom: 30.0),
-                width: 1000.0,
-                height: 250.0,
+                width: width * 0.8,
+                height: height * 0.3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +132,7 @@ class _ManagerMainScreenState extends State<ManagerMainScreen> {
                       context.go('/manager/calender');
                     },
                     child: SizedBox(
-                      width: 500.0,
+                      width: width * 0.4,
                       child: Image.asset(
                           'assets/images/manager/schedule_manage_button.png'),
                     ),
@@ -138,7 +142,7 @@ class _ManagerMainScreenState extends State<ManagerMainScreen> {
                       context.go('/manager/kids');
                     },
                     child: SizedBox(
-                      width: 500.0,
+                      width: width * 0.4,
                       child: Image.asset(
                           'assets/images/manager/kids_manage_button.png'),
                     ),

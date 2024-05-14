@@ -69,6 +69,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
   }
 
   InputDecoration inputStyle(String text) {
+
     return InputDecoration(
         filled: true,
         fillColor: Colors.white,
@@ -82,11 +83,14 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         ),
         border: InputBorder.none,
         hintText: text,
-        hintStyle: mapleText(14.0, FontWeight.bold, Colors.grey.shade400));
+        hintStyle: mapleText(20.0, FontWeight.bold, Colors.grey.shade400));
   }
 
   @override
   Widget build(BuildContext context) {
+
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFEEF8FF),
@@ -97,99 +101,99 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
               .toList(),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 300,
+              horizontal: 10,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(),
-                Image.asset(
-                  'assets/images/logo.png',
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 100,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 400,
-                        height: 120,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                    width: 90,
-                                    child: Text("아이디",
-                                        style: mapleText(20, FontWeight.w700,
-                                            Colors.brown))),
-                                SizedBox(
-                                  width: 300,
-                                  height: 45,
-                                  child: TextField(
-                                    controller: idController,
-                                    decoration: inputStyle("아이디를 입력해주세요."),
+            child: Center(
+              child: SizedBox(
+                width: width * 0.8,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Image.asset(
+                      'assets/images/logo.png',
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: width * 0.4,
+                          height: height * 0.25,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width: 120,
+                                      child: Text("아이디",
+                                          style: mapleText(28, FontWeight.w700,
+                                              Colors.brown))),
+                                  SizedBox(
+                                    width: width * 0.3,
+                                    height: 70,
+                                    child: TextField(
+                                      controller: idController,
+                                      decoration: inputStyle("아이디를 입력해주세요."),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                SizedBox(
-                                    width: 90,
-                                    child: Text("비밀번호",
-                                        style: mapleText(20, FontWeight.w700,
-                                            Colors.brown))),
-                                SizedBox(
-                                  width: 300,
-                                  height: 45,
-                                  child: TextField(
-                                    controller: passwordController,
-                                    decoration: inputStyle("비밀번호를 입력해주세요."),
-                                    // obscureText: true,
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width: 120,
+                                      child: Text("비밀번호",
+                                          style: mapleText(28, FontWeight.w700,
+                                              Colors.brown))),
+                                  SizedBox(
+                                    width: width * 0.3,
+                                    height: 70,
+                                    child: TextField(
+                                      controller: passwordController,
+                                      decoration: inputStyle("비밀번호를 입력해주세요."),
+                                      // obscureText: true,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: loginUser,
-                        child: Image.asset(
-                          'assets/images/login_button.png',
-                          height: 100,
-                        ),
-                      )
-                    ],
-                  ),
+                        GestureDetector(
+                          onTap: loginUser,
+                          child: Image.asset(
+                            'assets/images/login_button.png',
+
+                            height: 150,
+                          ),
+                        )
+                      ],
+                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     OutlinedButton(
+                    //       //이거 주석 풀면 아이/선생님 로그인 검사 들어감
+                    //       onPressed: loginUser,
+                    //       //이거 주석 풀면 로그인 없이 바로 키즈 페이지랑 관리자 접속됨
+                    //       // onPressed: () {context.go('/start');},
+                    //       child: Text("로그인"),
+                    //     ),
+                    //     OutlinedButton(
+                    //       onPressed: () {
+                    //         context.go('/manager');
+                    //       },
+                    //       child: Text("관리자"),
+                    //     ),
+                    //
+                    //   ],
+                    // )
+                  ],
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     OutlinedButton(
-                //       //이거 주석 풀면 아이/선생님 로그인 검사 들어감
-                //       onPressed: loginUser,
-                //       //이거 주석 풀면 로그인 없이 바로 키즈 페이지랑 관리자 접속됨
-                //       // onPressed: () {context.go('/start');},
-                //       child: Text("로그인"),
-                //     ),
-                //     OutlinedButton(
-                //       onPressed: () {
-                //         context.go('/manager');
-                //       },
-                //       child: Text("관리자"),
-                //     ),
-                //
-                //   ],
-                // )
-              ],
+              ),
             ),
           ),
         ],

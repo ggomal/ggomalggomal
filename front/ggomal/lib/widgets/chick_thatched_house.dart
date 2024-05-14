@@ -51,18 +51,21 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
+
     return Flexible(
       flex: 4,
       child: Stack(
         children: [
           Image.asset(
-            height: 600.0,
+            height: height * 0.8,
             'assets/images/chick/thatched_house.png',
           ),
           Container(
-            height: 450.0,
+            height: height * 0.6,
             width: double.infinity,
-            padding: const EdgeInsets.only(left: 80.0),
+            padding: const EdgeInsets.only(left: 100.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -75,21 +78,25 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Container(
-                                  width: 192.0,
-                                  padding: const EdgeInsets.fromLTRB(11, 0, 11, 0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(11, 0, 11, 0),
                                   child: Image.asset(
-                                    width: 170.0,
-                                    height: 150.0,
+                                    width: width * 0.14,
+                                    height: height * 0.18,
                                     'assets/images/chick/clean_thing_${e["img"]}.png',
                                   ),
                                 ),
-                                SizedBox(height: 40, child: Text(e["name"], style: mapleText(30, FontWeight.normal, Colors.black))),
+                                SizedBox(
+                                    height: 50,
+                                    child: Text(e["name"],
+                                        style: mapleText(40, FontWeight.normal,
+                                            Colors.black))),
                               ],
                             ),
                           )
                         : SizedBox(
-                            width: 190.0,
-                            height: 150.0,
+                            width: width * 0.14,
+                            height: height * 0.18,
                           ),
                   )
                   .toList(),

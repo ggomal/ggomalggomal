@@ -120,13 +120,6 @@ class _KidInfoState extends State<KidInfo> {
                   ),
                 ),
                 ElevatedButton(
-                  // onPressed: () => showDialog(
-                  //   context: context,
-                  //   builder: (BuildContext context) => CreateBingoModal(
-                  //     name: snapshot.data!["name"],
-                  //     kidId: snapshot.data!["id"],
-                  //   ),
-
                   onPressed: () {
                     final name = snapshot.data!["name"];
                     final kidId = snapshot.data!["id"];
@@ -136,13 +129,11 @@ class _KidInfoState extends State<KidInfo> {
                         extra: {'name': name, 'id': kidId}
                     );
                   },
-
                   child: Text("아이와 게임하기"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFAA8D),
                     foregroundColor: Colors.white,
                   ),
-                  child: Text("아이와 게임하기"),
                 ),
               ],
             );

@@ -7,6 +7,7 @@ import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.*;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.common.repository.WordRepository;
+import com.ssafy.ggomalbe.member.kid.KidService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BingoSocketService {
     private static final int BINGO_LINE = 3;
+    private static final long rewardCoin = 2;
     private static final int LIMIT = (int) Math.pow(BINGO_LINE, 2);
     private static final Map<String, BingoPlayer> bingoPlayerMap = new HashMap<>();
 
@@ -28,6 +30,8 @@ public class BingoSocketService {
 
     private final WordRepository wordRepository;
     private final WordService wordService;
+
+    private final KidService kidService;
 
 
     public void putBingoPlayer(BingoPlayer bingoPlayer) {
@@ -173,8 +177,14 @@ public class BingoSocketService {
     public Mono<Void> gameOver(Room room, MemberEntity.Role role) throws JsonProcessingException {
         GameOverResponse gameOverResponse = new GameOverResponse(SocketAction.GAME_OVER, role);
         String response = objectMapper.writeValueAsString(gameOverResponse);
-        return room.broadcastGameOver(response);
+        return room.broadcastGameOver(response).then(bingoReward(room)).then();
     }
+
+    public Mono<Integer> bingoReward(Room room){
+        Long memberId = roomService.getSessionIdMember(room.getKidSocket().getId());
+        return kidService.addCoin(memberId, rewardCoin);
+    }
+
 
     public BingoCard[][] loadMyBingoBoard() {
         return null;

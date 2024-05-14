@@ -103,7 +103,6 @@ public class KidServiceImpl implements KidService {
 
     @Override
     public Flux<TeacherKidEntity> findByKidId(Long kidId){
-        return teacherKidRepository.findByKidId(kidId)
-                .doOnNext(n-> System.out.println(n.getTeacherId()));
+        return teacherKidRepository.findByKidId(kidId);
     }
 }

@@ -5,9 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ggomalbe.bear.service.BingoSocketService;
 import com.ssafy.ggomalbe.bear.service.RoomService;
 import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
+import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.member.kid.dto.MemberIdRoleDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -32,6 +38,20 @@ public class RoomSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         log.info("room-socket sessionId {}", session.getId());
 
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
+                .map(authentication -> {
+                    Long memberId = authentication.getDetails();
+                    MemberEntity.Role memberRole = authentication.getRole();
+
+                    return MemberIdRoleDto.builder().memberId(memberId).memberRole(memberRole).build();
+                })
+                .doOnNext(memberIdRoleDto->roomService.initSessionMember(session,memberIdRoleDto))
+                .flatMap(memberIdRoleDto-> receive(session,memberIdRoleDto));
+    }
+
+
+    public Mono<Void> receive(WebSocketSession session, MemberIdRoleDto memberIdRoleDto){
         return session.receive()                                // WebSocket 세션을 통해 클라이언트로부터 메시지를 수신
                 .map(WebSocketMessage::getPayloadAsText)        //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                           //비동기 처리를 위한 flatMap, 처리하고 Mono로 반환하여 새로운 Publisher생성
@@ -47,20 +67,21 @@ public class RoomSocketHandler implements WebSocketHandler {
                         log.info("message type {}", messageType);
 
                         return switch (messageType) {
-                            case "joinRoom" -> roomService.joinRoom(jsonNode, session);
+                            case "joinRoom" -> roomService.joinRoom(jsonNode, session, memberIdRoleDto);
 
                             //아이가 방을 만들때
-                            case "createRoom" -> roomService.createRoom(jsonNode, session);
+                            case "createRoom" -> roomService.createRoom(jsonNode, session, memberIdRoleDto);
                             case "sendMessage" -> roomService.sendMessage(jsonNode, session);
 
 
                             case "countRoomMember" -> roomService.countRoomMember(session);
                             case "countRoom" -> roomService.countRoom();
-
+                            case "isOnlineKidId" -> roomService.isOnlineKidId(session,jsonNode);
+//                            case "findTeacher" -> roomService.findTeacher(session,jsonNode);
 
 
                             //삭제 플러그가 아니라. 두명이 다 leaveRoom하면 delete
-                            case "leaveRoom" -> roomService.leaveRoom(session);
+                            case "leaveRoom" -> roomService.leaveRoom(session, memberIdRoleDto);
                             case "setBingoBoard" -> teacherSocketService.setBingoBoard(session, jsonNode);
                             case "printBingoV" -> bingoSocketService.printBingoV(session);
 
@@ -86,8 +107,9 @@ public class RoomSocketHandler implements WebSocketHandler {
 
                     //애가 떠날때는 선생님에게 떠난다고하기
                     log.info("socket doFinally");
-                    roomService.leaveRoom(session).subscribe();
+                    roomService.leaveRoom(session,memberIdRoleDto).subscribe();
                 })
                 .then();    //모든 처리가 완료된 후에 Mono<Void>를 반환
     }
+
 }

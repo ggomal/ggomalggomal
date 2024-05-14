@@ -51,7 +51,6 @@ public class TeacherSocketService {
 
     //=====receive=====
     //평가 모달띄우기
-    //
 
     //아이가 칸을 터치한다
     // 선생님 창에 [다시듣기 통과] 모달이 띄워진다
@@ -69,7 +68,7 @@ public class TeacherSocketService {
         Room room = roomService.findRoomByMemberId(session.getId());
         if(room == null || room.getParticipants().size() <2) {return Mono.empty();}
 
-//        String messageType = jsonNode.get("type").asText();
+        //String messageType = jsonNode.get("type").asText();
         log.info("setBingoBoard parsing...");
         List<String> initialList = Arrays.asList(jsonNode.get("initial").asText().split(","));
         short syllable = Short.parseShort(jsonNode.get("syllable").asText());

@@ -4,7 +4,6 @@ import 'package:ggomal/widgets/check.dart';
 import 'package:ggomal/widgets/enroll_kid.dart';
 import 'package:ggomal/widgets/kid_card.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../constants.dart';
 
 class KidsManageScreen extends StatefulWidget {
@@ -16,7 +15,6 @@ class KidsManageScreen extends StatefulWidget {
 
 class _KidsManageScreenState extends State<KidsManageScreen> {
   late Future<List> _kidListFuture;
-
   @override
   void initState() {
     super.initState();

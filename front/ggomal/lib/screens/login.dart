@@ -44,9 +44,10 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         var responseData = response.data;
         String jwt = responseData['jwt'];
         String role = responseData['role'];
+        String name = responseData['name'];
         await loginStorage.setJwt(jwt);
         await loginStorage.setRole(role);
-
+        await loginStorage.setName(name);
         // if (role == 'KID') {
         // context.go('/start');
         // } else if (role == 'TEACHER') {
@@ -54,7 +55,6 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         // } else {
         //   print('role이 이상함');
         // }
-
         if (role == 'KID') {
           context.go('/start');
         } else {

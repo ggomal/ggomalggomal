@@ -18,4 +18,12 @@ class LoginStorage {
   Future<String?> getRole() async {
     return await _storage.read(key: 'role');
   }
+
+  Future<void> setName(String name) async {
+    await _storage.write(key: 'name', value: name);
+  }
+
+  Future<String?> getName() async {
+    return await _storage.read(key: 'name');
+  }
 }

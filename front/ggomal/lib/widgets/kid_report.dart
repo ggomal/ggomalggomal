@@ -33,10 +33,11 @@ class _KidReportState extends State<KidReport> {
   }
 
   String? selectedWord = "ㄱ, ㅋ, ㅈ, ㅊ";
-  List<String> wordList = ["ㄱ, ㅋ, ㅈ, ㅊ", "ㅍ, ㅁ, ㅇ"];
+  List<String> wordList = ["ㄱ, ㅋ, ㅈ, ㅊ", "ㄷ, ㅌ, ㄴ", "ㅍ, ㅁ, ㅇ", "ㅅ", "ㄹ"];
   // ['ㅍ,ㅁ,ㅇ', 'ㄷ,ㅌ,ㄴ', 'ㄱ,ㅋ,ㅈ,ㅊ', 'ㅅ', 'ㄹ']
   Future<void> loadReportData() async {
     reportData = await getStatistics(widget.kidId as String);
+
     wordMeanData = wordList
         .map((e) => MeanData(e, reportData['wordAccuracyMean'][e]))
         .toList();
@@ -45,19 +46,16 @@ class _KidReportState extends State<KidReport> {
           .map((e) => TimeData(e['date'], e['accuracyMean']))
           .toList()
     ];
-
     whaleData = [
       ...reportData['whaleMaxTime']
           .map((e) => TimeData(e['date'], e['meanMaxTime']))
           .toList()
     ];
-
     chickData = [
       ...reportData['chickAccuracy']
           .map((e) => TimeData(e['date'], e['accuracyMean']))
           .toList()
     ];
-
     setState(() {
       [wordData, whaleData, chickData].map((data) =>
           data = data.length < 5 ? data : data.sublist(wordData.length - 5));

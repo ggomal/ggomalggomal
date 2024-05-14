@@ -21,6 +21,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   final recorder = FlutterSoundRecorder();
   String filePath = '';
   List words = [];
+  bool isPass = true;
 
   @override
   void initState() {
@@ -49,11 +50,13 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
           1,
           "${widget.speechData['name']} ${widget.speechData['ending']}",
           filePath);
+      print(response['overResult']);
       if (response['overResult'] || recordCount == 3) {
         Navigator.pop(context, true);
       } else {
         setState(() {
           words = response['words'];
+          isPass = response['overResult'];
         });
       }
     } else {
@@ -88,7 +91,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
           style: mapleText(48, FontWeight.w700, textColor),
         ),
       );
-      if (i == widget.speechData['name'].length - 1){
+      if (i == widget.speechData['name'].length - 1) {
         textSpans.add(
           TextSpan(
             text: ' ',
@@ -107,7 +110,6 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
 
-    print(words);
     return Dialog(
       child: Stack(
         children: [
@@ -134,15 +136,25 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                     Flexible(
                       flex: 2,
                       child: Center(
-                        // child: Text(
-                        //     "${speechData['name']} ${speechData['ending']}",
-                        //     style: mapleText(
-                        //         48, FontWeight.w700, Colors.black))),
-                        child: RichText(
-                          text: TextSpan(
-                            children: _buildTextSpans(
-                                "${speechData['name']}${speechData['ending']}"),
-                          ),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                                height: 80,
+                                child: (recordCount > 0 && !isPass
+                                    ? Text("다시 한번 말해볼까?",
+                                        style: mapleText(
+                                            30, FontWeight.w700, Colors.black))
+                                    : Text(""))),
+                            RichText(
+                              text: TextSpan(
+                                children: _buildTextSpans(
+                                    "${speechData['name']}${speechData['ending']}"),
+                              ),
+                            ),
+                            Text("$recordCount / 3",
+                                style: mapleText(
+                                    30, FontWeight.w700, Colors.black)),
+                          ],
                         ),
                       ),
                     ),

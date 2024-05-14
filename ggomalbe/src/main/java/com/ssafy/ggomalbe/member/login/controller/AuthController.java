@@ -25,8 +25,8 @@ public class AuthController {
         return users.findByUsername(user.getId())
                 .defaultIfEmpty(new CustomUserDetails(null))
                 .map(u -> {
-                    if (u != null) {
-                        if (u.getPassword().equals(user.getPassword())) {
+                    try {
+                        if (user.getPassword().equals(u.getPassword())) {
                             return ResponseEntity.ok(
                                     LoginResponse.builder()
                                             .msg("Success")
@@ -38,9 +38,10 @@ public class AuthController {
                         }
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                                 LoginResponse.builder().msg("Invalid Credentials").build());
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                                LoginResponse.builder().msg("Invalid Credentials").build());
                     }
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                            LoginResponse.builder().msg("User not found. Please register").build());
                 });
     }
 

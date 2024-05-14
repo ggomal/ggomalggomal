@@ -36,8 +36,6 @@ public class RoomSocketHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        log.info("room-socket sessionId {}", session.getId());
-
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
                 .map(authentication -> {
@@ -67,22 +65,25 @@ public class RoomSocketHandler implements WebSocketHandler {
                         log.info("message type {}", messageType);
 
                         return switch (messageType) {
+                            //선생님이 방에 들어올때
                             case "joinRoom" -> roomService.joinRoom(jsonNode, session, memberIdRoleDto);
 
                             //아이가 방을 만들때
                             case "createRoom" -> roomService.createRoom(jsonNode, session, memberIdRoleDto);
+
+                            //아이 또는 선생님이 방을 떠날때
+                            case "leaveRoom" -> roomService.leaveRoom(session, memberIdRoleDto);
                             case "sendMessage" -> roomService.sendMessage(jsonNode, session);
 
-
+                            //아이 온라인 여부 확인
                             case "countRoomMember" -> roomService.countRoomMember(session);
                             case "countRoom" -> roomService.countRoom();
                             case "isOnlineKidId" -> roomService.isOnlineKidId(session,jsonNode);
-//                            case "findTeacher" -> roomService.findTeacher(session,jsonNode);
 
-
-                            //삭제 플러그가 아니라. 두명이 다 leaveRoom하면 delete
-                            case "leaveRoom" -> roomService.leaveRoom(session, memberIdRoleDto);
+                            //랜덤한 빙고판 샏성
                             case "setBingoBoard" -> teacherSocketService.setBingoBoard(session, jsonNode);
+
+                            //빙고판 확인
                             case "printBingoV" -> bingoSocketService.printBingoV(session);
 
                             //선생님이 통과를 누르면 아이는 음성데이터를 보내고, 빙고보드에 O친다
@@ -96,6 +97,9 @@ public class RoomSocketHandler implements WebSocketHandler {
 
                             //선생님이 통과를 선택했을때 아이가 가지고 있는 음성데이터를 보내라고 한다
                             case "requestVoice" -> teacherSocketService.requestVoice(session, jsonNode);
+
+                            case "sayAgain" -> teacherSocketService.sayAgain(session);
+
                             default -> Mono.empty();
                         };
                     } catch (IOException e) {
@@ -105,11 +109,11 @@ public class RoomSocketHandler implements WebSocketHandler {
                 .publishOn(Schedulers.boundedElastic())
                 .doFinally(signalType -> {
 
-                    //애가 떠날때는 선생님에게 떠난다고하기
+                    //소켓연결이 끊길경우 그 정보를 정리한다.
                     log.info("socket doFinally");
                     roomService.leaveRoom(session,memberIdRoleDto).subscribe();
                 })
-                .then();    //모든 처리가 완료된 후에 Mono<Void>를 반환
+                .then();
     }
 
 }

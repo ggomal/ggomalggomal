@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.ssafy.ggomalbe.bear.dto.CreateBingoResponse;
 import com.ssafy.ggomalbe.bear.dto.MarkingBingoResponse;
+import com.ssafy.ggomalbe.bear.dto.SayAgainResponse;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.BingoBoard;
 import com.ssafy.ggomalbe.bear.entity.BingoPlayer;
@@ -193,6 +194,18 @@ public class TeacherSocketService {
         Mono<Void> sendKidRequestMono = room.sendKidRequest(response);
 
         return markingBingoCard(session, jsonNode).then(sendKidRequestMono);
+    }
+
+    public Mono<Void> sayAgain(WebSocketSession session) throws JsonProcessingException {
+//        if (jsonNode.get("letter") == null) return Mono.empty();
+//        String choiceLetter = jsonNode.get("letter").asText();
+
+        Room room = roomService.findRoomByMemberId(session.getId());
+
+        SayAgainResponse sayAgainResponse = new SayAgainResponse(SocketAction.SAY_AGAIN);
+        String response = gson.toJson(sayAgainResponse);
+
+        return room.sendKidRequest(response);
     }
 
     // 선생님이 O를 눌렀을때(아이의 발음을 api로 평가하고, 둘다 O표시를 하고, 빙고인지 판단하고 맞다면 게임종료)

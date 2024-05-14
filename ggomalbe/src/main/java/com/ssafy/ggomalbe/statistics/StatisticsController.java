@@ -15,11 +15,11 @@ import reactor.core.publisher.Mono;
 public class StatisticsController {
     private final StatisticsService statisticsService;
     @GetMapping
-    public Mono<StatisticResponse> getStatistic(@RequestParam(value = "kidId",required = false, defaultValue = "-1L") Long kidId ){
+    public Mono<StatisticResponse> getStatistic(@RequestParam(value = "kidId", required = false) Long kidId){
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .map(memberId-> kidId==-1L?memberId:kidId)
+                .map(memberId-> kidId==null?memberId:kidId)
                 .flatMap(statisticsService::getStatistic);
     }
 

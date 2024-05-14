@@ -51,7 +51,6 @@ public class StatisticsServiceImpl implements StatisticsService {
         return bearRecordRepository.findAccuracyDateByKidIdAndInitial(kidId, Set.of(initial.split(", ")))
                 .collectList()
                 .map(wordAccuracyResults -> {
-                    if (wordAccuracyResults.isEmpty()) return res;
                     res.getWordAccuracy().put(initial, wordAccuracyResults);
                     res.putWordAccuracyMean(initial, wordAccuracyResults);
                     return res;

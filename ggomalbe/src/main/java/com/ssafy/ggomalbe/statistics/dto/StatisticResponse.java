@@ -33,7 +33,6 @@ public class StatisticResponse {
         int denominator = lis.size();
         Float numerator = 0F;
         for (WordAccuracyResult wa:lis) numerator += wa.getAccuracyMean();
-        wordAccuracyMean.put(initial, numerator / denominator);
-
+        wordAccuracyMean.put(initial, numerator / (denominator==0? 1:denominator));
     }
 }

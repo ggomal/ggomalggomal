@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../get_storage.dart';
 import '../../utils/notification_dialog.dart';
+import '../../widgets/kid_report.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -434,12 +435,18 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
           onTap: (
               ){
             showDialog(
-                context: context,
-                builder: (context){
-                  return Dialog(
-                    child: Text('이건 학습현황'),
-                  );
-                }
+              context: context,
+              builder: (BuildContext context) => Dialog(
+                child:  SizedBox(
+                  width: 1000, height: 600,
+                  child: Stack(
+                    children: [
+                      Image.asset("assets/images/chick/chick_modal.png",
+                          width: 1000, height: 600, fit: BoxFit.fill),
+                      Center(child: SizedBox(width:800, height: 350, child: KidReport('0')))],
+                  ),
+                ),
+              ),
             );
           },
           child: Container(

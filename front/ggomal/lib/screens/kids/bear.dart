@@ -57,13 +57,13 @@ class _KidBingoModalState extends State<KidBingoModal> {
   void postAudio() async {
     File audioFile = File(filePath);
     if (await audioFile.exists()) {
-      String m4a = filePath.replaceAll('.aac', '.m4a');
-      await audioFile.rename(m4a);
+      // String m4a = filePath.replaceAll('.aac', '.m4a');
+      // await audioFile.rename(m4a);
       final response = await checkAudio(1,
-          "${widget.selectData['letter']} ${widget.selectData['wordId']}", m4a);
-      if (response['result'] || recordCount == 3) {
-        Navigator.pop(context, true);
-      }
+          "${widget.selectData['letter']} ${widget.selectData['wordId']}", filePath);
+      // if (response['result'] || recordCount == 3) {
+      //   Navigator.pop(context, true);
+      // }
     } else {
       print("파일이 존재하지 않습니다.");
     }

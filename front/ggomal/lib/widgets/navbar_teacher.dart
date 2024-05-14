@@ -22,7 +22,7 @@ class NavBarTeacher extends StatelessWidget implements PreferredSizeWidget {
     }
 
     return AppBar(
-      backgroundColor: Color(0xffFFFEF1),
+      backgroundColor: Color(0xffF0E7FF),
       toolbarHeight: preferredSize.height,
       leadingWidth: 150,
       centerTitle: true,

@@ -106,9 +106,10 @@ public class TeacherSocketService {
                             Mono<Void> sendTeacherBoard = room.sendTeacherBingoBoard(responseT)
                                     .doOnSuccess(v -> {
                                         WebSocketSession teacherSocket = room.getTeacherSocket();
-                                        log.info("setting bingoPlayer kid? {}", teacherSocket);
+                                        log.info("setting teacherSocket? {}", teacherSocket);
                                         BingoPlayer bingoPlayerT = new BingoPlayer(teacherSocket.getId(), teacherSocket, bingoBoardT, MemberEntity.Role.TEACHER);
                                         bingoSocketService.putBingoPlayer(bingoPlayerT);
+                                        log.info("setting bingoPlayerT? {}", bingoSocketService.getBingoPlayer(bingoPlayerT.getId()));
                                     });
 
 
@@ -116,11 +117,12 @@ public class TeacherSocketService {
                                     .doOnSuccess(v -> {
                                         //아이에게 보내기, 방에서 아이 소켓 찾기
                                         WebSocketSession kidSocket = room.getKidSocket();
-                                        log.info("setting bingoPlayer kid? {}", kidSocket);
+                                        log.info("setting kidSocket? {}", kidSocket);
                                         BingoPlayer bingoPlayerK = new BingoPlayer(kidSocket.getId(), kidSocket, bingoBoardK, MemberEntity.Role.KID);
                                         bingoSocketService.putBingoPlayer(bingoPlayerK);
+                                        log.info("setting bingoPlayerK? {}", bingoSocketService.getBingoPlayer(bingoPlayerK.getId()));
                                     });
-                            return Mono.when(sendTeacherBoard,sendKidBoard);
+                            return sendTeacherBoard.then(sendKidBoard);
                         })
                 );
     }

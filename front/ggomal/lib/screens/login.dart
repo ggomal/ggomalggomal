@@ -64,7 +64,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         print('로그인 실패: ${response.statusCode}');
       }
     } catch (e) {
-      print('네트워크 에러: $e');
+      print('에러: $e');
     }
   }
 

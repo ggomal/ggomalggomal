@@ -1,36 +1,69 @@
-// import 'package:ggomal/login_storage.dart';
-//
-// class socketDio {
-//   static String getWebSocketUrl() {
-//     return 'wss://k10e206.p.ssafy.io/api/v1/room';
-//   }
-//
-//   static Map<String, dynamic> getWebSocketHeaders() {
-//     LoginStorage _storage = LoginStorage();
-//     // 아이 토큰
-//     // String loginJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IktJRCIsIm1lbWJlck5hbWUiOiLrp4jripjslYTsnbQiLCJtZW1iZXJJZCI6NCwic3ViIjoia2lkMSIsImlhdCI6MTcxNDkxMjg4MiwiZXhwIjoxMDE3MTQ5MTI4ODJ9.poP4jnnsdQhINLLD5RM9zDQNFcsJ_LQ57PDqB0exdJ8';
-//
-//     // 선생님 토큰
-//     // String loginJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJjZW50ZXJJZCI6Miwicm9sZSI6IlRFQUNIRVIiLCJtZW1iZXJOYW1lIjoi66eI64qY7ISg7IOdIiwibWVtYmVySWQiOjMsInN1YiI6InRlYWNoZXIxIiwiaWF0IjoxNzE0OTEyOTg1LCJleHAiOjEwMTcxNDkxMjk4NX0.Jj5OMXnMEINnP0FteSWVzGtzsEPJWGhnML3HS849nSI';
-//
-//     // 로그인 실행
-//     Future<String?> loginJwt = _storage.getJwt();
-//     print('소켓 토큰 $loginJwt');
-//     return {'Authorization': 'Bearer $loginJwt'};
-//   }
-// }
-
+import 'dart:convert';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ggomal/login_storage.dart';
 
+
 class SocketDio {
+  static WebSocketChannel? _channel;
+  static Stream? _broadcastStream;
+  static bool _isConnected = false;
+
+  // static Future<void> connectToWebSocket() async {
+  //   if (!_isConnected) {
+  //     try {
+  //       var headers = await getWebSocketHeadersAsync();
+  //       _channel = IOWebSocketChannel.connect(
+  //         Uri.parse(getWebSocketUrl()),
+  //         headers: headers,
+  //       );
+  //       _broadcastStream = _channel!.stream.asBroadcastStream();
+  //       _isConnected = true;
+  //
+  //       _broadcastStream!.listen((message) {
+  //         recievedMessage(message);
+  //       });
+  //     } catch (e) {
+  //       print('WebSocket 연결 실패했음 socket.dart를 확인하세요: $e');
+  //       _isConnected = false;
+  //     }
+  //   }
+  // }
+  //
+  // static void disconnectWebSocket() {
+  //   if (_isConnected && _channel != null) {
+  //     _channel!.sink.close();
+  //     _isConnected = false;
+  //   }
+  // }
+
+  static Stream? get broadcastStream => _broadcastStream;
+
   static String getWebSocketUrl() {
     return 'wss://k10e206.p.ssafy.io/api/v1/room';
   }
 
-  // 비동기로 웹소켓 헤더를 반환하는 함수
   static Future<Map<String, dynamic>> getWebSocketHeadersAsync() async {
     LoginStorage _storage = LoginStorage();
     String? loginJwt = await _storage.getJwt();
     return {'Authorization': 'Bearer $loginJwt'};
   }
+
+  // static void recievedMessage(dynamic message) {
+  //   try {
+  //     var decodedMessage = jsonDecode(message);
+  //     switch (decodedMessage['action']) {
+  //       case 'SET_BINGO_BOARD':
+  //       // 빙고 데이터 받아오는거
+  //         break;
+  //       case 'FIND_LETTER':
+  //       // 애기 빙고 찾게하는거
+  //         break;
+  //       default:
+  //         print('받는 : ${decodedMessage['type']}');
+  //     }
+  //   } catch (e) {
+  //     print('메시지 처리 중 에러 발생: $e');
+  //   }
+  // }
 }

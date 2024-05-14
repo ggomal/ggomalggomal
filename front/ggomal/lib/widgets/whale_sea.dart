@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/whale_dio.dart';
 import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/percent_bar.dart';
@@ -116,15 +117,21 @@ class _WhaleSeaState extends State<WhaleSea> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
+
     return Stack(
       children: [
         AnimatedContainer(
           duration: Duration(milliseconds: 200),
           curve: Curves.easeInOut,
           alignment: _alignment,
-          child: Image.asset(
-            'assets/images/whale/whale_diver.png',
-            width: 200.0,
+          child: RotatedBox(
+            quarterTurns: (directionCount + 2) % 4,
+            child: Image.asset(
+              'assets/images/whale/whale_diver.png',
+              width: width * 0.15,
+            ),
           ),
         ),
         ..._fishLocation
@@ -134,7 +141,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                       alignment: Alignment(e['x'] as double, e['y'] as double),
                       child: Image.asset(
                         "assets/images/whale/fish_pink.png",
-                        width: 50,
+                        width: width * 0.05,
                       ),
                     )
                   : Text(""),

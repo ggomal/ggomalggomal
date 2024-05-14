@@ -1,15 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/services/kid_manage_dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/constants.dart';
 
+import 'package:ggomal/login_storage.dart';
 import '../../utils/navbar_manager.dart';
 
-
-class ManagerMainScreen extends StatelessWidget {
+class ManagerMainScreen extends StatefulWidget {
   const ManagerMainScreen({super.key});
 
   @override
+  State<ManagerMainScreen> createState() => _ManagerMainScreenState();
+}
+
+class _ManagerMainScreenState extends State<ManagerMainScreen> {
+  String? name = '';
+  List kidList = [
+    {"memberId": 0, "name": "등록", "age": 0, "id": "2stu3IS1hhp", "password": "20240507"},
+  ];
+
+
+  getUserName() async {
+    LoginStorage storage = await LoginStorage();
+    String? loginName = await storage.getName();
+    setState(() {
+      name = loginName;
+    });
+  }
+
+  getUserKidList() async {
+    List kids = await getKidList();
+    setState(() {
+      kidList = kids;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserName();
+    getUserKidList();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
+
     return Scaffold(
         backgroundColor: Color(0xFFF9F9F9),
         appBar: ManagerNavBar(),
@@ -35,14 +72,14 @@ class ManagerMainScreen extends StatelessWidget {
                   vertical: 10.0,
                 ),
                 margin: const EdgeInsets.only(bottom: 30.0),
-                width: 1000.0,
-                height: 250.0,
+                width: width * 0.8,
+                height: height * 0.3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "위재원 선생님 안녕하세요!",
+                      "$name 선생님 안녕하세요!",
                       style: nanumText(36.0, FontWeight.w900, Colors.white),
                     ),
                     SizedBox(
@@ -51,29 +88,38 @@ class ManagerMainScreen extends StatelessWidget {
                     Text(
                       "담당 학생 목록이에요.",
                       style: nanumText(20.0, FontWeight.w700, Colors.white),
-
                     ),
-                    Wrap(
-                      children: ['박수빈', '장지민', '박서현', '최진우', '김창희']
-                          .map(
-                            (e) => Container(
-                              decoration: BoxDecoration(
-                                borderRadius:
+                    SizedBox(
+                      height: 80,
+                      child: SingleChildScrollView(
+
+                        child: Wrap(
+                          children: kidList
+                              .map(
+                                (e) =>
+                                Container(
+                                  width: 130,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
-                                color: Colors.white,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                                vertical: 3.0,
-                              ),
-                              margin: EdgeInsets.only(top: 5, right: 20),
-                              child: Text(
-                                e,
-                                style: nanumText(18.0, FontWeight.w800, Colors.black),
-                              ),
-                            ),
+                                    color: Colors.white,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0,
+                                    vertical: 3.0,
+                                  ),
+                                  margin: EdgeInsets.only(top: 5, right: 20),
+                                  child: Text(
+                                    "${e['name']}-${e['age']}세",
+                                    style: nanumText(
+                                        18.0, FontWeight.w800, Colors.black),
+                                  ),
+                                ),
                           )
-                          .toList(),
+                              .toList(),
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -86,7 +132,7 @@ class ManagerMainScreen extends StatelessWidget {
                       context.go('/manager/calender');
                     },
                     child: SizedBox(
-                      width: 500.0,
+                      width: width * 0.4,
                       child: Image.asset(
                           'assets/images/manager/schedule_manage_button.png'),
                     ),
@@ -96,7 +142,7 @@ class ManagerMainScreen extends StatelessWidget {
                       context.go('/manager/kids');
                     },
                     child: SizedBox(
-                      width: 500.0,
+                      width: width * 0.4,
                       child: Image.asset(
                           'assets/images/manager/kids_manage_button.png'),
                     ),

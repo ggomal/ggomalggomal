@@ -18,3 +18,7 @@ TextStyle mapleText(double size, FontWeight weight, Color color) {
     color: color,
   );
 }
+
+Size screenSize(BuildContext context) {
+  return MediaQuery.of(context).size;
+}

@@ -11,13 +11,12 @@ Future<Dio> useDio() async{
 
   // 로그인 실행시 토큰
   String? loginJwt = await _storage.getJwt();
-  print(loginJwt);
 
   final options = BaseOptions(
     baseUrl: 'https://k10e206.p.ssafy.io/api/v1',
     headers: {'Authorization': 'Bearer $loginJwt'},
-    connectTimeout: Duration(seconds: 10),
-    receiveTimeout: Duration(seconds: 10),
+    connectTimeout: Duration(seconds: 30),
+    receiveTimeout: Duration(seconds: 30),
   );
   return Dio(options);
 

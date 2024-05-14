@@ -83,11 +83,10 @@ class _KidInfoState extends State<KidInfo> {
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Image.asset(
-                    // snapshot.data!['kid_img_url'],
-                    "assets/images/manager/chunsik.jpg",
-                    width: 120.0,
+                    snapshot.data!['gender'] == 'MALE' ? "assets/images/manager/photo_boy.png" : "assets/images/manager/photo_girl.png",
+                    width: 220.0,
                     height: 120.0,
                     fit: BoxFit.cover,
                   ),

@@ -13,15 +13,15 @@ class KidCard extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 80,
+            width: 100,
             child: Text(
               "${text['field']}",
-              style: nanumText(14.0, FontWeight.w500, Colors.black),
+              style: nanumText(18.0, FontWeight.w500, Colors.black),
             ),
           ),
           Text(
             "${text['data']}",
-            style: nanumText(14.0, FontWeight.w700, Colors.black),
+            style: nanumText(18.0, FontWeight.w700, Colors.black),
           ),
         ],
       ),
@@ -30,13 +30,17 @@ class KidCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
+
     return GestureDetector(
       onTap: () {
         context.go('/manager/kids/${kidData['memberId']}');
       },
       child: Container(
-        width: 300.0,
-        height: 160.0,
+        width: width * 0.25,
+        height: height * 0.2,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -54,6 +58,7 @@ class KidCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             {"field": "이름", "data": kidData["name"]},
             {"field": "나이", "data": kidData["age"]},

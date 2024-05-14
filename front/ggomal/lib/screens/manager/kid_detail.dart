@@ -19,6 +19,8 @@ class _KidDetailState extends State<KidDetail> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -59,8 +61,8 @@ class _KidDetailState extends State<KidDetail> {
             ),
             Center(
               child: Container(
-                width: 1000.0,
-                height: 450.0,
+                width: width * 0.75,
+                height: height * 0.7,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,

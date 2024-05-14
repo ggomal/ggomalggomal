@@ -105,7 +105,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
             ),
             child: Center(
               child: SizedBox(
-                width: width * 0.8,
+                width: width * 0.6,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   // crossAxisAlignment: CrossAxisAlignment.stretch,

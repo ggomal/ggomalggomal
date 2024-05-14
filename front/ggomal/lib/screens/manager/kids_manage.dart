@@ -44,7 +44,7 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
             }),
         child: Container(
           width: width * 0.25,
-          height: height * 0.2,
+          height: height * 0.25,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -102,8 +102,7 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
               ),
             ),
             Center(
-              child: SizedBox(
-                width: width * 0.8,
+              child: Expanded(
                 child: FutureBuilder<List<dynamic>>(
                   future: _kidListFuture,
                   builder: (context, snapshot) {

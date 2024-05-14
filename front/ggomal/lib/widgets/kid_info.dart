@@ -24,24 +24,30 @@ class _KidInfoState extends State<KidInfo> {
 
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
+    double textSize = width > 1500 ? 18.0 : 14.0;
 
     Widget textLine(Map<String, String> text) {
+
+
       return Flexible(
         flex: 1,
         child: SizedBox(
-          height: 25,
+          height: height * 0.05,
           child: Row(
             children: [
               SizedBox(
-                width: 80,
+                width: width * 0.07,
                 child: Text(
                   "${text['field']}",
-                  style: nanumText(12.0, FontWeight.w800, Colors.black),
+                  style: nanumText(textSize, FontWeight.w800, Colors.black),
                 ),
+
               ),
               Text(
                 "${text['data']}",
-                style: nanumText(12.0, FontWeight.w500, Colors.black),
+                style: nanumText(textSize, FontWeight.w500, Colors.black),
               ),
             ],
           ),
@@ -54,8 +60,8 @@ class _KidInfoState extends State<KidInfo> {
         vertical: 5,
         horizontal: 20,
       ),
-      width: 250,
-      height: 400,
+      width: width * 0.2,
+      height: height * 0.6,
       decoration: BoxDecoration(
         color: Color(0xFFF6F6F6),
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -86,8 +92,8 @@ class _KidInfoState extends State<KidInfo> {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Image.asset(
                     snapshot.data!['gender'] == 'MALE' ? "assets/images/manager/photo_boy.png" : "assets/images/manager/photo_girl.png",
-                    width: 220.0,
-                    height: 120.0,
+                    width: width * 0.18,
+                    height: height * 0.18,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -103,7 +109,7 @@ class _KidInfoState extends State<KidInfo> {
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(
                     "아이 특이사항",
-                    style: nanumText(12.0, FontWeight.w800, Colors.black),
+                    style: nanumText(textSize, FontWeight.w800, Colors.black),
                   ),
                 ),
                 SizedBox(
@@ -113,7 +119,7 @@ class _KidInfoState extends State<KidInfo> {
                     "${snapshot.data!['kidNote']}",
                     maxLines:3,
                     overflow: TextOverflow.ellipsis,
-                    style: nanumText(12.0, FontWeight.w500, Colors.black),
+                    style: nanumText(textSize, FontWeight.w500, Colors.black),
                   ),
                 ),
                 ElevatedButton(

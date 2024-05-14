@@ -36,6 +36,8 @@ class _KidNoteState extends State<KidNote> {
 
   @override
   Widget build(BuildContext context) {
+    double height = screenSize(context).height;
+
     return Column(
       children: [
         Padding(
@@ -87,7 +89,7 @@ class _KidNoteState extends State<KidNote> {
           ),
         ),
         SizedBox(
-          height: 300,
+          height: height * 0.5,
           child: FutureBuilder<List<dynamic>>(
             future: _noticeListFuture,
             builder: (context, snapshot) {

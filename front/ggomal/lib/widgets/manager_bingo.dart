@@ -78,6 +78,7 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                             });
                             print('통과버튼 누르면 $message');
                             widget.channel.sink.add(message);
+                            Navigator.pop(context);
                           },
                           child: Image.asset(
                             'assets/images/manager/pass_button.png',

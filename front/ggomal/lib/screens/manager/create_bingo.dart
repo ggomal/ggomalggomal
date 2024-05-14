@@ -17,6 +17,7 @@ import 'package:ggomal/widgets/navbar_teacher.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:http/http.dart' as http;
 import 'package:ggomal/login_storage.dart';
+import 'package:ggomal/constants.dart';
 
 class CreateBingo extends StatefulWidget {
   final String name;
@@ -86,7 +87,16 @@ class _CreateBingoModalState extends State<CreateBingo> {
           BingoSelect(message['letter']);
           break;
         case 'MARKING_BINGO':
-
+          String markedLetter = message['letter'];
+          setState(() {
+            for (var row in bingoBoardData) {
+              for (var item in row) {
+                if (item['letter'] == markedLetter) {
+                  item['isSelected'] = true;
+                }
+              }
+            }
+          });
       }
 
     }, onDone: () {
@@ -132,9 +142,11 @@ class _CreateBingoModalState extends State<CreateBingo> {
       if (data['action'] == "SET_BINGO_BOARD") {
         var boardData = data['bingoBoard']['board'] as List;
         List<List<Map<String, dynamic>>> formattedData = boardData.map((row) {
-          return (row as List)
-              .map((item) => item as Map<String, dynamic>)
-              .toList();
+          return (row as List).map((item) {
+            var mapItem = item as Map<String, dynamic>;
+            mapItem['isSelected'] = false;
+            return mapItem;
+          }).toList();
         }).toList();
         print('formatdata 어케 출력되는지 보자 $formattedData');
         setState(() {
@@ -588,27 +600,44 @@ class _CreateBingoModalState extends State<CreateBingo> {
         var cell = flatList[index];
         return InkWell(
             onTap: () {
-              BingoSelect(cell['letter']);
+              // BingoSelect(cell['letter']);
               sendWebSocketMessage(cell['letter']);
             },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black54, width: 2),
-                image: DecorationImage(
-                  image: NetworkImage(
-                      cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+            child: Stack(
               alignment: Alignment.center,
-              child: Text(
-                cell['letter'],
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black54, width: 2),
+                    image: DecorationImage(
+                      image: NetworkImage(cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-            ));
+                Positioned(
+                  bottom: 10,
+                  child: Text(
+                      cell['letter'],
+                      style: mapleText(30, FontWeight.normal, Colors.black)
+                  ),
+                ),
+                if (cell['isSelected'])
+                  Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.red,
+                        width: 25,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                  ),
+              ],
+            )
+        );
       },
     );
   }
@@ -670,30 +699,6 @@ class _CreateBingoModalState extends State<CreateBingo> {
                       width: 250,
                     ),
                   ),
-
-                  // 임시 버튼
-                  // Positioned(
-                  //   right: 0,
-                  //   top: 100,
-                  //   child: ElevatedButton(
-                  //     onPressed: () async {
-                  //       if (recorder.isRecording) {
-                  //         await stop();
-                  //       } else {
-                  //         await record();
-                  //       }
-                  //     },
-                  //     child: Text(recorder.isRecording ? '녹음종료' : '녹음하기'),
-                  //   ),
-                  // ),
-                  // Positioned(
-                  //   right: 0,
-                  //   top: 200,
-                  //   child: ElevatedButton(
-                  //     onPressed: sendLastAudio,
-                  //     child: Text('통과'),
-                  //   ),
-                  // ),
                 ]),
               ));
         } else {

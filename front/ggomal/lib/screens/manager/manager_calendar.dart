@@ -8,8 +8,10 @@ import 'package:ggomal/screens/manager/component/schedule_card.dart';
 import 'package:ggomal/screens/manager/component/today_banner.dart';
 import 'package:ggomal/screens/manager/const/color.dart';
 import 'package:ggomal/screens/manager/model/Schedule.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../constants.dart';
 import '../../services/dio.dart';
 import '../../utils/navbar_manager.dart';
 
@@ -90,6 +92,28 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center, // 세로 방향 중앙 정렬
             children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                height: 50.0,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          context.go('/manager');
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.navigate_before , color: Colors.black, size: 50,),
+                            Text(
+                              "홈으로",
+                              style: nanumText(30.0, FontWeight.w700, Colors.black),
+                            ),
+                          ],
+                        )
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 가로 방향 간격 조정

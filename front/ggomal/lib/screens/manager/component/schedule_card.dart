@@ -20,7 +20,7 @@ class ScheduleCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           border: Border.all(
-              color: primaryColor,
+              color: Colors.grey,
               width: 1.0
           ),
           borderRadius: BorderRadius.circular(8.0)

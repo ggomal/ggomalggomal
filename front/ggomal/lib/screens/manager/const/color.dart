@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const primaryColor = Color(0xFF0DB2B2);
+const primaryColor = Color(0xFFFEAF93);
 
 const categoryColors = [
   /// 빨강

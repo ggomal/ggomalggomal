@@ -44,13 +44,13 @@ class TodayBanner extends StatelessWidget {
                     fontWeight: FontWeight.w700
                 ),
               ),
-              Text(
-                '${taskCount}개',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w700
-                ),
-              )
+              // Text(
+              //   '${taskCount}개',
+              //   style: TextStyle(
+              //       color: Colors.black,
+              //       fontWeight: FontWeight.w700
+              //   ),
+              // )
             ],
           ),
         ),

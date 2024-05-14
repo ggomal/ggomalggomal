@@ -4,6 +4,7 @@ import jakarta.xml.bind.DatatypeConverter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Base64ImageDto {
     private boolean hasErrors;
     private List<String> errorMessages;
     private static final List<String> VALID_FILE_TYPES = new ArrayList<String>(3);
+    private ByteBuffer byteBuffer;
 
     static {
         VALID_FILE_TYPES.add("jpg");
@@ -24,7 +26,7 @@ public class Base64ImageDto {
         VALID_FILE_TYPES.add("png");
     }
 
-    public Base64ImageDto(String b64ImageData, String fileName) {
+    public Base64ImageDto(String fileName, String b64ImageData) {
         this.fileName = fileName;
         this.errorMessages = new ArrayList<>(2);
         String[] base64Components = b64ImageData.split(",");
@@ -46,6 +48,7 @@ public class Base64ImageDto {
             if (!this.hasErrors) {
                 String base64Image = base64Components[1];
                 this.imageBytes = DatatypeConverter.parseBase64Binary(base64Image);
+                this.byteBuffer = ByteBuffer.wrap(imageBytes);
             }
         }
     }

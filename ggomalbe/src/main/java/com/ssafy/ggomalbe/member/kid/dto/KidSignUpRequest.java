@@ -52,7 +52,8 @@ public class KidSignUpRequest {
     public KidEntity toKidEntity(){
         return KidEntity.builder()
                 .memberId(memberId)
-                .kidImgUrl(kidImgUrl==null? "https://ggomalggomal.s3.ap-southeast-2.amazonaws.com/userImg/noImg":kidImgUrl)
+//                .kidImgUrl(kidImgUrl==null? "https://ggomalggomal.s3.ap-southeast-2.amazonaws.com/userImg/noImg":kidImgUrl)
+                .kidImgUrl(gender.toString().equals("MALE")? "https://ggomalggomal.s3.ap-southeast-2.amazonaws.com/userImg/male":"https://ggomalggomal.s3.ap-southeast-2.amazonaws.com/userImg/female")
                 .kidBirthDT(kidBirthDT)
                 .kidNote(kidNote)
                 .parentName(parentName)

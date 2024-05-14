@@ -1,5 +1,6 @@
 package com.ssafy.ggomalbe.member.kid;
 
+import com.ssafy.ggomalbe.common.dto.Base64ImageDto;
 import com.ssafy.ggomalbe.common.entity.KidEntity;
 import com.ssafy.ggomalbe.common.entity.SituationKidEntity;
 import com.ssafy.ggomalbe.common.entity.TeacherKidEntity;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
+import java.nio.ByteBuffer;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +37,13 @@ public class KidServiceImpl implements KidService {
                     request.setMemberId(memberEntity.getMemberId());
                     return request;
                 })
+                .publishOn(Schedulers.boundedElastic())
+//                .map(req->{
+//                    Base64ImageDto base64Data = new Base64ImageDto(req.getUser(), req.getImg());
+//                    s3Service.uploadHandler(base64Data.getFileName(), Mono.fromCallable(base64Data::getByteBuffer))
+//                            .subscribe();
+//                    return req;
+//                })
                 .doOnSuccess(this::saveKid)
                 .doOnSuccess(this::saveTeacherKid)
                 .map(KidSignUpRequest::toKidSignUpResponse);

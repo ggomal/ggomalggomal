@@ -28,7 +28,7 @@ public class S3Service {
     private final S3AsyncClient s3client;
     private final S3ClientConfigurationProperties s3config;
 
-    public Mono<ResponseEntity<UploadResult>> uploadHandler(String fileKey, Flux<ByteBuffer> file) {
+    public Mono<ResponseEntity<UploadResult>> uploadHandler(String fileKey, Mono<ByteBuffer> file) {
         Map<String, String> metadata = new HashMap<String, String>();
         MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
 
@@ -46,7 +46,7 @@ public class S3Service {
                 .map((response) -> {
                     return ResponseEntity
                             .status(HttpStatus.CREATED)
-                            .body(new UploadResult(HttpStatus.CREATED, new String[] {fileKey}));
+                            .body(new UploadResult(HttpStatus.CREATED, new String[]{fileKey}));
                 });
     }
 

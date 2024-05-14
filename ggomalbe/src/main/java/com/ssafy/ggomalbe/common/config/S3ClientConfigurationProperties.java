@@ -12,7 +12,7 @@ public class S3ClientConfigurationProperties {
     private Region region = Region.AP_SOUTHEAST_2;
     private String accessKeyId;
     private String secretAccessKey;
-    private URI endpoint = null;
+    private URI endpoint;
     private String bucket;
 
 }

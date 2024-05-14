@@ -47,7 +47,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
       // String m4a = filePath.replaceAll('.aac', '.m4a');
       // await audioFile.rename(m4a);
       final response = await checkAudio(
-          1,
+          widget.speechData['gameNum'],
           "${widget.speechData['name']} ${widget.speechData['ending']}",
           filePath);
       print(response['overResult']);

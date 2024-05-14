@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ggomal/constants.dart';
 
 class Notice extends StatefulWidget {
   final Map<String, dynamic> notice;
@@ -12,6 +13,8 @@ class Notice extends StatefulWidget {
 class _NoticeState extends State<Notice> {
   @override
   Widget build(BuildContext context) {
+    double width = screenSize(context).width;
+    double height = screenSize(context).height;
 
     TextStyle baseText(double size, FontWeight weight) {
       return TextStyle(
@@ -29,7 +32,9 @@ class _NoticeState extends State<Notice> {
         vertical: 10,
         horizontal: 10,
       ),
-      width: 200,
+
+      width: width * 0.15,
+      height: height * 0.6,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -47,7 +52,7 @@ class _NoticeState extends State<Notice> {
           SizedBox(height: 30,
           child: Center(child: Text("${widget.notice['date']}", style: baseText(18, FontWeight.w900)))),
           SizedBox(
-            height: 110,
+            height: height * 0.15,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -56,9 +61,8 @@ class _NoticeState extends State<Notice> {
               ],
             ),
           ),
-
           SizedBox(
-            height: 100,
+            height: height * 0.15,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

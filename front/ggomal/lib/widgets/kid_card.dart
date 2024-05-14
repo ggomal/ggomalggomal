@@ -16,12 +16,12 @@ class KidCard extends StatelessWidget {
             width: 100,
             child: Text(
               "${text['field']}",
-              style: nanumText(18.0, FontWeight.w500, Colors.black),
+              style: nanumText(16.0, FontWeight.w500, Colors.black),
             ),
           ),
           Text(
             "${text['data']}",
-            style: nanumText(18.0, FontWeight.w700, Colors.black),
+            style: nanumText(16.0, FontWeight.w700, Colors.black),
           ),
         ],
       ),
@@ -40,7 +40,7 @@ class KidCard extends StatelessWidget {
       },
       child: Container(
         width: width * 0.25,
-        height: height * 0.2,
+        height: height * 0.25,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(10)),

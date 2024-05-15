@@ -102,6 +102,7 @@ flutter:
     - assets/images/home/
     - assets/images/home/audio/
     - assets/audio/
+    - assets/images/intro/
 
   # To add assets to your aplication, add an assets section, like this:
 

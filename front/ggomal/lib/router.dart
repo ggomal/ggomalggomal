@@ -1,5 +1,5 @@
-//경로 관련
 import 'package:flutter/material.dart';
+import 'package:ggomal/screens/kids/intro.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ggomal/screens/kids/chick_clean.dart';
 import 'package:ggomal/screens/kids/chick_pizza.dart';
@@ -23,6 +23,7 @@ final router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
     GoRoute(path: '/start', builder: (context, state) => const StartScreen()),
+    GoRoute(path: '/intro', builder: (context, state) => IntroPage()),
     GoRoute(
       path: '/kids',
       builder: (context, state) => const MainScreen(),

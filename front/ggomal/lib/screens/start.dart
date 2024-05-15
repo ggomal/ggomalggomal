@@ -19,7 +19,7 @@ class StartScreen extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                         onTap: () {
-              context.go('/kids');
+              context.go('/intro');
                         },
                         child: Image.asset('assets/images/start_button.png', width: 400),
                       ),

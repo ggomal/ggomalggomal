@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.bear.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.ssafy.ggomalbe.bear.dto.GameOverResponse;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.*;
@@ -22,12 +23,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class BingoSocketService {
     private static final int BINGO_LINE = 3;
-    private static final long rewardCoin = 2;
+    private static final short winnerCoin = 3;
+    private static final short loserCoin = 1;
+
     private static final int LIMIT = (int) Math.pow(BINGO_LINE, 2);
     private static final Map<String, BingoPlayer> bingoPlayerMap = new ConcurrentHashMap<>();
 
     private final RoomService roomService;
     private final ObjectMapper objectMapper;
+    private final Gson gson;
 
     private final WordRepository wordRepository;
     private final WordService wordService;
@@ -175,14 +179,19 @@ public class BingoSocketService {
         return Mono.empty();
     }
 
-    public Mono<Void> gameOver(Room room, MemberEntity.Role role) throws JsonProcessingException {
+    public Mono<Void> gameOver(Room room, MemberEntity.Role role) {
         GameOverResponse gameOverResponse = new GameOverResponse(SocketAction.GAME_OVER, role);
-        String response = objectMapper.writeValueAsString(gameOverResponse);
-        return room.broadcastGameOver(response).then(bingoReward(room)).then();
+        String response  = gson.toJson(gameOverResponse);
+        return room.broadcastGameOver(response).then(bingoReward(room,role)).then();
     }
 
-    public Mono<Integer> bingoReward(Room room){
+    public Mono<Integer> bingoReward(Room room,MemberEntity.Role role){
         Long memberId = roomService.getSessionIdMember(room.getKidSocket().getId());
+
+        long rewardCoin = 0;
+        if(role == MemberEntity.Role.KID) rewardCoin = winnerCoin;
+        else rewardCoin = loserCoin;
+
         return kidService.addCoin(memberId, rewardCoin);
     }
 

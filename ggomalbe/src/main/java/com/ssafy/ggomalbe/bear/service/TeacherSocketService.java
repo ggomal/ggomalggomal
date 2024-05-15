@@ -14,13 +14,11 @@ import com.ssafy.ggomalbe.bear.entity.Room;
 import com.ssafy.ggomalbe.bear.entity.SocketAction;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.common.service.GameNumService;
-import com.ssafy.ggomalbe.member.kid.KidService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.Arrays;
 import java.util.List;

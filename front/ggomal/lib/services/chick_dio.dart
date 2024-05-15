@@ -15,6 +15,7 @@ checkAudio(int gameNum, String sentence, String audio) async {
   });
 
   Dio dio = await useDio();
+  print(123);
   final response = await dio.post('/chick/evaluation', data: formData);
   print(response.data);
   return response.data;

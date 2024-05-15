@@ -22,6 +22,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   String filePath = '';
   List words = [];
   bool isPass = true;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -44,19 +45,20 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   void postAudio() async {
     File audioFile = File(filePath);
     if (await audioFile.exists()) {
-      // String m4a = filePath.replaceAll('.aac', '.m4a');
-      // await audioFile.rename(m4a);
       final response = await checkAudio(
           widget.speechData['gameNum'],
           "${widget.speechData['name']} ${widget.speechData['ending']}",
           filePath);
-      print(response['overResult']);
-      if (response['overResult'] || recordCount == 3) {
+      if (response['overResult'] || recordCount >= 2) {
+        print("통과 음성");
         Navigator.pop(context, true);
       } else {
+        print("다시 한번 얘기해보자 음성");
         setState(() {
           words = response['words'];
           isPass = response['overResult'];
+          isLoading = false;
+          recordCount++;
         });
       }
     } else {
@@ -77,7 +79,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     await recorder.stopRecorder();
     postAudio();
     setState(() {
-      recordCount++;
+      isLoading = true;
     });
   }
 
@@ -88,7 +90,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
       textSpans.add(
         TextSpan(
           text: text[i],
-          style: mapleText(48, FontWeight.w700, textColor),
+          style: mapleText(60, FontWeight.w700, textColor),
         ),
       );
       if (i == widget.speechData['name'].length - 1) {
@@ -120,14 +122,14 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
             width: width,
             padding: const EdgeInsets.all(80),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   child: Row(children: [
                     Flexible(
                         flex: 1,
                         child: SizedBox(
-                          height: 250,
+                          height: height * 0.5,
                           child: Center(
                             child: Image.asset(
                                 "assets/images/chick/${speechData['game']}_thing_${speechData['img']}.png"),
@@ -138,13 +140,6 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                       child: Center(
                         child: Column(
                           children: [
-                            SizedBox(
-                                height: 80,
-                                child: (recordCount > 0 && !isPass
-                                    ? Text("다시 한번 말해볼까?",
-                                        style: mapleText(
-                                            30, FontWeight.w700, Colors.black))
-                                    : Text(""))),
                             RichText(
                               text: TextSpan(
                                 children: _buildTextSpans(
@@ -153,32 +148,46 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                             ),
                             Text("$recordCount / 3",
                                 style: mapleText(
-                                    30, FontWeight.w700, Colors.black)),
+                                    40, FontWeight.w700, Colors.black)),
                           ],
                         ),
                       ),
                     ),
                   ]),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (recorder.isRecording) {
-                      await stop();
-                    } else {
-                      await record();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 40,
-                    ),
-                    backgroundColor: Color(0xFFFFFAAC),
-                    foregroundColor: Colors.white,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    color: isLoading ? Color(0xFFC3C3C3) : Color(0xFFFFC107),
+                    shape: BoxShape.circle,
                   ),
-                  child: Text(recorder.isRecording ? '끝내기' : '말하기',
-                      style: mapleText(20, FontWeight.w700, Colors.black)),
+                  child: IconButton(
+                      onPressed: () async {
+                        if (recorder.isRecording) {
+                          await stop();
+                        } else {
+                          isLoading ? null : await record();
+                        }
+                      },
+                      icon: Icon(
+                        recorder.isRecording
+                            ? Icons.stop_rounded
+                            : isLoading
+                                ? Icons.more_horiz
+                                : Icons.mic,
+                        color: Colors.white,
+                        size: 60,
+                      )),
                 ),
+                Text(
+                  recorder.isRecording
+                      ? "종료 버튼을 눌러주세요."
+                      : isLoading
+                          ? "AI 발음 정밀 분석  중입니다."
+                          : "버튼을 눌러 말해보세요.",
+                  style: mapleText(24, FontWeight.w500, Colors.grey),
+                )
               ],
             ),
           ),

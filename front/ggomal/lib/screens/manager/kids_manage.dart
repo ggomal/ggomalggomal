@@ -82,7 +82,7 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
             ),
             GestureDetector(
               onTap: () {
-                context.go('/manager/kids');
+                context.go('/manager');
               },
               child: Container(
                 margin: EdgeInsets.only(left: 100, bottom: 20),

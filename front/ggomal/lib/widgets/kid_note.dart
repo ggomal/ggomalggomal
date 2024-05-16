@@ -89,7 +89,7 @@ class _KidNoteState extends State<KidNote> {
           ),
         ),
         SizedBox(
-          height: height * 0.5,
+          height: (height * 0.55 - 50),
           child: FutureBuilder<List<dynamic>>(
             future: _noticeListFuture,
             builder: (context, snapshot) {

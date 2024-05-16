@@ -16,17 +16,15 @@ checkAudio(int gameNum, String sentence, String audio) async {
 
   Dio dio = await useDio();
   final response = await dio.post('/chick/evaluation', data: formData);
-  print(response.data);
   return response.data;
 }
 
 chickReword(int situationId, int getCoin) async {
   Dio dio = await useDio();
 
-  final response = await dio.post('/chick', data: {
+  await dio.post('/chick', data: {
     "situationId": situationId,
     "getCoin": getCoin,
   });
-  print(response.data);
 
 }

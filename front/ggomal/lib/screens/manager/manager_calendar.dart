@@ -45,12 +45,15 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
     Map<DateTime, List<Schedule>> newSchedules = {};
 
     for (var item in data) {
+      print("==============================");
+      print(item);
       DateTime startTime = DateTime.parse(item['startTime']);
+      DateTime endTime = DateTime.parse(item['endTime']);
       Schedule schedule = Schedule(
         id: item['kidId'], // 임시로 kidId를 id로 사용
         startTime: startTime.hour,
-        endTime: startTime.hour + 1, // 예시로 1시간 후를 종료 시간으로 설정
-        content: item['kidName'],
+        endTime: endTime.hour, // 예시로 1시간 후를 종료 시간으로 설정
+        content: item['content'],
         date: DateTime.utc(startTime.year, startTime.month, startTime.day),
         color: categoryColors[0], // 임의로 색상 설정
         createdAt: DateTime.now().toUtc(),

@@ -98,13 +98,33 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
 
   }
 
+  DateTime combineDateWithTime(DateTime date, int time) {
+    int hours = time ~/ 100; // 시간 부분을 추출
+    int minutes = time % 100; // 분 부분을 추출
+    return DateTime(date.year, date.month, date.day, minutes, hours);
+  }
+
+
+
   void onSavePressed() async{
     fomrmKey.currentState!.save();
 
+    DateTime startDateTime = combineDateWithTime(widget.selectedDay, startTime!);
+    DateTime endDateTime = combineDateWithTime(widget.selectedDay, endTime!);
+
+    // ISO 8601 형식의 문자열로 변환
+    String startTimeString = startDateTime.toIso8601String().substring(0, 16);
+    String endTimeString = endDateTime.toIso8601String().substring(0, 16);
+
+    // print(startTimeString);
+    // print(endTimeString);
+
     var dio = await useDio();
-    final response = await dio.post('/schedule', data: { // 예시로 고정된 값, 실제 앱에서는 동적으로 설정할 수 있어야 함
-      "kidId" : 4,
-      "startTime" : "2024-05-14T10:00"
+    final response = await dio.post('/schedule', data: {
+      "kidId" : 4, // 사실 없어두 됨
+      "startTime" : startTimeString,
+      "endTime" : endTimeString,
+      "content" : content
     });
 
     print("============================");

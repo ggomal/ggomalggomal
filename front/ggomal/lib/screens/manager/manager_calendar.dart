@@ -45,8 +45,6 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
     Map<DateTime, List<Schedule>> newSchedules = {};
 
     for (var item in data) {
-      print("==============================");
-      print(item);
       DateTime startTime = DateTime.parse(item['startTime']);
       DateTime endTime = DateTime.parse(item['endTime']);
       Schedule schedule = Schedule(
@@ -70,6 +68,10 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
     });
   }
 
+  List<Schedule> _getEventsForDay(DateTime day) {
+    return schedules[day] ?? [];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +83,10 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
               context: context,
               builder: (BuildContext context) {
                 return Dialog(
-                  child: ScheduleBottomSheet(selectedDay: selectedDay, fetchSchedules: fetchSchedules,),
+                  child: ScheduleBottomSheet(
+                    selectedDay: selectedDay,
+                    fetchSchedules: fetchSchedules,
+                  ),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 );
               }
@@ -91,9 +96,9 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
         child: Icon(Icons.add, color: Colors.white),
       ),
       body: SafeArea(
-        child: Center( // Center를 사용해 전체를 중앙에 배치
+        child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // 세로 방향 중앙 정렬
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 100),
@@ -101,48 +106,53 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
                 child: Row(
                   children: [
                     GestureDetector(
-                        onTap: () {
-                          context.go('/manager');
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.navigate_before , color: Colors.black, size: 50,),
-                            Text(
-                              "홈으로",
-                              style: nanumText(30.0, FontWeight.w700, Colors.black),
-                            ),
-                          ],
-                        )
+                      onTap: () {
+                        context.go('/manager');
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.navigate_before, color: Colors.black, size: 50,),
+                          Text(
+                            "홈으로",
+                            style: nanumText(30.0, FontWeight.w700, Colors.black),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
               Expanded(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 가로 방향 간격 조정
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width * 0.4,
                       height: MediaQuery.of(context).size.height * 0.55,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey[400]!, width: 1),
-                        borderRadius: BorderRadius.circular(20)
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Calendar(
-                          focusedDay: DateTime(2024, 5, 1),
-                          onDaySelected: onDaySelected,
-                          selectedDayPredicate: selectedDayPredicate),
+                        focusedDay: DateTime(2024, 5, 1),
+                        onDaySelected: onDaySelected,
+                        selectedDayPredicate: selectedDayPredicate,
+                        schedules: schedules,
+                      ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.4, //
-                      height: MediaQuery.of(context).size.height * 0.7,//
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.7,
                       decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey[400]!, width: 1),
-                          borderRadius: BorderRadius.circular(20)
+                        border: Border.all(color: Colors.grey[400]!, width: 1),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
                         children: [
-                          TodayBanner(selectedDay: selectedDay, taskCount: 0),
+                          TodayBanner(
+                            selectedDay: selectedDay,
+                            taskCount: schedules[selectedDay]?.length ?? 0,
+                          ),
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
@@ -152,10 +162,11 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
                                   final scheduleSchedules = schedules[selectedDay]!;
                                   final scheduleModel = scheduleSchedules[index];
                                   return ScheduleCard(
-                                      startTime: scheduleModel.startTime,
-                                      endTime: scheduleModel.endTime,
-                                      content: scheduleModel.content,
-                                      color: Color(int.parse('FF${scheduleModel.color}', radix: 16)));
+                                    startTime: scheduleModel.startTime,
+                                    endTime: scheduleModel.endTime,
+                                    content: scheduleModel.content,
+                                    color: Color(int.parse('FF${scheduleModel.color}', radix: 16)),
+                                  );
                                 },
                                 separatorBuilder: (BuildContext context, int index) {
                                   return SizedBox(height: 8.0);
@@ -176,7 +187,6 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
     );
   }
 
-
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       this.selectedDay = selectedDay;
@@ -184,8 +194,6 @@ class _ManagerCalendarScreenState extends State<ManagerCalendarScreen> {
   }
 
   bool selectedDayPredicate(DateTime date) {
-    if (selectedDay == null) return false;
-
-    return date.isAtSameMomentAs(selectedDay!);
+    return date.isAtSameMomentAs(selectedDay);
   }
 }

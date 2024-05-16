@@ -97,11 +97,11 @@ class _KidBingoModalState extends State<KidBingoModal> {
                     Flexible(
                         flex: 4,
                         child: SizedBox(
-                          // height: 300,
-                          height: 170,
+                          height: 300,
+                          // height: 170,
                           child: Padding(
-                            // padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                            // padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Center(
                                 child: Image(
                               image: NetworkImage(widget.selectData['img']),
@@ -116,16 +116,16 @@ class _KidBingoModalState extends State<KidBingoModal> {
                         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: Text("${speechData['letter']}",
                             style:
-                                // mapleText(180, FontWeight.w700, Colors.black)),
-                                mapleText(100, FontWeight.w700, Colors.black)),
+                                mapleText(180, FontWeight.w700, Colors.black)),
+                                // mapleText(100, FontWeight.w700, Colors.black)),
                       )),
                     ),
                     Flexible(flex: 1, child: Container()),
                   ]),
                 ),
                 Text("단어를 듣고 따라 말해봅시다~!",
-                    // style: mapleText(50, FontWeight.w300, Colors.black54)),
-                    style: mapleText(30, FontWeight.w300, Colors.black54)),
+                    style: mapleText(50, FontWeight.w300, Colors.black54)),
+                    // style: mapleText(30, FontWeight.w300, Colors.black54)),
                 ElevatedButton(
                   onPressed: () async {
                     if (recorder.isRecording) {
@@ -136,17 +136,14 @@ class _KidBingoModalState extends State<KidBingoModal> {
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                      // vertical: 25,
-                      vertical: 20,
-                      // horizontal: 50,
-                      horizontal: 30,
+                      vertical: 25,
+                      horizontal: 50,
                     ),
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
                   ),
                   child: Text(recorder.isRecording ? '끝내기' : '말하기',
-                      // style: mapleText(40, FontWeight.w700, Colors.black)),
-                      style: mapleText(20, FontWeight.w700, Colors.black)),
+                      style: mapleText(40, FontWeight.w700, Colors.black)),
                 ),
               ],
             ),
@@ -216,6 +213,7 @@ class _BearScreenState extends State<BearScreen> {
             subscription?.cancel();
             subscription = null;
             showBingo = true;
+            player.play(AssetSource('audio/bear/start_bingo.mp3'));
             break;
           case 'FIND_LETTER':
             print('빙고판 데이터 출력 $bingoBoardData');
@@ -452,16 +450,13 @@ class _BearScreenState extends State<BearScreen> {
                 ),
                 if (cell['isSelected'])
                   Container(
-                    // width: 250,
-                    // height: 250,
-                    width: 150,
-                    height: 150,
+                    width: 250,
+                    height: 250,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.red,
-                        // width: 40,
-                        width: 30,
+                        width: 40,
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -493,10 +488,9 @@ class _BearScreenState extends State<BearScreen> {
           children: [
             Column(
               children: [
-                // Flexible(flex: 1, child: Container()),
+                Flexible(flex: 1, child: Container()),
                 Flexible(
-                  // flex: 5,
-                  flex: 4,
+                  flex: 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -517,16 +511,15 @@ class _BearScreenState extends State<BearScreen> {
                     ],
                   ),
                 ),
-                // Flexible(flex: 1, child: Container()),
+                Flexible(flex: 1, child: Container()),
                 Flexible(
-                  // flex: 5,
                   flex: 5,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        // padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+                        // padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: InkWell(
                           onTap: () {
                             player.play(
@@ -536,8 +529,8 @@ class _BearScreenState extends State<BearScreen> {
                         ),
                       ),
                       Padding(
-                        // padding: EdgeInsets.fromLTRB(400, 0, 0, 0),
-                        padding: EdgeInsets.fromLTRB(360, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(400, 0, 0, 0),
+                        // padding: EdgeInsets.fromLTRB(360, 0, 0, 0),
                         child: InkWell(
                           onTap: () {
                             player.play(
@@ -580,37 +573,37 @@ class _BearScreenState extends State<BearScreen> {
               ],
             ),
             Positioned(
-              // top: 600,
-              top: 350,
-              left: 160,
+              top: 480,
+              // top: 350,
+              left: 200,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/table.mp3'));
                 },
-                // child: Image.asset('assets/images/bear/table.png', width: 800),
-                child: Image.asset('assets/images/bear/table.png', width: 500),
+                child: Image.asset('assets/images/bear/table.png', width: 650),
+                // child: Image.asset('assets/images/bear/table.png', width: 500),
               ),
             ),
             Positioned(
-              // top: 550,
-              top: 280,
-              left: 280,
+              top: 410,
+              // top: 280,
+              left: 370,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/milk.mp3'));
                 },
                 child: SizedBox(
-                  width: 130,
-                  // width: 200,
+                  // width: 130,
+                  width: 160,
                   child: Image.asset('assets/images/bear/milk.png'),
                 ),
               ),
             ),
             Positioned(
-              // top: 630,
-              // left: 730,
-              top: 320,
-              left: 500,
+              top: 480,
+              left: 680,
+              // top: 320,
+              // left: 500,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/pencil.mp3'));
@@ -624,33 +617,33 @@ class _BearScreenState extends State<BearScreen> {
               ),
             ),
             Positioned(
-              // top: 720,
-              // left: 530,
-              top: 400,
-              left: 350,
+              top: 560,
+              left: 490,
+              // top: 400,
+              // left: 350,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/notebook.mp3'));
                 },
                 child: SizedBox(
-                  // width: 250,
-                  width: 200,
+                  width: 250,
+                  // width: 200,
                   child: Image.asset('assets/images/bear/notebook.png'),
                 ),
               ),
             ),
             Positioned(
-              // top: 700,
-              // left: 300,
-              top: 380,
-              left: 200,
+              top: 540,
+              left: 270,
+              // top: 380,
+              // left: 200,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/hat.mp3'));
                 },
                 child: SizedBox(
-                  // width: 200,
-                  width: 170,
+                  width: 200,
+                  // width: 170,
                   child: Image.asset('assets/images/bear/hat.png'),
                 ),
               ),
@@ -696,8 +689,8 @@ class _BearScreenState extends State<BearScreen> {
                   if (turn == 2)
                     Positioned(
                       bottom: 400,
-                      // right: 100,
-                      right: 50,
+                      right: 100,
+                      // right: 50,
                       child: Container(
                         color: Colors.blue,
                         width: 300,
@@ -713,15 +706,15 @@ class _BearScreenState extends State<BearScreen> {
                     children: [
                       Flexible(
                         child: Container(),
-                        flex: 3,
-                        // flex: 1,
+                        // flex: 3,
+                        flex: 1,
                       ),
                       Flexible(
-                        // flex: 2,
-                        flex: 5,
+                        flex: 2,
+                        // flex: 5,
                         child: Padding(
-                          // padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
-                          padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                          padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
+                          // padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
                           child: bingoBoardData != null
                               ? buildBingoGrid(bingoBoardData)
                               : Container(color: Colors.yellow),
@@ -729,8 +722,8 @@ class _BearScreenState extends State<BearScreen> {
                       ),
                       Flexible(
                         child: Container(),
-                        // flex: 1,
-                        flex: 3,
+                        flex: 1,
+                        // flex: 3,
                       )
                     ],
                   )),
@@ -739,8 +732,8 @@ class _BearScreenState extends State<BearScreen> {
                     bottom: 0,
                     child: Image.asset(
                       'assets/images/bear/student.png',
-                      // width: 300,
-                      width: 250,
+                      width: 300,
+                      // width: 250,
                     ),
                   ),
                   Positioned(
@@ -748,8 +741,8 @@ class _BearScreenState extends State<BearScreen> {
                     bottom: 5,
                     child: Image.asset(
                       'assets/images/bear/teacher.png',
-                      width: 250,
-                      // width: 300,
+                      // width: 250,
+                      width: 300,
                     ),
                   ),
                   Positioned(

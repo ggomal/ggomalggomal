@@ -27,6 +27,8 @@ public class BingoSocketService {
     private static final short loserCoin = 1;
 
     private static final int LIMIT = (int) Math.pow(BINGO_LINE, 2);
+    
+    //sessionId를 key로 플레이어 정보 저장
     private static final Map<String, BingoPlayer> bingoPlayerMap = new ConcurrentHashMap<>();
 
     private final RoomService roomService;

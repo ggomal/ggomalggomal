@@ -8,14 +8,11 @@ import com.ssafy.ggomalbe.bear.dto.ErrorResponse;
 import com.ssafy.ggomalbe.bear.dto.KidOnlineDto;
 import com.ssafy.ggomalbe.bear.entity.Room;
 import com.ssafy.ggomalbe.bear.entity.SocketAction;
-import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
-import com.ssafy.ggomalbe.common.entity.TeacherKidEntity;
 import com.ssafy.ggomalbe.member.kid.KidService;
 import com.ssafy.ggomalbe.member.kid.dto.MemberIdRoleDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
@@ -23,7 +20,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 

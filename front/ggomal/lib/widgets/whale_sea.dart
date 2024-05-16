@@ -259,7 +259,7 @@ class _WhaleSeaState extends State<WhaleSea> {
               // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
               // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
               // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
-              ],
+              
             ),
           ),
         ),

@@ -117,35 +117,34 @@ class _PizzaPlateState extends State<PizzaPlate> {
                   height: height * 0.65,
                   'assets/images/chick/pizza_plate.png',
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 45.0,
-                    horizontal: 40.0,
-                  ),
+                Container(
+                  width: width * 0.3,
+                  height: height * 0.65,
+                  padding: const EdgeInsets.only(top: 60),
                   child: Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: pizzaThingList
                         .map(
                           (e) => GestureDetector(
+
                             onTap: () {
                               handleTopping(e);
                             },
-                            child: Container(
+                            child: SizedBox(
+                              width: width * 0.12,
                               height: height * 0.18,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                                vertical: 20.0,
-                              ),
                               child: Column(
                                 children: [
                                   Image.asset(
-                                    height: height * 0.1,
+                                    height: height * 0.08,
                                     width: width * 0.1,
                                     'assets/images/chick/pizza_thing_${e['img']}.png',
                                   ),
                                   Text(
                                     '${e['name']}',
                                     style: mapleText(
-                                        28.0, FontWeight.w500, Colors.black),
+                                        24.0, FontWeight.w500, Colors.black),
                                   ),
                                 ],
                               ),

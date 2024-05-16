@@ -28,7 +28,7 @@ public class WhaleController {
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
                 .flatMap(memberId -> {  // 코인 획득 -> 게임 기록 저장
-                    return kidService.addCoin(memberId, 1L)
+                    return kidService.addCoin(memberId, request.getGetCoin())
                             .then(whaleService.setWhaleGameRecord(memberId, request));
                 })
                 .map(WhaleEndResponse::new);

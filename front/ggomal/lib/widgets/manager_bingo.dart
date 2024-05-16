@@ -47,7 +47,8 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                     Flexible(
                         flex: 4,
                         child: SizedBox(
-                          height: 230,
+                          // height: 230,
+                          height: 200,
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                             child: Center(
@@ -62,15 +63,16 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                         padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                         child: Center(
                             child: Text("${speechData['letter']}",
-                                style: mapleText(
-                                    150, FontWeight.w700, Colors.black))),
+                                // style: mapleText(150, FontWeight.w700, Colors.black))),
+                                style: mapleText(110, FontWeight.w700, Colors.black))),
                       ),
                     ),
                     Flexible(flex: 1, child: Container()),
                   ]),
                 ),
                 Text("아이의 발음을 듣고 버튼을 눌러주세요",
-                    style: mapleText(40, FontWeight.w300, Colors.black54)),
+                    // style: mapleText(40, FontWeight.w300, Colors.black54)),
+                    style: mapleText(30, FontWeight.w300, Colors.black54)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -88,11 +90,13 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                           },
                           child: Image.asset(
                             'assets/images/manager/pass_button.png',
-                            height: 100,
+                            // height: 100,
+                            height: 50,
                           ),
                         ),
                         Text("통과",
-                            style: mapleText(50, FontWeight.w200, Colors.black))
+                            // style: mapleText(50, FontWeight.w200, Colors.black))
+                            style: mapleText(30, FontWeight.w200, Colors.black))
                       ],
                     ),
                     SizedBox(
@@ -114,11 +118,13 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                           },
                           child: Image.asset(
                             'assets/images/manager/retry_button.png',
-                            height: 100,
+                            // height: 100,
+                            height: 50,
                           ),
                         ),
                         Text("다시하기",
-                            style: mapleText(50, FontWeight.w200, Colors.black))
+                            // style: mapleText(50, FontWeight.w200, Colors.black))
+                            style: mapleText(30, FontWeight.w200, Colors.black))
                       ],
                     ),
                   ],

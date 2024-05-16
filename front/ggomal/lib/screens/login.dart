@@ -19,6 +19,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
   final LoginStorage loginStorage = LoginStorage();
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool loginError = false;
   final List<ParticleOptionsData> particleOptionsList = [
     ParticleOptionsData(baseColor: Colors.cyan),
     ParticleOptionsData(baseColor: Colors.yellow),
@@ -62,6 +63,9 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         }
       } else {
         print('로그인 실패: ${response.statusCode}');
+        setState(() {
+          loginError = true;
+        });
       }
     } catch (e) {
       print('에러: $e');
@@ -154,7 +158,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                                     child: TextField(
                                       controller: passwordController,
                                       decoration: inputStyle("비밀번호를 입력해주세요."),
-                                      // obscureText: true,
+                                      obscureText: true,
                                     ),
                                   ),
                                 ],
@@ -191,6 +195,11 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                     //
                     //   ],
                     // )
+                    if (loginError) // 로그인 실패 메시지 조건부 표시
+                      Text(
+                        "로그인에 실패했습니다. 다시 시도해주세요",
+                        style: mapleText(50, FontWeight.bold, Colors.red)
+                      ),
                   ],
                 ),
               ),

@@ -121,6 +121,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
+            backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/teacher_win.png'),
               InkWell(
@@ -142,6 +143,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
+            backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/teacher_lose.png'),
               InkWell(
@@ -660,13 +662,16 @@ class _CreateBingoModalState extends State<CreateBingo> {
                 ),
                 if (cell['isSelected'])
                   Container(
-                    width: 250,
-                    height: 250,
+                    // width: 250,
+                    // height: 250,
+                    width: 150,
+                    height: 150,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.red,
-                        width: 40,
+                        // width: 40,
+                        width: 30,
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -702,12 +707,15 @@ class _CreateBingoModalState extends State<CreateBingo> {
                         children: [
                           Flexible(
                             child: Container(),
-                            flex: 1,
+                            // flex: 1,
+                            flex: 3,
                           ),
                           Flexible(
-                            flex: 2,
+                            // flex: 2,
+                            flex: 5,
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
+                              padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                              // padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
                               child: bingoBoardData != null
                                   ? buildBingoGrid(bingoBoardData)
                                   : Container(color: Colors.yellow),
@@ -715,7 +723,8 @@ class _CreateBingoModalState extends State<CreateBingo> {
                           ),
                           Flexible(
                             child: Container(),
-                            flex: 1,
+                            // flex: 1,
+                            flex: 3,
                           )
                         ],
                       )),
@@ -724,7 +733,8 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     bottom: 0,
                     child: Image.asset(
                       'assets/images/bear/student.png',
-                      width: 300,
+                      // width: 300,
+                      width: 250,
                     ),
                   ),
                   Positioned(
@@ -732,7 +742,8 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     bottom: 5,
                     child: Image.asset(
                       'assets/images/bear/teacher.png',
-                      width: 300,
+                      width: 250,
+                      // width: 300,
                     ),
                   ),
                 ]),

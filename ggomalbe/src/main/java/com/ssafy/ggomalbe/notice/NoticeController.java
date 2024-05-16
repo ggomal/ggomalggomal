@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -29,8 +30,14 @@ public class NoticeController {
     }
 
     @GetMapping
-    public Mono<NoticeResponse> getNotice(@RequestParam Long noticeId){
-        return noticeService.getNotice(noticeId);
+    public Mono<NoticeResponse> getNotice(@RequestParam(required = false) Integer year,
+                                          @RequestParam(required = false) Integer month,
+                                          @RequestParam(required = false) Integer day){
+        if (year==null) year = LocalDate.now().getYear();
+        if (month==null) month = LocalDate.now().getMonthValue();
+        if (day==null) day = LocalDate.now().getDayOfMonth();
+        LocalDate date = LocalDate.of(year, month, day);
+        return noticeService.getNotice(date);
     }
 
     @PostMapping

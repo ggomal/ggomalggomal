@@ -6,7 +6,7 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Month;
+import java.time.LocalDate;
 
 public interface NoticeRepository extends R2dbcRepository<NoticeEntity, Long> {
     @Query("SELECT notice.notice_id, notice.kid_id, notice.notice_contents, notice.teacher_name, notice.created_at, notice.modified_at, notice.deleted_at " +
@@ -15,6 +15,10 @@ public interface NoticeRepository extends R2dbcRepository<NoticeEntity, Long> {
             "ORDER BY notice.notice_id DESC")
     Flux<NoticeEntity> findAllByKidIdAndCreatedAtMonth(Long kidId, Integer month);
 
-    Mono<NoticeEntity> findByNoticeId(Long noticeId);
+    @Query("SELECT n.notice_id, n.kid_id, n.notice_contents, n.teacher_name, n.created_at, n.modified_at, n.deleted_at " +
+            "FROM notice n " +
+            "WHERE DATE(n.created_at)= :createdDate " +
+            "LIMIT 1")
+    Mono<NoticeEntity> findByCreatedAt(LocalDate createdDate);
 
 }

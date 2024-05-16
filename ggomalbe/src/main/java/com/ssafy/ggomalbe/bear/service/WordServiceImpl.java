@@ -1,6 +1,5 @@
 package com.ssafy.ggomalbe.bear.service;
 
-import com.ssafy.ggomalbe.bear.dto.LetterSoundRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryRequest;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.BingoCard;

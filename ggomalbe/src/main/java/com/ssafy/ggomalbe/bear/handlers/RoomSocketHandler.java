@@ -5,9 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ggomalbe.bear.service.BingoSocketService;
 import com.ssafy.ggomalbe.bear.service.RoomService;
 import com.ssafy.ggomalbe.bear.service.TeacherSocketService;
+import com.ssafy.ggomalbe.common.config.security.CustomAuthentication;
+import com.ssafy.ggomalbe.common.entity.MemberEntity;
+import com.ssafy.ggomalbe.member.kid.dto.MemberIdRoleDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -30,8 +36,20 @@ public class RoomSocketHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        log.info("room-socket sessionId {}", session.getId());
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> (CustomAuthentication) securityContext.getAuthentication())
+                .map(authentication -> {
+                    Long memberId = authentication.getDetails();
+                    MemberEntity.Role memberRole = authentication.getRole();
 
+                    return MemberIdRoleDto.builder().memberId(memberId).memberRole(memberRole).build();
+                })
+                .doOnNext(memberIdRoleDto->roomService.initSessionMember(session,memberIdRoleDto))
+                .flatMap(memberIdRoleDto-> receive(session,memberIdRoleDto));
+    }
+
+
+    public Mono<Void> receive(WebSocketSession session, MemberIdRoleDto memberIdRoleDto){
         return session.receive()                                // WebSocket 세션을 통해 클라이언트로부터 메시지를 수신
                 .map(WebSocketMessage::getPayloadAsText)        //수신된 각 메시지 텍스트 형식으로 변환
                 .flatMap(message -> {                           //비동기 처리를 위한 flatMap, 처리하고 Mono로 반환하여 새로운 Publisher생성
@@ -47,14 +65,25 @@ public class RoomSocketHandler implements WebSocketHandler {
                         log.info("message type {}", messageType);
 
                         return switch (messageType) {
-                            case "joinRoom" -> roomService.joinRoom(jsonNode, session);
-                            case "createRoom" -> roomService.createRoom(jsonNode, session);
+                            //선생님이 방에 들어올때
+                            case "joinRoom" -> roomService.joinRoom(jsonNode, session, memberIdRoleDto);
+
+                            //아이가 방을 만들때
+                            case "createRoom" -> roomService.createRoom(jsonNode, session, memberIdRoleDto);
+
+                            //아이 또는 선생님이 방을 떠날때
+                            case "leaveRoom" -> roomService.leaveRoom(session, memberIdRoleDto);
                             case "sendMessage" -> roomService.sendMessage(jsonNode, session);
 
-                            //삭제 플러그가 아니라. 두명이 다 leaveRoom하면 delete
-                            case "deleteRoom" -> roomService.deleteRoom(jsonNode, session);
-                            case "leaveRoom" -> roomService.leaveRoom(session);
+                            //아이 온라인 여부 확인
+                            case "countRoomMember" -> roomService.countRoomMember(session);
+                            case "countRoom" -> roomService.countRoom();
+                            case "isOnlineKidId" -> roomService.isOnlineKidId(session,jsonNode);
+
+                            //랜덤한 빙고판 샏성
                             case "setBingoBoard" -> teacherSocketService.setBingoBoard(session, jsonNode);
+
+                            //빙고판 확인
                             case "printBingoV" -> bingoSocketService.printBingoV(session);
 
                             //선생님이 통과를 누르면 아이는 음성데이터를 보내고, 빙고보드에 O친다
@@ -68,6 +97,9 @@ public class RoomSocketHandler implements WebSocketHandler {
 
                             //선생님이 통과를 선택했을때 아이가 가지고 있는 음성데이터를 보내라고 한다
                             case "requestVoice" -> teacherSocketService.requestVoice(session, jsonNode);
+
+                            case "sayAgain" -> teacherSocketService.sayAgain(session);
+
                             default -> Mono.empty();
                         };
                     } catch (IOException e) {
@@ -76,12 +108,12 @@ public class RoomSocketHandler implements WebSocketHandler {
                 })
                 .publishOn(Schedulers.boundedElastic())
                 .doFinally(signalType -> {
-                    //then은 비동기 작업을 순차적으로 실행하고 싶을 때 사용(이전 작업이 완료(empty여도 상관없음)되어야 실행)
-                    // WebSocket 연결이 종료될 때 해당 세션을 방에서 제거
-                    // roomService.rooms.values().forEach(room -> room.removeParticipant(session));
+
+                    //소켓연결이 끊길경우 그 정보를 정리한다.
                     log.info("socket doFinally");
-                    roomService.leaveRoom(session).subscribe();
+                    roomService.leaveRoom(session,memberIdRoleDto).subscribe();
                 })
-                .then();    //모든 처리가 완료된 후에 Mono<Void>를 반환
+                .then();
     }
+
 }

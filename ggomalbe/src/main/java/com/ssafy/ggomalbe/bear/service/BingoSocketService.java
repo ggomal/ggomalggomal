@@ -2,11 +2,13 @@ package com.ssafy.ggomalbe.bear.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.ssafy.ggomalbe.bear.dto.GameOverResponse;
 import com.ssafy.ggomalbe.bear.dto.WordCategoryResponse;
 import com.ssafy.ggomalbe.bear.entity.*;
 import com.ssafy.ggomalbe.common.entity.MemberEntity;
 import com.ssafy.ggomalbe.common.repository.WordRepository;
+import com.ssafy.ggomalbe.member.kid.KidService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,20 +16,29 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class BingoSocketService {
     private static final int BINGO_LINE = 3;
+    private static final short winnerCoin = 3;
+    private static final short loserCoin = 1;
+
     private static final int LIMIT = (int) Math.pow(BINGO_LINE, 2);
-    private static final Map<String, BingoPlayer> bingoPlayerMap = new HashMap<>();
+    
+    //sessionId를 key로 플레이어 정보 저장
+    private static final Map<String, BingoPlayer> bingoPlayerMap = new ConcurrentHashMap<>();
 
     private final RoomService roomService;
     private final ObjectMapper objectMapper;
+    private final Gson gson;
 
     private final WordRepository wordRepository;
     private final WordService wordService;
+
+    private final KidService kidService;
 
 
     public void putBingoPlayer(BingoPlayer bingoPlayer) {
@@ -147,7 +158,7 @@ public class BingoSocketService {
     }
 
     //빙고 유무 판단
-    public Mono<Void> isBingo(Room room, MemberEntity.Role role) throws JsonProcessingException {
+    public Mono<Void> isBingo(Room room, MemberEntity.Role role)  {
         log.info("is Bingo room {}", room);
         WebSocketSession kidSocket = room.getKidSocket();
         WebSocketSession teacherSocket = room.getTeacherSocket();
@@ -170,11 +181,22 @@ public class BingoSocketService {
         return Mono.empty();
     }
 
-    public Mono<Void> gameOver(Room room, MemberEntity.Role role) throws JsonProcessingException {
+    public Mono<Void> gameOver(Room room, MemberEntity.Role role) {
         GameOverResponse gameOverResponse = new GameOverResponse(SocketAction.GAME_OVER, role);
-        String response = objectMapper.writeValueAsString(gameOverResponse);
-        return room.broadcastGameOver(response);
+        String response  = gson.toJson(gameOverResponse);
+        return room.broadcastGameOver(response).then(bingoReward(room,role)).then();
     }
+
+    public Mono<Integer> bingoReward(Room room,MemberEntity.Role role){
+        Long memberId = roomService.getSessionIdMember(room.getKidSocket().getId());
+
+        long rewardCoin = 0;
+        if(role == MemberEntity.Role.KID) rewardCoin = winnerCoin;
+        else rewardCoin = loserCoin;
+
+        return kidService.addCoin(memberId, rewardCoin);
+    }
+
 
     public BingoCard[][] loadMyBingoBoard() {
         return null;
@@ -200,12 +222,4 @@ public class BingoSocketService {
         String message = objectMapper.writeValueAsString(bingoPlayer.getBingoBoard().getV());
         return session.send(Mono.just(session.textMessage(message))).then();
     }
-
-
-    //플로우 -> 칸을 터치하면 글자를 서버로 전송 -> 글자에 해당하는 곳 체크하고 빙고인지아닌지 판단
-
-    //누가 이겼는지 반환
-
-    //게임이 끝났는지 판별한다
-
 }

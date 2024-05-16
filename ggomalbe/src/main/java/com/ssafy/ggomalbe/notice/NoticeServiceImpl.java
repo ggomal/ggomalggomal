@@ -16,6 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalDate;
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +37,8 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public Mono<NoticeResponse> getNotice(Long noticeId) {
-        return noticeRepository.findByNoticeId(noticeId)
+    public Mono<NoticeResponse> getNotice(Long kidId, LocalDate date) {
+        return noticeRepository.findByCreatedAt(kidId, date)
                 .map(NoticeMapper::toNoticeResponse)
                 .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
                         .map(HomeworkMapper::toHomeworkResponse)

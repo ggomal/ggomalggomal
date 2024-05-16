@@ -14,5 +14,8 @@ public class ScheduleListResponse {
     private String kidName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime endTime;
     private ScheduleEntity.Status status;
+    private String content;
 }

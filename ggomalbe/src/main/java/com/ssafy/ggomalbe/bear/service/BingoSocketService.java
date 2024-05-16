@@ -158,7 +158,7 @@ public class BingoSocketService {
     }
 
     //빙고 유무 판단
-    public Mono<Void> isBingo(Room room, MemberEntity.Role role) throws JsonProcessingException {
+    public Mono<Void> isBingo(Room room, MemberEntity.Role role)  {
         log.info("is Bingo room {}", room);
         WebSocketSession kidSocket = room.getKidSocket();
         WebSocketSession teacherSocket = room.getTeacherSocket();
@@ -222,12 +222,4 @@ public class BingoSocketService {
         String message = objectMapper.writeValueAsString(bingoPlayer.getBingoBoard().getV());
         return session.send(Mono.just(session.textMessage(message))).then();
     }
-
-
-    //플로우 -> 칸을 터치하면 글자를 서버로 전송 -> 글자에 해당하는 곳 체크하고 빙고인지아닌지 판단
-
-    //누가 이겼는지 반환
-
-    //게임이 끝났는지 판별한다
-
 }

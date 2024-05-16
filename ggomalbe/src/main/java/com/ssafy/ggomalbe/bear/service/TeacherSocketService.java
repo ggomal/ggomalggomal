@@ -2,7 +2,6 @@ package com.ssafy.ggomalbe.bear.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.ssafy.ggomalbe.bear.dto.CreateBingoResponse;
 import com.ssafy.ggomalbe.bear.dto.MarkingBingoResponse;
@@ -33,8 +32,7 @@ public class TeacherSocketService {
 
     //선생님 먼저 들어오고 애가 방만들떄
     //애가 들어오거나 나갈때 선생님에게 요청 보낸다 -> 디비에서 담당선생님을 꺼내와서 맵에 들어있는 사람만 보낸다.
-    //애가 나갔다가 다시 들얼오면 joinRoom한다.  -> 이거 하는지..
-    private final ObjectMapper objectMapper;
+    //애가 나갔다가 다시 들얼오면 joinRoom한다.  ->
     private final Gson gson;
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;
@@ -150,7 +148,6 @@ public class TeacherSocketService {
         Room room = roomService.findRoomByMemberId(session.getId());
 
         MarkingBingoResponse markingBingoResponse = new MarkingBingoResponse(SocketAction.FIND_LETTER, choiceLetter);
-//        String response = objectMapper.writeValueAsString(markingBingoResponse);
         String response = gson.toJson(markingBingoResponse);
         return room.sendKidRequest(response).then();
     }
@@ -180,14 +177,14 @@ public class TeacherSocketService {
     }
 
     //선생님이 아이한테 음성데이터 보내라고 요청(통과버튼 선택시)
-    public Mono<Void> requestVoice(WebSocketSession session, JsonNode jsonNode) throws JsonProcessingException {
+    public Mono<Void> requestVoice(WebSocketSession session, JsonNode jsonNode){
         if (jsonNode.get("letter") == null) return Mono.empty();
         String choiceLetter = jsonNode.get("letter").asText();
 
         Room room = roomService.findRoomByMemberId(session.getId());
 
         MarkingBingoResponse markingBingoResponse = new MarkingBingoResponse(SocketAction.REQ_VOICE, choiceLetter);
-        String response = objectMapper.writeValueAsString(markingBingoResponse);
+        String response = gson.toJson(markingBingoResponse);
 
         Mono<Void> sendKidRequestMono = room.sendKidRequest(response);
 
@@ -195,9 +192,6 @@ public class TeacherSocketService {
     }
 
     public Mono<Void> sayAgain(WebSocketSession session) throws JsonProcessingException {
-//        if (jsonNode.get("letter") == null) return Mono.empty();
-//        String choiceLetter = jsonNode.get("letter").asText();
-
         Room room = roomService.findRoomByMemberId(session.getId());
 
         SayAgainResponse sayAgainResponse = new SayAgainResponse(SocketAction.SAY_AGAIN);
@@ -208,7 +202,7 @@ public class TeacherSocketService {
 
     // 선생님이 O를 눌렀을때(아이의 발음을 api로 평가하고, 둘다 O표시를 하고, 빙고인지 판단하고 맞다면 게임종료)
     // 아이가 말한 단어를 통과했을때 빙고보드에 표시하고 빙고인지 판단하고 true이면 게임을끝낸다.
-    public Mono<Void> markingBingoCard(WebSocketSession session, JsonNode jsonNode) throws JsonProcessingException {
+    public Mono<Void> markingBingoCard(WebSocketSession session, JsonNode jsonNode){
         if (jsonNode.get("letter") == null) return Mono.empty();
         String choiceLetter = jsonNode.get("letter").asText();
 
@@ -223,7 +217,7 @@ public class TeacherSocketService {
 
         //모두에게 O를 보낸다
         MarkingBingoResponse markingBingoResponse = new MarkingBingoResponse(SocketAction.MARKING_BINGO, choiceLetter);
-        String response = objectMapper.writeValueAsString(markingBingoResponse);
+        String response = gson.toJson(markingBingoResponse);
         Mono<Void> boardcastMarkingBingoMono = room.broadcastMarkBingo(response);
 
         //빙고인지아닌지 -> 나의 옵션(선생,아이)을 같이보내서 우선순위

@@ -37,12 +37,11 @@ public class WhaleController {
 
     @PostMapping("/evaluation")
     public Mono<WhaleEvaluationResponse> evaluation(@RequestPart("kidVoice") FilePart filePart,
-                                                    @RequestPart("gameNum") String gameNum,
                                                     @RequestPart("sentence") String sentence) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
-                .flatMap(memberId -> whaleService.evaluationWhale(filePart, memberId, Long.valueOf(gameNum), sentence))
+                .flatMap(memberId -> whaleService.evaluationWhale(filePart, memberId, sentence))
                 .map(dto ->{
                     return WhaleEvaluationResponse.builder()
                             .refSentence(dto.getRefSentence())

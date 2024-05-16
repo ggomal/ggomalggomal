@@ -9,6 +9,6 @@ public interface WhaleService {
 
     Mono<Boolean> setWhaleGameRecord(Long memberId, WhaleEndRequest request);
 
-    Mono<WhaleEvaluationDto> evaluationWhale(FilePart filePart, Long memberId, Long gameNum, String sentence);
+    Mono<WhaleEvaluationDto> evaluationWhale(FilePart filePart, Long memberId, String sentence);
 
 }

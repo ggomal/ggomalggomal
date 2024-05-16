@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public interface NoticeService {
     Flux<NoticeResponse> getAllNotice(Long kidId, Integer month);
-    Mono<NoticeResponse> getNotice(LocalDate date);
+    Mono<NoticeResponse> getNotice(Long kidId, LocalDate date);
     Mono<NoticeAddResponse> addNotice(Long memberId, NoticeAddRequest request);
     Mono<NoticeResponse> updateNotice(Long kidId, NoticeUpdateRequest request);
 }

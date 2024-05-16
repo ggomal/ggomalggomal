@@ -18,7 +18,8 @@ public interface NoticeRepository extends R2dbcRepository<NoticeEntity, Long> {
     @Query("SELECT n.notice_id, n.kid_id, n.notice_contents, n.teacher_name, n.created_at, n.modified_at, n.deleted_at " +
             "FROM notice n " +
             "WHERE DATE(n.created_at)= :createdDate " +
+            "AND n.kid_id = :kidId " +
             "LIMIT 1")
-    Mono<NoticeEntity> findByCreatedAt(LocalDate createdDate);
+    Mono<NoticeEntity> findByCreatedAt(Long kidId, LocalDate createdDate);
 
 }

@@ -37,8 +37,8 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public Mono<NoticeResponse> getNotice(LocalDate date) {
-        return noticeRepository.findByCreatedAt(date)
+    public Mono<NoticeResponse> getNotice(Long kidId, LocalDate date) {
+        return noticeRepository.findByCreatedAt(kidId, date)
                 .map(NoticeMapper::toNoticeResponse)
                 .flatMap(notice -> homeworkRepository.findAllByNoticeId(notice.getNoticeId())
                         .map(HomeworkMapper::toHomeworkResponse)

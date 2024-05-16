@@ -37,7 +37,9 @@ public class NoticeController {
         if (month==null) month = LocalDate.now().getMonthValue();
         if (day==null) day = LocalDate.now().getDayOfMonth();
         LocalDate date = LocalDate.of(year, month, day);
-        return noticeService.getNotice(date);
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> (Long) securityContext.getAuthentication().getDetails())
+                .flatMap(kidId -> noticeService.getNotice(kidId, date));
     }
 
     @PostMapping

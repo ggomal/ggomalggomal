@@ -50,15 +50,7 @@ class ScheduleCard extends StatelessWidget {
               Expanded(
                   child: Text('${content}')
               ),
-              Container(
 
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
-                ),
-                width: 16.0,
-                height: 16.0,
-              )
             ],
           ),
         ),

@@ -41,7 +41,7 @@ public class WhaleServiceImpl implements WhaleService {
 
 
     @Override
-    public Mono<WhaleEvaluationDto> evaluationWhale(FilePart filePart, Long memberId, Long gameNum, String sentence) {
+    public Mono<WhaleEvaluationDto> evaluationWhale(FilePart filePart, Long memberId, String sentence) {
         return speechSuperService.evaluation(filePart,sentence)
                 .map(result -> result.getResult())
                 .map(result -> {
@@ -66,7 +66,6 @@ public class WhaleServiceImpl implements WhaleService {
                             .wordResult(wordResult)
                             .wordScores(wordScores)
                             .memberId(memberId)
-                            .gameNum(gameNum)
                             .score(score)
                             .build();
                 });

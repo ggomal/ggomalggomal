@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class GameNumService {
 
-    private final R2dbcEntityTemplate entityTemplate;
+        private final R2dbcEntityTemplate entityTemplate;
 
     @Autowired
     public GameNumService(R2dbcEntityTemplate entityTemplate) {

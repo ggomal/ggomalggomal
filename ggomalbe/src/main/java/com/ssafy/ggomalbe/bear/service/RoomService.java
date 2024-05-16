@@ -58,7 +58,7 @@ public class RoomService {
     }
 
 
-    public Mono<Void> createRoom(JsonNode jsonNode, WebSocketSession session, MemberIdRoleDto memberIdRoleDto) throws IOException {
+    public Mono<Void> createRoom(JsonNode jsonNode, WebSocketSession session, MemberIdRoleDto memberIdRoleDto) {
         Long memberId = memberIdRoleDto.getMemberId();
         MemberEntity.Role memberRole = memberIdRoleDto.getMemberRole();
 
@@ -85,8 +85,7 @@ public class RoomService {
 
             //해당 세션에게 방을 만들었다고 알림
             CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.CREATE_ROOM, roomId);
-//                        String response = objectMapper.writeValueAsString(createRoomResponse);
-            String response = new Gson().toJson(createRoomResponse);
+            String response = gson.toJson(createRoomResponse);
             return Mono.when(session.send(Mono.just(session.textMessage(response))), changeStatus(memberIdRoleDto, true));
         } else {
             ErrorResponse errorResponse = new ErrorResponse(SocketAction.ERROR, "이미 존재하는 방입니다.");
@@ -95,7 +94,7 @@ public class RoomService {
         }
     }
 
-    public Mono<Void> joinRoom(JsonNode jsonNode, WebSocketSession session , MemberIdRoleDto memberIdRoleDto) throws JsonProcessingException {
+    public Mono<Void> joinRoom(JsonNode jsonNode, WebSocketSession session , MemberIdRoleDto memberIdRoleDto) {
         Long memberId = memberIdRoleDto.getMemberId();
         MemberEntity.Role memberRole = memberIdRoleDto.getMemberRole();
 
@@ -104,7 +103,6 @@ public class RoomService {
 
         if (!isExistsStr(jsonNode, "kidId")) return Mono.empty();
         Long kidId = Long.parseLong(jsonNode.get("kidId").asText());
-
 
         //memberId와 session을 mapping
         String memberIdStr = String.valueOf(memberId);
@@ -120,17 +118,16 @@ public class RoomService {
         if (room != null) {
             room.addParticipant(session, memberRole);
             memberRoom.put(session.getId(), room);
+
             //WebSocket 세션을 통해 메시지를 클라이언트에게 보내는 작업 수행
             //비동기적으로 실행되며, 클라이언트에게 메시지를 성공적으로 보내면 Mono<Void>를 반환
-
             CreateRoomResponse createRoomResponse = new CreateRoomResponse(SocketAction.JOIN_ROOM, String.valueOf(kidId));
-            String response = new Gson().toJson(createRoomResponse);
+            String response = gson.toJson(createRoomResponse);
 
             return Mono.when(session.send(Mono.just(session.textMessage(response))), changeStatus(memberIdRoleDto, true));
         } else {
             ErrorResponse errorResponse = new ErrorResponse(SocketAction.ERROR, "방이 존재하지 않습니다.");
-            String response = new Gson().toJson(errorResponse);
-//                        String response = objectMapper.writeValueAsString(errorResponse);
+            String response = gson.toJson(errorResponse);
             return session.send(Mono.just(session.textMessage(response)));
         }
     }
@@ -148,7 +145,7 @@ public class RoomService {
             //같은 룸에 있는 사용자에게
             return room.broadcast(message);
         } else {
-//            return Mono.error(new IllegalArgumentException("Room not found: " + roomId));
+            //return Mono.error(new IllegalArgumentException("Room not found: " + roomId));
             return Mono.empty();
         }
     }
@@ -218,11 +215,6 @@ public class RoomService {
     public Mono<Void> isOnlineKidId(WebSocketSession session, JsonNode jsonNode) {
         if (!isExistsStr(jsonNode, "kidId")) return Mono.empty();
         Long id = Long.parseLong(jsonNode.get("kidId").asText());
-
-//        log.info("id {}", id);
-//        for (String s : memberIdSession.keySet()) {
-//            log.info("find id {}", s);
-//        }
 
         return Flux.fromIterable(memberIdSession.keySet())
                 .filter(findId -> findId.longValue() == id.longValue())

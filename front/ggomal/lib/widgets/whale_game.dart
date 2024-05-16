@@ -28,15 +28,23 @@ class _WhaleGameModalState extends State<WhaleGameModal> {
           Container(
             height: height,
             width: width,
-            padding: const EdgeInsets.fromLTRB(100, 100, 100, 5),
+            padding: const EdgeInsets.fromLTRB(100, 150, 100, 100),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text("$modalData",
-                    style: mapleText(50, FontWeight.w700, Colors.black)),
-                Text("$modalData",
-                    style: mapleText(28, FontWeight.w500, Colors.black)),
-
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("${modalData['fishCount']} 마리를 먹었어요!",style: mapleText(60, FontWeight.w700, Colors.black))
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("assets/images/whale/fish_pink.png", height: 60,),
+                    Text("${modalData['totalCount']} / 10",style: mapleText(60, FontWeight.w700, Colors.black))
+                  ],
+                ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context, true);
@@ -45,12 +53,12 @@ class _WhaleGameModalState extends State<WhaleGameModal> {
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
-                      vertical: 5,
+                      vertical: 10,
                       horizontal: 40,
                     ),
                   ),
-                  child: Text("시작",
-                      style: mapleText(24, FontWeight.w700, Colors.black)),
+                  child: Text("계속하기",
+                      style: mapleText(40, FontWeight.w700, Colors.black)),
                 )
               ],
             ),

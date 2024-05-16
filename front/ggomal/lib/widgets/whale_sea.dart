@@ -3,14 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/whale_dio.dart';
-import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/percent_bar.dart';
 import 'package:ggomal/widgets/whale_game.dart';
 import 'package:ggomal/widgets/whale_reward.dart';
-import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class WhaleSea extends StatefulWidget {
   const WhaleSea({super.key});
@@ -27,6 +26,8 @@ class _WhaleSeaState extends State<WhaleSea> {
   List<double> xList = [-0.5, -0.25, 0.0, 0.25, 0.5];
   bool isPass = true;
   bool isLoading = false;
+  bool isMoving = false;
+  List<bool> isCount = [true, true, true];
   int recordCount = 0;
   int _fishCount = 0;
   late int _totalFishCount = 0;
@@ -54,16 +55,16 @@ class _WhaleSeaState extends State<WhaleSea> {
   }
 
   void postAudio() async {
+    isLoading = true;
     File audioFile = File(filePath);
     if (await audioFile.exists()) {
       final response = await checkAudio(filePath);
       print(response['allResult']);
-      // if (response['overResult'] || recordCount == 3) {
-      //   Navigator.pop(context, true);
-      // } else {
       setState(() {
-        words = [false, false, false, false, true];
+        isMoving = true;
+        words = response['wordResult'];
         isPass = response['allResult'];
+        isLoading = false;
       });
       _timer = Timer.periodic(Duration(microseconds: 1000), (timer) {
         move();
@@ -86,6 +87,7 @@ class _WhaleSeaState extends State<WhaleSea> {
     await recorder.stopRecorder();
     postAudio();
     setState(() {
+      isCount[recordCount] = false;
       recordCount++;
     });
   }
@@ -112,22 +114,30 @@ class _WhaleSeaState extends State<WhaleSea> {
   int endTime = 0;
 
   final List<Map<String, dynamic>> _fishLocation = [
-    {"x": -0.5, "y": -0.4, "isVisible": true, "idx": 0},
-    {"x": -0.25, "y": -0.4, "isVisible": true, "idx": 1},
-    {"x": 0.0, "y": -0.4, "isVisible": true, "idx": 2},
-    {"x": 0.25, "y": -0.4, "isVisible": true, "idx": 3},
-    {"x": 0.5, "y": -0.4, "isVisible": true, "idx": 4},
+    {"x": -0.5, "y": -0.4, "isVisible": true},
+    {"x": -0.25, "y": -0.4, "isVisible": true},
+    {"x": 0.0, "y": -0.4, "isVisible": true},
+    {"x": 0.25, "y": -0.4, "isVisible": true},
+    {"x": 0.5, "y": -0.4, "isVisible": true},
   ];
 
   void move() {
     if (_alignment.x >= 0.9) {
       _timer.cancel();
       if (_totalFishCount >= 10) {
+        endTime = DateTime
+            .now()
+            .millisecondsSinceEpoch;
+        whaleReword((endTime - startTime) / 1000);
         Future.delayed(Duration(milliseconds: 500)).then((value) {
-          showDialog(context: context,
+          showDialog(
+              context: context,
               builder: (BuildContext context) =>
-                  WhaleRewardModal(
-                      {"count": 1, "totalCount": _totalFishCount, "result" : "성공"}));
+                  WhaleRewardModal({
+                    "count": 1,
+                    "totalCount": _totalFishCount,
+                    "result": "pass"
+                  }));
         });
       } else {
         showDialog(
@@ -135,36 +145,48 @@ class _WhaleSeaState extends State<WhaleSea> {
           builder: (BuildContext context) =>
               WhaleGameModal(
                   {"fishCount": _fishCount, "totalCount": _totalFishCount}),
-        ).then((value) => {
-        if (recordCount >= 2){
-            showDialog(context: context,
-            builder: (BuildContext context) =>
-                WhaleRewardModal(
-                    {"count": 1, "totalCount": _totalFishCount, "result" : "실패"})),
+        ).then((value) =>
+        {
+          if (recordCount >= 3)
+            {
+              endTime = DateTime
+                  .now()
+                  .millisecondsSinceEpoch,
+              whaleReword((endTime - startTime) / 1000),
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      WhaleRewardModal({
+                        "count": 1,
+                        "totalCount": _totalFishCount,
+                        "result": "fail"
+                      })),
+            }
+          else
+            {
+              setState(() {
+                _alignment = Alignment(-0.8, -0.5);
+                for (int i = 0; i < 5; i++) {
+                  _fishLocation[i]["x"] = xList[i];
+                  _fishLocation[i]["isVisible"] = true;
+                  _fishCount = 0;
+                  isMoving = false;
+                }
+              })
+            }
+        });
       }
-    else {
-      setState(() {
-        _alignment = Alignment(-0.8, -0.5);
-        for (int i = 0; i < 5; i++) {
-          _fishLocation[i]["x"] = xList[i];
-          _fishLocation[i]["isVisible"] = true;
-          _fishCount = 0;
-        }
-      })
-    }
-  });
-    }
     }
     double x = _alignment.x + 0.001;
     setState(() {
-    _alignment += Alignment(0.001, 0);
+      _alignment += Alignment(0.001, 0);
     });
     int fishIndex = _fishLocation.indexWhere(
-    (location) => x > location["x"]! && x - 0.16 < location["x"]!);
+            (location) => x > location["x"]! && x - 0.16 < location["x"]!);
     if (fishIndex != -1 &&
-    _fishLocation[fishIndex]['isVisible'] &&
-    words[fishIndex]) {
-    _eatFish(fishIndex);
+        _fishLocation[fishIndex]['isVisible'] &&
+        words[fishIndex]) {
+      _eatFish(fishIndex);
     }
   }
 
@@ -173,14 +195,6 @@ class _WhaleSeaState extends State<WhaleSea> {
       _fishCount += 1;
       _totalFishCount += 1;
       _fishLocation[fishIndex]['isVisible'] = false;
-
-      if (_totalFishCount == 10) {
-        endTime = DateTime
-            .now()
-            .millisecondsSinceEpoch;
-        double gameTime = (endTime - startTime) / 1000;
-        whaleReword(gameTime);
-      }
     });
   }
 
@@ -230,6 +244,25 @@ class _WhaleSeaState extends State<WhaleSea> {
             }),
           ),
         ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Container(
+            width: 400,
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: isCount.map((e) =>
+                  Image.asset(e
+                      ? 'assets/images/whale/starfish.png'
+                      : 'assets/images/whale/grey_starfish.png',
+                      width: width * 0.05)).toList(),
+              // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
+              // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
+              // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
+              ],
+            ),
+          ),
+        ),
         Positioned(
             bottom: 30,
             width: width,
@@ -255,29 +288,34 @@ class _WhaleSeaState extends State<WhaleSea> {
                         ),
                       ),
                       Container(
-                        height: height * 0.1,
+                        width: 100,
+                        height: 100,
                         padding: const EdgeInsets.all(10),
                         margin: const EdgeInsets.only(bottom: 10),
                         decoration: BoxDecoration(
-                          color:
-                          isLoading ? Color(0xFFC3C3C3) : Color(0xFFFFC107),
+                          color: (isLoading || isMoving)
+                              ? Color(0xFFC3C3C3)
+                              : Color(0xFFFFC107),
                           shape: BoxShape.circle,
                         ),
                         child: Column(
                           children: [
-                            IconButton(
+                            isLoading
+                                ? LoadingAnimationWidget.fourRotatingDots(
+                              color: Colors.white,
+                              size: 80,
+                            )
+                                : IconButton(
                                 onPressed: () async {
-                                  if (recorder.isRecording) {
-                                    await stop();
-                                  } else {
-                                    isLoading ? null : await record();
-                                  }
+                                  recorder.isRecording
+                                      ? await stop()
+                                      : isMoving
+                                      ? null
+                                      : await record();
                                 },
                                 icon: Icon(
                                   recorder.isRecording
                                       ? Icons.stop_rounded
-                                      : isLoading
-                                      ? Icons.more_horiz
                                       : Icons.mic,
                                   color: Colors.white,
                                   size: 60,
@@ -286,7 +324,9 @@ class _WhaleSeaState extends State<WhaleSea> {
                         ),
                       ),
                       Text(
-                        recorder.isRecording
+                        isMoving
+                            ? "물고기를 먹는 중이에요."
+                            : recorder.isRecording
                             ? "종료 버튼을 눌러주세요."
                             : isLoading
                             ? "AI 발음 정밀 분석  중입니다."

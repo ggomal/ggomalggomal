@@ -2,6 +2,7 @@ package com.ssafy.ggomalbe.common.service;
 
 import com.google.gson.Gson;
 import com.ssafy.ggomalbe.common.dto.superspeech.PronunciationResDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.security.MessageDigest;
 
 @Service
+@Slf4j
 public class SpeechSuperService {
 
     @Value("${speechsuper.baseUrl}")
@@ -127,7 +129,8 @@ public class SpeechSuperService {
         String audioSampleRate = "16000";
 
         return HttpAPI(file, audioType, audioSampleRate, refText, coreType)
-                .map(result -> new Gson().fromJson(result, PronunciationResDto.class));
+                .map(result -> new Gson().fromJson(result, PronunciationResDto.class))
+                .doOnNext(pronunciationResDto->log.info("evaluation {}", pronunciationResDto));
     }
 
     private Mono<PronunciationResDto> speechSuperWord(FilePart file, String refText) {

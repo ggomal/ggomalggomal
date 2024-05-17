@@ -261,7 +261,6 @@ class _WhaleSeaState extends State<WhaleSea> {
               children: isCount
                   .map((e) => Image.asset(
                       'assets/images/whale/starfish.png',
-                          // : 'assets/images/whale/grey_starfish.png',
                       width: width * 0.05,
                   color: e ? null : Colors.grey.withOpacity(0.5)))
                   .toList(),
@@ -311,7 +310,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                             isLoading
                                 ? LoadingAnimationWidget.fourRotatingDots(
                                     color: Colors.white,
-                                    size: 60,
+                                    size: 60, 
                                   )
                                 : IconButton(
                                     onPressed: () async {

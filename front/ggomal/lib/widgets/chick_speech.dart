@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:ggomal/constants.dart';
-import 'package:ggomal/services/chick_dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:ggomal/constants.dart';
+import 'package:ggomal/services/chick_dio.dart';
 
 class ChickSpeechModal extends StatefulWidget {
   final Map<String, dynamic> speechData;
@@ -195,12 +196,14 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                           isLoading ? null : await record();
                         }
                       },
-                      icon: Icon(
+                      icon:
+                      isLoading
+                          ? LoadingAnimationWidget.fourRotatingDots(
+                        color: Colors.white,
+                        size: 60,
+                      ) : Icon(
                         recorder.isRecording
-                            ? Icons.stop_rounded
-                            : isLoading
-                                ? Icons.more_horiz
-                                : Icons.mic,
+                            ? Icons.stop_rounded : Icons.mic,
                         color: Colors.white,
                         size: 60,
                       )),

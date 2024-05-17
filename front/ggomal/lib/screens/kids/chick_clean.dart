@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:ggomal/widgets/chick_thatched_house.dart';
 
@@ -10,7 +11,13 @@ class ChickCleanScreen extends StatefulWidget {
 }
 
 class _ChickCleanScreenState extends State<ChickCleanScreen> {
+  final AudioPlayer player = AudioPlayer();
 
+  @override
+  void initState() {
+    super.initState();
+    player.play(AssetSource('audio/chick/clean_start.mp3'));
+  }
 
   @override
   Widget build(BuildContext context) {

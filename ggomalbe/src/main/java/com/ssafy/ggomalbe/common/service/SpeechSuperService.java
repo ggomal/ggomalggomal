@@ -99,7 +99,7 @@ public class SpeechSuperService {
                 + "\"tokenId\":\"tokenId\","
                 + "\"refText\":\"" + refText + "\","
                 + "\"coreType\":\"" + coreType + "\","
-                + "\"slack\":0.5"
+                + "\"slack\":0.8"
                 + "}"
                 + "}"
                 + "}"

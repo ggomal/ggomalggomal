@@ -15,8 +15,8 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
   int count = 0;
   List<Map<String, dynamic>> thingList = [
     {"name": "이불", "img": 1, "isVisible": true},
-    {"name": "돌", "img": 2, "isVisible": true},
-    {"name": "물", "img": 3, "isVisible": true},
+    {"name": "모자", "img": 2, "isVisible": true},
+    {"name": "잠옷", "img": 3, "isVisible": true},
     {"name": "안경", "img": 4, "isVisible": true},
   ];
 
@@ -65,7 +65,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
           Container(
             height: height * 0.6,
             width: double.infinity,
-            padding: const EdgeInsets.only(left: 100.0),
+            padding: const EdgeInsets.only(left: 70.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -77,14 +77,10 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(11, 0, 11, 0),
-                                  child: Image.asset(
-                                    width: width * 0.14,
-                                    height: height * 0.18,
-                                    'assets/images/chick/clean_thing_${e["img"]}.png',
-                                  ),
+                                Image.asset(
+                                  width: width * 0.151,
+                                  height: height * 0.18,
+                                  'assets/images/chick/clean_thing_${e["img"]}.png',
                                 ),
                                 SizedBox(
                                     height: 50,
@@ -95,7 +91,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                             ),
                           )
                         : SizedBox(
-                            width: width * 0.14,
+                            width: width * 0.151,
                             height: height * 0.18,
                           ),
                   )

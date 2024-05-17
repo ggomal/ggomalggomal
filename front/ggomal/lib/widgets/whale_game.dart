@@ -41,8 +41,8 @@ class _WhaleGameModalState extends State<WhaleGameModal> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset("assets/images/whale/fish_pink.png", height: 60,),
-                    Text("${modalData['totalCount']} / 10",style: mapleText(60, FontWeight.w700, Colors.black))
+                    Image.asset("assets/images/whale/green_fish.png", height: 60,),
+                    Text(" ${modalData['totalCount']} / 10",style: mapleText(50, FontWeight.w700, Colors.black))
                   ],
                 ),
                 ElevatedButton(
@@ -58,7 +58,7 @@ class _WhaleGameModalState extends State<WhaleGameModal> {
                     ),
                   ),
                   child: Text("계속하기",
-                      style: mapleText(40, FontWeight.w700, Colors.black)),
+                      style: mapleText(36, FontWeight.w700, Colors.black)),
                 )
               ],
             ),

@@ -93,7 +93,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
         textSpans.add(
           TextSpan(
             text: text[i],
-            style: mapleText(60, FontWeight.w700, Colors.grey.shade300),
+            style: mapleText(48, FontWeight.w700, Colors.grey.shade300),
           ),
         );
         if (i == widget.speechData['name'].length - 1) {
@@ -111,7 +111,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
         textSpans.add(
           TextSpan(
             text: text[i],
-            style: mapleText(60, FontWeight.w700, textColor),
+            style: mapleText(48, FontWeight.w700, textColor),
           ),
         );
         if (i == widget.speechData['name'].length - 1) {
@@ -143,7 +143,10 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
           Container(
             height: height,
             width: width,
-            padding: const EdgeInsets.all(80),
+            padding: const EdgeInsets.symmetric(
+              vertical: 60,
+              horizontal: 100,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -151,12 +154,11 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                   child: Row(children: [
                     Flexible(
                         flex: 1,
-                        child: SizedBox(
-                          height: height * 0.5,
-                          child: Center(
+                        child: Container(
+                          height: height * 0.4,
+                            padding: const EdgeInsets.only(left : 20),
                             child: Image.asset(
                                 "assets/images/chick/${speechData['game']}_thing_${speechData['img']}.png"),
-                          ),
                         )),
                     Flexible(
                       flex: 2,
@@ -179,8 +181,8 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                   ]),
                 ),
                 Container(
-                  padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.only(bottom: 10),
+                  height: 80,
                   decoration: BoxDecoration(
                     color: isLoading ? Color(0xFFC3C3C3) : Color(0xFFFFC107),
                     shape: BoxShape.circle,

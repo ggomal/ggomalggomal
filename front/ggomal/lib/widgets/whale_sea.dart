@@ -29,6 +29,7 @@ class _WhaleSeaState extends State<WhaleSea> {
   bool isPass = true;
   bool isLoading = false;
   bool isMoving = false;
+  bool isSpeak = true;
   List<bool> isCount = [true, true, true];
   int recordCount = 0;
   int _fishCount = 0;
@@ -63,10 +64,11 @@ class _WhaleSeaState extends State<WhaleSea> {
       final response = await checkAudio(filePath);
       setState(() {
         isMoving = true;
-        // words = response['wordResult'];
-        words = [true, true, false, true, false];
+        words = response['wordResult'];
+        // words = [true, true, false, true, false];
         isPass = response['allResult'];
         isLoading = false;
+        isSpeak = false;
       });
       _timer = Timer.periodic(Duration(microseconds: 1000), (timer) {
         move();
@@ -81,6 +83,7 @@ class _WhaleSeaState extends State<WhaleSea> {
     filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
     await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
     setState(() {
+      isSpeak = true;
       currentFilePath = filePath;
     });
   }
@@ -96,14 +99,26 @@ class _WhaleSeaState extends State<WhaleSea> {
 
   List<TextSpan> _buildTextSpans(text) {
     List<TextSpan> textSpans = [];
-    for (int i = 0; i < text.length; i++) {
-      Color textColor = words[i] ? Colors.black : Colors.red;
-      textSpans.add(
-        TextSpan(
-          text: "${text[i]} ",
-          style: mapleText(48, FontWeight.w700, textColor),
-        ),
-      );
+
+    if (isSpeak) {
+      for (int i = 0; i < text.length; i++) {
+        textSpans.add(
+          TextSpan(
+            text: "${text[i]} ",
+            style: mapleText(48, FontWeight.w700, Colors.grey.shade500),
+          ),
+        );
+      }
+    } else {
+      for (int i = 0; i < text.length; i++) {
+        Color textColor = words[i] ? Colors.black : Colors.red;
+        textSpans.add(
+          TextSpan(
+            text: "${text[i]} ",
+            style: mapleText(48, FontWeight.w700, textColor),
+          ),
+        );
+      }
     }
     return textSpans;
   }
@@ -189,9 +204,9 @@ class _WhaleSeaState extends State<WhaleSea> {
       _fishCount += 1;
       _totalFishCount += 1;
       _fishLocation[fishIndex]['isVisible'] = false;
-      player.play(AssetSource('audio/whale/${_fishLocation[fishIndex]['word']}.mp3'));
+      player.play(
+          AssetSource('audio/whale/${_fishLocation[fishIndex]['word']}.mp3'));
     });
-
   }
 
   @override
@@ -245,10 +260,10 @@ class _WhaleSeaState extends State<WhaleSea> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: isCount
                   .map((e) => Image.asset(
-                      e
-                          ? 'assets/images/whale/starfish.png'
-                          : 'assets/images/whale/grey_starfish.png',
-                      width: width * 0.05))
+                      'assets/images/whale/starfish.png',
+                          // : 'assets/images/whale/grey_starfish.png',
+                      width: width * 0.05,
+                  color: e ? null : Colors.grey.withOpacity(0.5)))
                   .toList(),
             ),
           ),
@@ -263,7 +278,6 @@ class _WhaleSeaState extends State<WhaleSea> {
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.7),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-
                 ),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -272,7 +286,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                           height: height * 0.1,
                           child: Text("'아에이오우' 를 말하고 물고기를 먹어봐 !",
                               style: mapleText(
-                                  40, FontWeight.w700, Colors.black))),
+                                  36, FontWeight.w700, Colors.black))),
                       SizedBox(
                         height: height * 0.1,
                         child: RichText(
@@ -283,7 +297,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                       ),
                       Container(
                         width: 100,
-                        height: 100,
+                        height: 80,
                         padding: const EdgeInsets.all(10),
                         margin: const EdgeInsets.only(bottom: 10),
                         decoration: BoxDecoration(
@@ -297,7 +311,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                             isLoading
                                 ? LoadingAnimationWidget.fourRotatingDots(
                                     color: Colors.white,
-                                    size: 80,
+                                    size: 60,
                                   )
                                 : IconButton(
                                     onPressed: () async {
@@ -312,7 +326,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                                           ? Icons.stop_rounded
                                           : Icons.mic,
                                       color: Colors.white,
-                                      size: 60,
+                                      size: 40,
                                     )),
                           ],
                         ),

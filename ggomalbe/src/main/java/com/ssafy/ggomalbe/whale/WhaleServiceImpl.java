@@ -51,7 +51,7 @@ public class WhaleServiceImpl implements WhaleService {
                     List<WordScore> wordScores = new ArrayList<>();
 
                     for (WordResDto wrd : result.getWords()){
-                        boolean flag = wrd.getScores().getPronunciation() >= 70;
+                        boolean flag = wrd.getScores().getPronunciation() >= 55;
                         wordResult.add(flag);
                         overResult &= flag;
 

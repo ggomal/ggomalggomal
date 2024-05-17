@@ -23,7 +23,7 @@ class _WhaleGameModalState extends State<WhaleGameModal> {
       backgroundColor: Colors.transparent,
       child: Stack(
         children: [
-          Image.asset("assets/images/chick/chick_modal.png",
+          Image.asset("assets/images/modal_frame.png",
               width: width, height: height, fit: BoxFit.fill),
           Container(
             height: height,

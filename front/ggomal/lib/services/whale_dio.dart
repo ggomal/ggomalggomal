@@ -13,7 +13,7 @@ checkAudio(String audio) async {
   return response.data;
 }
 
-whaleReword(double maxTime) async {
+whaleReward(double maxTime) async {
   Dio dio = await useDio();
 
   final response = await dio.post('/whale/end', data: {

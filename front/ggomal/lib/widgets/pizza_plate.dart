@@ -52,7 +52,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
         "game": "pizza",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "넣어주세요"
+        "ending": "넣어요"
       }),
     ).then((value) => {
           if (value)
@@ -65,7 +65,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
               }),
               if (toppingIndex == 18)
                 {
-                  chickReword(2, 2),
+                  chickReward(2, 2),
                   showDialog(
                     context: context,
                     builder: (BuildContext context) =>

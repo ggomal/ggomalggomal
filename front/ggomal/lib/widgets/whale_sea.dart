@@ -62,6 +62,7 @@ class _WhaleSeaState extends State<WhaleSea> {
       print(response['allResult']);
       setState(() {
         isMoving = true;
+        //
         words = response['wordResult'];
         isPass = response['allResult'];
         isLoading = false;
@@ -114,26 +115,23 @@ class _WhaleSeaState extends State<WhaleSea> {
   int endTime = 0;
 
   final List<Map<String, dynamic>> _fishLocation = [
-    {"x": -0.5, "y": -0.4, "isVisible": true},
-    {"x": -0.25, "y": -0.4, "isVisible": true},
-    {"x": 0.0, "y": -0.4, "isVisible": true},
-    {"x": 0.25, "y": -0.4, "isVisible": true},
-    {"x": 0.5, "y": -0.4, "isVisible": true},
+    {"idx": 0, "x": -0.5, "y": -0.45, "isVisible": true, "img": "a"},
+    {"idx": 1, "x": -0.25, "y": -0.45, "isVisible": true, "img": "e"},
+    {"idx": 2, "x": 0.0, "y": -0.45, "isVisible": true, "img": "i"},
+    {"idx": 3, "x": 0.25, "y": -0.45, "isVisible": true, "img": "o"},
+    {"idx": 4, "x": 0.5, "y": -0.45, "isVisible": true, "img": "u"},
   ];
 
   void move() {
     if (_alignment.x >= 0.9) {
       _timer.cancel();
       if (_totalFishCount >= 10) {
-        endTime = DateTime
-            .now()
-            .millisecondsSinceEpoch;
-        whaleReword((endTime - startTime) / 1000);
+        endTime = DateTime.now().millisecondsSinceEpoch;
+        whaleReward((endTime - startTime) / 1000);
         Future.delayed(Duration(milliseconds: 500)).then((value) {
           showDialog(
               context: context,
-              builder: (BuildContext context) =>
-                  WhaleRewardModal({
+              builder: (BuildContext context) => WhaleRewardModal({
                     "count": 1,
                     "totalCount": _totalFishCount,
                     "result": "pass"
@@ -142,39 +140,34 @@ class _WhaleSeaState extends State<WhaleSea> {
       } else {
         showDialog(
           context: context,
-          builder: (BuildContext context) =>
-              WhaleGameModal(
-                  {"fishCount": _fishCount, "totalCount": _totalFishCount}),
-        ).then((value) =>
-        {
-          if (recordCount >= 3)
-            {
-              endTime = DateTime
-                  .now()
-                  .millisecondsSinceEpoch,
-              whaleReword((endTime - startTime) / 1000),
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) =>
-                      WhaleRewardModal({
-                        "count": 1,
-                        "totalCount": _totalFishCount,
-                        "result": "fail"
-                      })),
-            }
-          else
-            {
-              setState(() {
-                _alignment = Alignment(-0.8, -0.5);
-                for (int i = 0; i < 5; i++) {
-                  _fishLocation[i]["x"] = xList[i];
-                  _fishLocation[i]["isVisible"] = true;
-                  _fishCount = 0;
-                  isMoving = false;
+          builder: (BuildContext context) => WhaleGameModal(
+              {"fishCount": _fishCount, "totalCount": _totalFishCount}),
+        ).then((value) => {
+              if (recordCount >= 3)
+                {
+                  endTime = DateTime.now().millisecondsSinceEpoch,
+                  whaleReward((endTime - startTime) / 1000),
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => WhaleRewardModal({
+                            "count": 1,
+                            "totalCount": _totalFishCount,
+                            "result": "fail"
+                          })),
                 }
-              })
-            }
-        });
+              else
+                {
+                  setState(() {
+                    _alignment = Alignment(-0.8, -0.5);
+                    for (int i = 0; i < 5; i++) {
+                      _fishLocation[i]["x"] = xList[i];
+                      _fishLocation[i]["isVisible"] = true;
+                      _fishCount = 0;
+                      isMoving = false;
+                    }
+                  })
+                }
+            });
       }
     }
     double x = _alignment.x + 0.001;
@@ -182,7 +175,7 @@ class _WhaleSeaState extends State<WhaleSea> {
       _alignment += Alignment(0.001, 0);
     });
     int fishIndex = _fishLocation.indexWhere(
-            (location) => x > location["x"]! && x - 0.16 < location["x"]!);
+        (location) => x > location["x"]! && x - 0.16 < location["x"]!);
     if (fishIndex != -1 &&
         _fishLocation[fishIndex]['isVisible'] &&
         words[fishIndex]) {
@@ -207,17 +200,16 @@ class _WhaleSeaState extends State<WhaleSea> {
       children: [
         ..._fishLocation
             .map(
-              (e) =>
-          e['isVisible'] || !words[e['idx']]
-              ? Align(
-            alignment: Alignment(e['x'] as double, e['y'] as double),
-            child: Image.asset(
-              "assets/images/whale/fish_pink.png",
-              width: width * 0.05,
-            ),
-          )
-              : Text(""),
-        )
+              (e) => e['isVisible'] || !words[e['idx']]
+                  ? Align(
+                      alignment: Alignment(e['x'] as double, e['y'] as double),
+                      child: Image.asset(
+                        "assets/images/whale/fish_${e['img']}.png",
+                        width: width * 0.1,
+                      ),
+                    )
+                  : Text(""),
+            )
             .toList(),
         AnimatedContainer(
           duration: Duration(milliseconds: 50),
@@ -231,16 +223,13 @@ class _WhaleSeaState extends State<WhaleSea> {
         Align(
           alignment: Alignment.topCenter,
           child: Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width / 2 - 200,
+            width: MediaQuery.of(context).size.width / 2 - 200,
             height: 80,
             padding: const EdgeInsets.all(20),
             child: PercentBar({
               "count": _totalFishCount,
               "barColor": Color(0xFFFF835C),
-              "imgUrl": "assets/images/whale/fish_pink.png"
+              "imgUrl": "assets/images/whale/green_fish.png"
             }),
           ),
         ),
@@ -251,15 +240,13 @@ class _WhaleSeaState extends State<WhaleSea> {
             padding: const EdgeInsets.all(20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: isCount.map((e) =>
-                  Image.asset(e
-                      ? 'assets/images/whale/starfish.png'
-                      : 'assets/images/whale/grey_starfish.png',
-                      width: width * 0.05)).toList(),
-              // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
-              // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
-              // Image.asset('assets/images/whale/starfish.png', width: width * 0.05),
-              
+              children: isCount
+                  .map((e) => Image.asset(
+                      e
+                          ? 'assets/images/whale/starfish.png'
+                          : 'assets/images/whale/grey_starfish.png',
+                      width: width * 0.05))
+                  .toList(),
             ),
           ),
         ),
@@ -269,8 +256,12 @@ class _WhaleSeaState extends State<WhaleSea> {
             height: height * 0.4,
             child: Center(
               child: Container(
-                width: width * 0.8,
-                color: Colors.white.withOpacity(0.5),
+                width: width * 0.6,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.7),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+
+                ),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -302,24 +293,24 @@ class _WhaleSeaState extends State<WhaleSea> {
                           children: [
                             isLoading
                                 ? LoadingAnimationWidget.fourRotatingDots(
-                              color: Colors.white,
-                              size: 80,
-                            )
+                                    color: Colors.white,
+                                    size: 80,
+                                  )
                                 : IconButton(
-                                onPressed: () async {
-                                  recorder.isRecording
-                                      ? await stop()
-                                      : isMoving
-                                      ? null
-                                      : await record();
-                                },
-                                icon: Icon(
-                                  recorder.isRecording
-                                      ? Icons.stop_rounded
-                                      : Icons.mic,
-                                  color: Colors.white,
-                                  size: 60,
-                                )),
+                                    onPressed: () async {
+                                      recorder.isRecording
+                                          ? await stop()
+                                          : isMoving
+                                              ? null
+                                              : await record();
+                                    },
+                                    icon: Icon(
+                                      recorder.isRecording
+                                          ? Icons.stop_rounded
+                                          : Icons.mic,
+                                      color: Colors.white,
+                                      size: 60,
+                                    )),
                           ],
                         ),
                       ),
@@ -327,10 +318,10 @@ class _WhaleSeaState extends State<WhaleSea> {
                         isMoving
                             ? "물고기를 먹는 중이에요."
                             : recorder.isRecording
-                            ? "종료 버튼을 눌러주세요."
-                            : isLoading
-                            ? "AI 발음 정밀 분석  중입니다."
-                            : "버튼을 눌러 말해보세요.",
+                                ? "종료 버튼을 눌러주세요."
+                                : isLoading
+                                    ? "AI 발음 정밀 분석  중입니다."
+                                    : "버튼을 눌러 말해보세요.",
                         style: mapleText(
                             24, FontWeight.w500, Colors.grey.shade700),
                       )

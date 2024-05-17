@@ -19,7 +19,7 @@ checkAudio(int gameNum, String sentence, String audio) async {
   return response.data;
 }
 
-chickReword(int situationId, int getCoin) async {
+chickReward(int situationId, int getCoin) async {
   Dio dio = await useDio();
 
   await dio.post('/chick', data: {

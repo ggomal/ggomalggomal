@@ -5,6 +5,7 @@ import com.ssafy.ggomalbe.member.kid.KidService;
 import com.ssafy.ggomalbe.whale.dto.WhaleEndRequest;
 import com.ssafy.ggomalbe.whale.dto.WhaleEndResponse;
 import com.ssafy.ggomalbe.whale.dto.WhaleEvaluationResponse;
+import com.ssafy.ggomalbe.whale.dto.WhaleRewardRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
@@ -22,16 +23,32 @@ public class WhaleController {
     private final WhaleService whaleService;
     private final GameNumService gameNumService;
 
+//    @PostMapping("/end")
+//    public Mono<WhaleEndResponse> endWhaleGame(@RequestBody WhaleEndRequest request){
+//        return ReactiveSecurityContextHolder.getContext()
+//                .map(securityContext ->
+//                        (Long) securityContext.getAuthentication().getDetails())
+//                .flatMap(memberId -> {  // 코인 획득 -> 게임 기록 저장
+//                    return kidService.addCoin(memberId, request.getGetCoin())
+//                            .then(whaleService.setWhaleGameRecord(memberId, request));
+//                })
+//                .map(WhaleEndResponse::new);
+//    }
+
+
     @PostMapping("/end")
-    public Mono<WhaleEndResponse> endWhaleGame(@RequestBody WhaleEndRequest request){
+    public Mono<WhaleEndResponse> endWhaleGame(@RequestBody WhaleRewardRequest rewardRequest){
         return ReactiveSecurityContextHolder.getContext()
                 .map(securityContext ->
                         (Long) securityContext.getAuthentication().getDetails())
                 .flatMap(memberId -> {  // 코인 획득 -> 게임 기록 저장
-                    return kidService.addCoin(memberId, request.getGetCoin())
-                            .then(whaleService.setWhaleGameRecord(memberId, request));
+                    return kidService.addCoin(memberId, rewardRequest.getCoin());
                 })
-                .map(WhaleEndResponse::new);
+                .doOnNext(result -> log.info("rewardRequest {}", result))
+                .map(result->{
+                    if(result > 0) return new WhaleEndResponse(true);
+                    else return new WhaleEndResponse(false);
+                });
     }
 
 

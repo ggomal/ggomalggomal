@@ -37,12 +37,15 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                 thing["isVisible"] = false;
                 count += 1;
                 if (count == 4) {
-                  chickReward(1, 2);
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        GameContinueDialog(continuePage: '/chick/clean', count: 2),
-                  );
+                  Future.delayed(Duration(milliseconds: 1000)).then((value) {
+                    chickReward(1, 2);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          GameContinueDialog(
+                              continuePage: '/chick/clean', count: 2),
+                    );
+                  });
                 }
               })
             }

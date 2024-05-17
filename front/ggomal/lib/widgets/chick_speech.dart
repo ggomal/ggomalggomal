@@ -6,6 +6,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 
 class ChickSpeechModal extends StatefulWidget {
   final Map<String, dynamic> speechData;
@@ -20,6 +22,8 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   late String currentFilePath;
   int recordCount = 0;
   final recorder = FlutterSoundRecorder();
+  final AudioPlayer player = AudioPlayer();
+
   String filePath = '';
   List words = [];
   bool isPass = true;
@@ -52,10 +56,10 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
           "${widget.speechData['name']} ${widget.speechData['ending']}",
           filePath);
       if (response['overResult'] || recordCount >= 2) {
-        print("통과 음성");
+        player.play(AssetSource('audio/chick/pass.mp3'));
         Navigator.pop(context, true);
       } else {
-        print("다시 한번 얘기해보자 음성");
+        player.play(AssetSource('audio/chick/fail.mp3'));
         setState(() {
           words = response['words'];
           isPass = response['overResult'];

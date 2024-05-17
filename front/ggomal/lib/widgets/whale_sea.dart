@@ -25,7 +25,7 @@ class _WhaleSeaState extends State<WhaleSea> {
   final AudioPlayer player = AudioPlayer();
   String filePath = '';
   List words = [true, true, true, true, true];
-  List<double> xList = [-0.5, -0.25, 0.0, 0.25, 0.5];
+  List<double> xList = [-0.6, -0.3, 0.0, 0.3, 0.6];
   bool isPass = true;
   bool isLoading = false;
   bool isMoving = false;
@@ -131,11 +131,11 @@ class _WhaleSeaState extends State<WhaleSea> {
   int endTime = 0;
 
   final List<Map<String, dynamic>> _fishLocation = [
-    {"idx": 0, "x": -0.5, "y": -0.45, "isVisible": true, "word": "a"},
-    {"idx": 1, "x": -0.25, "y": -0.45, "isVisible": true, "word": "e"},
+    {"idx": 0, "x": -0.6, "y": -0.45, "isVisible": true, "word": "a"},
+    {"idx": 1, "x": -0.3, "y": -0.45, "isVisible": true, "word": "e"},
     {"idx": 2, "x": 0.0, "y": -0.45, "isVisible": true, "word": "i"},
-    {"idx": 3, "x": 0.25, "y": -0.45, "isVisible": true, "word": "o"},
-    {"idx": 4, "x": 0.5, "y": -0.45, "isVisible": true, "word": "u"},
+    {"idx": 3, "x": 0.3, "y": -0.45, "isVisible": true, "word": "o"},
+    {"idx": 4, "x": 0.6, "y": -0.45, "isVisible": true, "word": "u"},
   ];
 
   void move() {

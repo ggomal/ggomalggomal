@@ -65,12 +65,14 @@ class _PizzaPlateState extends State<PizzaPlate> {
               }),
               if (toppingIndex == 18)
                 {
-                  chickReward(2, 2),
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        GameContinueDialog(continuePage:'/chick/pizza', count: 2),
-                  )
+                  Future.delayed(Duration(milliseconds: 1000)).then((value) {
+                    chickReward(2, 2);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => GameContinueDialog(
+                          continuePage: '/chick/pizza', count: 2),
+                    );
+                  })
                 }
             }
         });
@@ -100,7 +102,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
                         left: e['left'] as double,
                         child: Image.asset(
                           "assets/images/chick/pizza_thing_${e['img']}.png",
-                          width:  width * 0.03,
+                          width: width * 0.03,
                         ),
                       )
                     : SizedBox.shrink(),
@@ -127,7 +129,6 @@ class _PizzaPlateState extends State<PizzaPlate> {
                     children: pizzaThingList
                         .map(
                           (e) => GestureDetector(
-
                             onTap: () {
                               handleTopping(e);
                             },

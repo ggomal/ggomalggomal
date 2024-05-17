@@ -108,9 +108,8 @@ public class RoomSocketHandler implements WebSocketHandler {
                 })
                 .publishOn(Schedulers.boundedElastic())
                 .doFinally(signalType -> {
-
                     //소켓연결이 끊길경우 그 정보를 정리한다.
-                    log.info("socket doFinally");
+                    log.info("socket doFinally memberId: {}",roomService.getSessionIdMember(session.getId()));
                     roomService.leaveRoom(session,memberIdRoleDto).subscribe();
                 })
                 .then();

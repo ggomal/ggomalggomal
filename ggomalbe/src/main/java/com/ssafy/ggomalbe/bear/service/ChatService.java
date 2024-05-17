@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 public class ChatService {
-    private static Map<String, Sinks.Many<Chat>> chatSinkMap
+    private static final Map<String, Sinks.Many<Chat>> chatSinkMap
             = new ConcurrentHashMap<>();
 
     public Collection<Sinks.Many<Chat>> getAllSinks(){

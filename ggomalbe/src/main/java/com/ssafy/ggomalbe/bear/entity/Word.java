@@ -2,10 +2,12 @@ package com.ssafy.ggomalbe.common.entity;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+@EqualsAndHashCode(callSuper = true)
 @Table("word")
 @Builder
 @Data

@@ -32,7 +32,7 @@ public class TeacherSocketService {
 
     //선생님 먼저 들어오고 애가 방만들떄
     //애가 들어오거나 나갈때 선생님에게 요청 보낸다 -> 디비에서 담당선생님을 꺼내와서 맵에 들어있는 사람만 보낸다.
-    //애가 나갔다가 다시 들얼오면 joinRoom한다.  ->
+    //애가 나갔다가 다시 들얼오면 joinRoom한다.
     private final Gson gson;
     private final RoomService roomService;
     private final BingoSocketService bingoSocketService;

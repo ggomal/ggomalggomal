@@ -32,7 +32,7 @@ import java.util.Map;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class ChickRecordServiceImpl implements ChickRecordService{
+public class ChickRecordServiceImpl implements ChickRecordService {
     private final ChickRecordRepository chickRecordRepository;
     private final EvaluationService evaluationService;
     private final SituationRepository situationRepository;
@@ -51,15 +51,15 @@ public class ChickRecordServiceImpl implements ChickRecordService{
 
     @Override
     public Mono<ChickEvaluationResponseCommand> addChickRecord(FilePart filePart, Long memberId, Long gameNum, String sentence) {
-        return speechSuperService.evaluation(filePart,sentence)
+        return speechSuperService.evaluation(filePart, sentence)
                 .map(PronunciationResDto::getResult)
                 .map(result -> {
                     Boolean overResult = true;
                     Integer score = 0;
                     List<Boolean> words = new ArrayList<>();
-                    for (WordResDto wrd : result.getWords()){
+                    for (WordResDto wrd : result.getWords()) {
                         words.add(wrd.getScores().getPronunciation() >= 55);
-                        overResult &= words.get(words.size()-1);
+                        overResult &= words.get(words.size() - 1);
                         score += wrd.getScores().getPronunciation();
                     }
                     Float scoreF = (float) score / words.size();
@@ -90,7 +90,7 @@ public class ChickRecordServiceImpl implements ChickRecordService{
                         return Mono.just(false);
                     } else {
                         SituationKidEntity entity = SituationKidEntity.builder()
-                                .situationId(situationId+1)
+                                .situationId(situationId + 1)
                                 .memberId(memberId)
                                 .build();
 

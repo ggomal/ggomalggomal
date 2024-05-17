@@ -50,10 +50,7 @@ public class BingoSocketService {
     }
 
 
-    //해당 룸의 선생님 빙고판
-
-
-    //해당 룸의 아이 빙고판
+    //옵션에 해당하는 빙고판을 검색한다.
     public Mono<List<BingoCard>> findBingoCard(WordCategoryResponse wordCategoryResponse) {
         List<String> initialList = wordCategoryResponse.getInitialList();
         Short syllable = wordCategoryResponse.getSyllable();
@@ -62,14 +59,14 @@ public class BingoSocketService {
         Mono<List<BingoCard>> bingoCardsMono;
 
         if (syllable > 2) {
-            log.info("advance");
+            log.info("create advance room");
             if (finalityFlag) {
                 bingoCardsMono = wordService.getAdvancedBingoFinalityIsNotNull(wordCategoryResponse);
             } else {
                 bingoCardsMono = wordService.getAdvancedBingoFinalityIsNull(wordCategoryResponse);
             }
         } else {
-            log.info("basic");
+            log.info("create basic room");
             if (finalityFlag) {
                 bingoCardsMono = wordService.getBasicBingoFinalityIsNotNull(wordCategoryResponse);
             } else {
@@ -80,12 +77,11 @@ public class BingoSocketService {
         return bingoCardsMono
                 .map(bingoCards -> {
                     Collections.shuffle(bingoCards);
-                    return bingoCards.subList(0, Math.min(9, bingoCards.size()));
+                    return bingoCards.subList(0, Math.min(LIMIT, bingoCards.size()));
                 });
     }
 
     //빙고판 생성
-//    public Mono<BingoBoard> createBingoBoard(WordCategoryResponse wordCategoryResponse, List<BingoCard> bingoCardList) {
     public BingoBoard createBingoBoard(List<BingoCard> bingoCardList) {
         log.info("createBingoBoard : {}", bingoCardList);
         Collections.shuffle(bingoCardList);
@@ -97,23 +93,10 @@ public class BingoSocketService {
             bingoBoard[r][i % BINGO_LINE] = bingoCardList.get(i);
         }
         return new BingoBoard(bingoBoard, createBingoVisitBoard());
+    }
 
-//        return bingoCardList
-//                .map(bingo->{
-//                    log.info("createBingoBoard : {}", bingo);
-//                    Collections.shuffle(bingo);
-//                    BingoCard[][] bingoBoard = new BingoCard[BINGO_LINE][BINGO_LINE];
-//
-//                    int r = 0;
-//                    for (int i = 0; i < LIMIT; i++) {
-//                        if (i > 0 && i % BINGO_LINE == 0) {
-//                            r++;
-//                        }
-//                        bingoBoard[r][i % BINGO_LINE] = bingo.get(i);
-//                    }
-//                    return new BingoBoard(bingoBoard, createBingoVisitBoard());
-//                });
-
+    public boolean[][] createBingoVisitBoard() {
+        return new boolean[BINGO_LINE][BINGO_LINE];
     }
 
     //빙고카드 선택
@@ -121,16 +104,13 @@ public class BingoSocketService {
         log.info("choiceBingoCard {} ", bingoPlayerMap.size());
         BingoPlayer bingoPlayerT = bingoPlayerMap.get(room.getTeacherSocket().getId());
         BingoPlayer bingoPlayerK = bingoPlayerMap.get(room.getKidSocket().getId());
-        log.info("teacher {}", bingoPlayerT);
-        log.info("kid {}", bingoPlayerK);
+        log.info("teacher choice bingo card {}", bingoPlayerT);
+        log.info("kid choice bingo card {}", bingoPlayerK);
 
         boolean result1 = markBingoBoard(bingoPlayerT, choiceLetter);
         boolean result2 = markBingoBoard(bingoPlayerK, choiceLetter);
 
         return result1 && result2;
-
-
-        //빙고를 하고 빙고가 되었는지 판단해야한다.
     }
 
     //선택된 빙고카드 O 표시하기 -> 이미 체크된 카드는 프론트에서 거르지만 한번더 체크
@@ -169,7 +149,7 @@ public class BingoSocketService {
         boolean isBingoT = Bingo.isBingo(bingoPlayerT.getBingoBoard());
         boolean isBingoK = Bingo.isBingo(bingoPlayerK.getBingoBoard());
         log.info("now {} {}", role, role == MemberEntity.Role.TEACHER);
-        log.info("isBingoT {} === isBingoK {} ", isBingoT, isBingoK);
+        log.info("isBingoT {}, isBingoK {} ", isBingoT, isBingoK);
         if (isBingoT && isBingoK) {
             log.info("both win");
             return gameOver(room, role);
@@ -197,24 +177,17 @@ public class BingoSocketService {
         return kidService.addCoin(memberId, rewardCoin);
     }
 
-
-    public BingoCard[][] loadMyBingoBoard() {
-        return null;
-    }
-
     // print
     public void printBingoCard(BingoBoard bingoBoard) {
+        StringBuilder sb = new StringBuilder();
         BingoCard[][] bingo = bingoBoard.getBoard();
         for (BingoCard[] bingoCards : bingo) {
             for (BingoCard bingoCard : bingoCards) {
-                System.out.print(bingoCard + " ");
+                sb.append(bingoCard).append(" ");
             }
-            System.out.println();
+            sb.append("\n");
         }
-    }
-
-    public boolean[][] createBingoVisitBoard() {
-        return new boolean[BINGO_LINE][BINGO_LINE];
+        log.info("{}",sb.toString());
     }
 
     public Mono<Void> printBingoV(WebSocketSession session) throws JsonProcessingException {

@@ -125,9 +125,6 @@ public class WordController {
         return wordService.addWordList(Flux.fromIterable(wordEntityList));
     }
 
-
-
-
     // WordRequest를 WordEntity로 변환하는 메소드
     private WordEntity convertToEntity(WordRequest wordRequest) {
         if (wordRequest.getFinality().equals("null")) {wordRequest.setFinality(null);}

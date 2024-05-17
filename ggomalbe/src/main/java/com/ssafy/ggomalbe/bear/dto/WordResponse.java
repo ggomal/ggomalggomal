@@ -1,4 +1,4 @@
-package com.ssafy.ggomalbe.common.entity;
+package com.ssafy.ggomalbe.bear.dto;
 
 import lombok.Builder;
 import lombok.Data;

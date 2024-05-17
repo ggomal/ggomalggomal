@@ -87,8 +87,6 @@ public class Room {
         return teacherSocket.send(Mono.just(teacherSocket.textMessage(message))).then();
     }
 
-
-
     public boolean containsMember(WebSocketSession session){
         String sessionId = session.getId();
         for (String s : participants.keySet()) {

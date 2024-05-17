@@ -310,7 +310,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                             isLoading
                                 ? LoadingAnimationWidget.fourRotatingDots(
                                     color: Colors.white,
-                                    size: 60, 
+                                    size: 60,
                                   )
                                 : IconButton(
                                     onPressed: () async {

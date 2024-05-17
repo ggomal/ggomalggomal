@@ -127,7 +127,7 @@ class _WhaleSeaState extends State<WhaleSea> {
       _timer.cancel();
       if (_totalFishCount >= 10) {
         endTime = DateTime.now().millisecondsSinceEpoch;
-        whaleReward((endTime - startTime) / 1000);
+        whaleReward(2);
         Future.delayed(Duration(milliseconds: 500)).then((value) {
           showDialog(
               context: context,
@@ -146,7 +146,7 @@ class _WhaleSeaState extends State<WhaleSea> {
               if (recordCount >= 3)
                 {
                   endTime = DateTime.now().millisecondsSinceEpoch,
-                  whaleReward((endTime - startTime) / 1000),
+                  whaleReward(1),
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => WhaleRewardModal({

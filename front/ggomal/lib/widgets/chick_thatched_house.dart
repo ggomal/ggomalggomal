@@ -28,7 +28,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
         "game": "clean",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "정리해주세요"
+        "ending": "정리해요"
       }),
     ).then((value) => {
           if (value)
@@ -37,7 +37,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                 thing["isVisible"] = false;
                 count += 1;
                 if (count == 4) {
-                  chickReword(1, 2);
+                  chickReward(1, 2);
                   showDialog(
                     context: context,
                     builder: (BuildContext context) =>

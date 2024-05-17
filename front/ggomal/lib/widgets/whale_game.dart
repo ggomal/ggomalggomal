@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/constants.dart';
 
-class ChickGameModal extends StatefulWidget {
+class WhaleGameModal extends StatefulWidget {
   final Map<String, dynamic> modalData;
 
-  const ChickGameModal(this.modalData, {super.key});
+  const WhaleGameModal(this.modalData, {super.key});
 
   @override
-  State<ChickGameModal> createState() => _ChickGameModalState();
+  State<WhaleGameModal> createState() => _WhaleGameModalState();
 }
 
-class _ChickGameModalState extends State<ChickGameModal> {
+class _WhaleGameModalState extends State<WhaleGameModal> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> modalData = widget.modalData;
@@ -28,35 +28,41 @@ class _ChickGameModalState extends State<ChickGameModal> {
           Container(
             height: height,
             width: width,
-
-            padding: const EdgeInsets.fromLTRB(100,100,100,5),
+            padding: const EdgeInsets.fromLTRB(100, 150, 100, 100),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(modalData['title'], style: mapleText(50, FontWeight.w700, Colors.black)),
-                Text(modalData['content'],
-                    style: mapleText(28, FontWeight.w500, Colors.black)),
-                Image.asset(
-                  "assets/images/chick/modal_${modalData['game']}.png",
-                  height: height * 0.3,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("${modalData['fishCount']} 마리를 먹었어요!",style: mapleText(60, FontWeight.w700, Colors.black))
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("assets/images/whale/fish_pink.png", height: 60,),
+                    Text("${modalData['totalCount']} / 10",style: mapleText(60, FontWeight.w700, Colors.black))
+                  ],
                 ),
                 ElevatedButton(
-
-                  onPressed: () {context.go('/kids/chick/${modalData['game']}');},
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
-                      vertical: 5,
+                      vertical: 10,
                       horizontal: 40,
                     ),
                   ),
-                  child: Text("시작", style: mapleText(24, FontWeight.w700, Colors.black)),
+                  child: Text("계속하기",
+                      style: mapleText(40, FontWeight.w700, Colors.black)),
                 )
               ],
             ),
           ),
-
         ],
       ),
     );

@@ -34,11 +34,13 @@ class KidCard extends StatelessWidget {
     double width = screenSize(context).width;
     double height = screenSize(context).height;
 
-    return GestureDetector(
+    return
+      GestureDetector(
       onTap: () {
         context.go('/manager/kids/${kidData['memberId']}');
       },
-      child: Container(
+      child:
+    Container(
         width: width * 0.25,
         height: height * 0.25,
         decoration: BoxDecoration(

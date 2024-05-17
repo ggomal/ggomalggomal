@@ -1,6 +1,7 @@
 package com.ssafy.ggomalbe.common.service;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ssafy.ggomalbe.common.dto.superspeech.PronunciationResDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
@@ -128,9 +129,12 @@ public class SpeechSuperService {
         String audioType = "mp3"; // Change the audio type corresponding to the audio file.
         String audioSampleRate = "16000";
 
+        Gson gsonPretty = new GsonBuilder().setPrettyPrinting().create();
+
+
         return HttpAPI(file, audioType, audioSampleRate, refText, coreType)
                 .map(result -> new Gson().fromJson(result, PronunciationResDto.class))
-                .doOnNext(pronunciationResDto->log.info("evaluation {}", pronunciationResDto));
+                .doOnNext(pronunciationResDto->log.info("evaluation {}",gsonPretty.toJson(pronunciationResDto)));
     }
 
     private Mono<PronunciationResDto> speechSuperWord(FilePart file, String refText) {

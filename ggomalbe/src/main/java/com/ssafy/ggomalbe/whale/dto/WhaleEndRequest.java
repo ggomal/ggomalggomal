@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WhaleEndRequest {
-
     private float maxTime;
+    private Long getCoin;
 }

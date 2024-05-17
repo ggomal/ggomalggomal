@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:ggomal/widgets/whale_sea.dart';
 
@@ -11,6 +12,14 @@ class WhaleScreen extends StatefulWidget {
 }
 
 class _WhaleScreenState extends State<WhaleScreen> {
+  final AudioPlayer player = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    player.play(AssetSource('audio/whale/whale_start.mp3'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

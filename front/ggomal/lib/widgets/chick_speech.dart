@@ -23,6 +23,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   List words = [];
   bool isPass = true;
   bool isLoading = false;
+  bool isSpeak = true;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
           words = response['words'];
           isPass = response['overResult'];
           isLoading = false;
+          isSpeak = false;
           recordCount++;
         });
       }
@@ -71,6 +73,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
     await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
     setState(() {
+      isSpeak = true;
       currentFilePath = filePath;
     });
   }
@@ -85,21 +88,40 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
 
   List<TextSpan> _buildTextSpans(text) {
     List<TextSpan> textSpans = [];
-    for (int i = 0; i < text.length; i++) {
-      Color textColor = words[i] ? Colors.black : Colors.red;
-      textSpans.add(
-        TextSpan(
-          text: text[i],
-          style: mapleText(60, FontWeight.w700, textColor),
-        ),
-      );
-      if (i == widget.speechData['name'].length - 1) {
+    if (isSpeak) {
+      for (int i = 0; i < text.length; i++) {
         textSpans.add(
           TextSpan(
-            text: ' ',
-            style: mapleText(48, FontWeight.w700, textColor),
+            text: text[i],
+            style: mapleText(60, FontWeight.w700, Colors.grey.shade300),
           ),
         );
+        if (i == widget.speechData['name'].length - 1) {
+          textSpans.add(
+            TextSpan(
+              text: ' ',
+              style: mapleText(48, FontWeight.w700, Colors.grey.shade300),
+            ),
+          );
+        }
+      }
+    } else {
+      for (int i = 0; i < text.length; i++) {
+        Color textColor = words[i] ? Colors.black : Colors.red;
+        textSpans.add(
+          TextSpan(
+            text: text[i],
+            style: mapleText(60, FontWeight.w700, textColor),
+          ),
+        );
+        if (i == widget.speechData['name'].length - 1) {
+          textSpans.add(
+            TextSpan(
+              text: ' ',
+              style: mapleText(48, FontWeight.w700, textColor),
+            ),
+          );
+        }
       }
     }
     return textSpans;

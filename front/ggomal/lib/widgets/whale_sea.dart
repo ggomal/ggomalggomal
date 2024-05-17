@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class WhaleSea extends StatefulWidget {
   const WhaleSea({super.key});
@@ -21,6 +22,7 @@ class WhaleSea extends StatefulWidget {
 class _WhaleSeaState extends State<WhaleSea> {
   late String currentFilePath;
   final recorder = FlutterSoundRecorder();
+  final AudioPlayer player = AudioPlayer();
   String filePath = '';
   List words = [true, true, true, true, true];
   List<double> xList = [-0.5, -0.25, 0.0, 0.25, 0.5];
@@ -59,11 +61,10 @@ class _WhaleSeaState extends State<WhaleSea> {
     File audioFile = File(filePath);
     if (await audioFile.exists()) {
       final response = await checkAudio(filePath);
-      print(response['allResult']);
       setState(() {
         isMoving = true;
-        //
-        words = response['wordResult'];
+        // words = response['wordResult'];
+        words = [true, true, false, true, false];
         isPass = response['allResult'];
         isLoading = false;
       });
@@ -115,11 +116,11 @@ class _WhaleSeaState extends State<WhaleSea> {
   int endTime = 0;
 
   final List<Map<String, dynamic>> _fishLocation = [
-    {"idx": 0, "x": -0.5, "y": -0.45, "isVisible": true, "img": "a"},
-    {"idx": 1, "x": -0.25, "y": -0.45, "isVisible": true, "img": "e"},
-    {"idx": 2, "x": 0.0, "y": -0.45, "isVisible": true, "img": "i"},
-    {"idx": 3, "x": 0.25, "y": -0.45, "isVisible": true, "img": "o"},
-    {"idx": 4, "x": 0.5, "y": -0.45, "isVisible": true, "img": "u"},
+    {"idx": 0, "x": -0.5, "y": -0.45, "isVisible": true, "word": "a"},
+    {"idx": 1, "x": -0.25, "y": -0.45, "isVisible": true, "word": "e"},
+    {"idx": 2, "x": 0.0, "y": -0.45, "isVisible": true, "word": "i"},
+    {"idx": 3, "x": 0.25, "y": -0.45, "isVisible": true, "word": "o"},
+    {"idx": 4, "x": 0.5, "y": -0.45, "isVisible": true, "word": "u"},
   ];
 
   void move() {
@@ -188,7 +189,9 @@ class _WhaleSeaState extends State<WhaleSea> {
       _fishCount += 1;
       _totalFishCount += 1;
       _fishLocation[fishIndex]['isVisible'] = false;
+      player.play(AssetSource('audio/whale/${_fishLocation[fishIndex]['word']}.mp3'));
     });
+
   }
 
   @override
@@ -204,7 +207,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                   ? Align(
                       alignment: Alignment(e['x'] as double, e['y'] as double),
                       child: Image.asset(
-                        "assets/images/whale/fish_${e['img']}.png",
+                        "assets/images/whale/fish_${e['word']}.png",
                         width: width * 0.1,
                       ),
                     )

@@ -41,7 +41,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) =>
-                        GameContinueDialog(continuePage: '/chick', count: 2),
+                        GameContinueDialog(continuePage: '/chick/clean', count: 2),
                   );
                 }
               })

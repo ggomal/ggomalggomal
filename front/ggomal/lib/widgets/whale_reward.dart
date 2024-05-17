@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:ggomal/constants.dart';
 import 'package:ggomal/get_storage.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-class WhaleRewardModal extends StatelessWidget {
-  final Map<String, dynamic> modalData;
 
+class WhaleRewardModal extends StatefulWidget {
+  final Map<String, dynamic> modalData;
   const WhaleRewardModal(this.modalData, {super.key});
+
+  @override
+  State<WhaleRewardModal> createState() => _WhaleRewardModalState();
+}
+
+class _WhaleRewardModalState extends State<WhaleRewardModal> {
+  final AudioPlayer player = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.modalData['result'] == 'pass'){
+      player.play(AssetSource('audio/end.mp3'));
+    }else {
+      player.play(AssetSource('audio/whale/fail.mp3'));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +41,7 @@ class WhaleRewardModal extends StatelessWidget {
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(
-                    "assets/images/whale/whale_${modalData['result']}.png"),
+                    "assets/images/whale/whale_${widget.modalData['result']}.png"),
                 fit: BoxFit.fill)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,

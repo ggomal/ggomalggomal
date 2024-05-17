@@ -69,7 +69,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) =>
-                        GameContinueDialog(continuePage:'/chick', count: 2),
+                        GameContinueDialog(continuePage:'/chick/pizza', count: 2),
                   )
                 }
             }

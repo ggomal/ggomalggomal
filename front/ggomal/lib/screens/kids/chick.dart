@@ -29,9 +29,9 @@ class _ChickScreenState extends State<ChickScreen> {
     },
     {
       'img': 'egg',
-      'game': 'clean',
-      'title': '집을 청소해주세요 !',
-      'content': '침대 위 물건을 말하면 물건이 사라져요.\n물건을 하나씩 불러서 집을 청소해주세요.'
+      'game': 'null',
+      'title': '',
+      'content': ''
     },
   ];
 
@@ -80,7 +80,7 @@ class _ChickScreenState extends State<ChickScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: List.generate(
                           snapshot.data!.length,
-                          (index) => snapshot.data![index]['acquired']
+                          (index) => snapshot.data![index]['acquired'] && gameInfoList[index]['game'] != 'null'
                               ? InkWell(
                                   onTap: () {
                                     showDialog(

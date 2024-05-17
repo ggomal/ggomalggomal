@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ggomal/get_storage.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-class GameContinueDialog extends StatelessWidget {
+class GameContinueDialog extends StatefulWidget {
   final String continuePage;
   final int count;
 
@@ -11,6 +12,18 @@ class GameContinueDialog extends StatelessWidget {
     required this.continuePage,
     required this.count,
     super.key});
+
+  @override
+  State<GameContinueDialog> createState() => _GameContinueDialogState();
+}
+
+class _GameContinueDialogState extends State<GameContinueDialog> {
+  final AudioPlayer player = AudioPlayer();
+  @override
+  void initState() {
+    super.initState();
+    player.play(AssetSource('audio/end.mp3'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class GameContinueDialog extends StatelessWidget {
                   padding: EdgeInsets.only(top: 20),
                   child: Container(
                     child: Text(
-                      "${count}개",
+                      "${widget.count}개",
                       style: TextStyle(
                           fontSize: 40, fontFamily: 'Maplestory',
                           fontWeight: FontWeight.bold, color: Colors.black
@@ -54,36 +67,37 @@ class GameContinueDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                 horizontal: 100
               ),
-              child: Row(
+              child:
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
-                    child: ElevatedButton(
-                      onPressed: (){
-                        context.go(continuePage);
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10
-                        ),
-                        child: Text(
-                          "계속하기",
-                          style: TextStyle(
-                              fontSize: 35, fontFamily: 'Maplestory',
-                              fontWeight: FontWeight.bold, color: Colors.black
-                          ),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFCFE4D1),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
-                              side: BorderSide(color: Colors.black, width: 4.0)
-                          )
-                      ),
-                    ),
-                  ),
+              //     Container(
+              //       child: ElevatedButton(
+              //         onPressed: (){
+              //           context.go(widget.continuePage);
+              //         },
+              //         child: Padding(
+              //           padding: EdgeInsets.symmetric(
+              //               horizontal: 15,
+              //               vertical: 10
+              //           ),
+              //           child: Text(
+              //             "계속하기",
+              //             style: TextStyle(
+              //                 fontSize: 35, fontFamily: 'Maplestory',
+              //                 fontWeight: FontWeight.bold, color: Colors.black
+              //             ),
+              //           ),
+              //         ),
+              //         style: ElevatedButton.styleFrom(
+              //             backgroundColor: Color(0xFFCFE4D1),
+              //             shape: RoundedRectangleBorder(
+              //                 borderRadius: BorderRadius.circular(40),
+              //                 side: BorderSide(color: Colors.black, width: 4.0)
+              //             )
+              //         ),
+              //       ),
+              //     ),
                   Container(
                     child: ElevatedButton(
                       onPressed: (){

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ggomal/services/socket.dart';
@@ -78,6 +79,9 @@ class _KidBingoModalState extends State<KidBingoModal> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
+    final AudioPlayer player2 = AudioPlayer();
+    player2.setVolume(0.2);
+
 
     return Dialog(
       child: Stack(
@@ -117,7 +121,7 @@ class _KidBingoModalState extends State<KidBingoModal> {
                         child: Text("${speechData['letter']}",
                             style:
                                 mapleText(180, FontWeight.w700, Colors.black)),
-                                // mapleText(100, FontWeight.w700, Colors.black)),
+                        // mapleText(100, FontWeight.w700, Colors.black)),
                       )),
                     ),
                     Flexible(flex: 1, child: Container()),
@@ -125,26 +129,29 @@ class _KidBingoModalState extends State<KidBingoModal> {
                 ),
                 Text("단어를 듣고 따라 말해봅시다~!",
                     style: mapleText(50, FontWeight.w300, Colors.black54)),
-                    // style: mapleText(30, FontWeight.w300, Colors.black54)),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (recorder.isRecording) {
-                      await stop();
-                    } else {
-                      await record();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 25,
-                      horizontal: 50,
-                    ),
-                    backgroundColor: Color(0xFFFFFAAC),
-                    foregroundColor: Colors.white,
+                Container(
+                  width: 100,
+                  height: 100,
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFC107),
+                    shape: BoxShape.circle,
                   ),
-                  child: Text(recorder.isRecording ? '끝내기' : '말하기',
-                      style: mapleText(40, FontWeight.w700, Colors.black)),
+                  child: IconButton(
+                      onPressed: () async {
+                        player2.play(
+                            AssetSource('audio/record.mp3'));
+                        if (recorder.isRecording) {
+                          await stop();
+                        } else {
+                          await record();
+                        }
+                      },
+                      icon: Icon(
+                          recorder.isRecording ? Icons.stop_rounded : Icons.mic), color: Colors.white, iconSize : 50,),
                 ),
+                Text(recorder.isRecording ?'말하기':'끝내기', style: mapleText(40, FontWeight.normal, Colors.grey),),
               ],
             ),
           ),
@@ -156,6 +163,8 @@ class _KidBingoModalState extends State<KidBingoModal> {
 
 class _BearScreenState extends State<BearScreen> {
   final AudioPlayer player = AudioPlayer();
+  final AudioPlayer player1 = AudioPlayer();
+
   late final WebSocketChannel channel;
   bool isConnected = false;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -242,15 +251,6 @@ class _BearScreenState extends State<BearScreen> {
           case 'REQ_VOICE':
             sendLastAudio(message['letter']);
             break;
-          // if (turn == 1) {
-          //   setState(() {
-          //     turn = 2;
-          //   });
-          // } else if (turn == 2) {
-          //   setState(() {
-          //     turn == 1;
-          //   });
-          // }
 
           case 'SAY_AGAIN':
             player.play(AssetSource('audio/bear/say_again.mp3'));
@@ -260,6 +260,7 @@ class _BearScreenState extends State<BearScreen> {
             print('마킹빙고 응답확인');
             print('순서 확인 $turn');
             Navigator.pop(context);
+            player.play(AssetSource('audio/bear/bingo_check.mp3'));
 
             String markedLetter = message['letter'];
             setState(() {
@@ -283,12 +284,19 @@ class _BearScreenState extends State<BearScreen> {
           case 'GAME_OVER':
             if (message['winner'] == 'KID') {
               KidWinModal();
+              player.setVolume(0.1);
+              player.play(AssetSource('audio/end.mp3'));
+              player1.play(AssetSource('audio/end_pass.mp3'));
             } else if (message['winner'] == 'TEACHER') {
               KidLoseModal();
+              player.play(AssetSource('audio/end_fail.mp3'));
             } else {
               print('빙고 끝났는데 이긴 사람 이상함 ㅠㅠ');
             }
             break;
+
+          case 'KID_ONLINE':
+            print('애기 온라인 응답');
         }
       }, onDone: () {
         print('연결 종료 ');
@@ -334,11 +342,16 @@ class _BearScreenState extends State<BearScreen> {
             backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/kid_win.png'),
-              InkWell(
-                  onTap: () {
-                    context.go('/kids');
-                  },
-                  child: Image.asset('assets/images/bear/main_button.png'))
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 20,
+                child: InkWell(
+                    onTap: () {
+                      context.go('/kids');
+                    },
+                    child: Image.asset('assets/images/bear/main_button.png')),
+              )
             ]),
           );
         });
@@ -352,15 +365,16 @@ class _BearScreenState extends State<BearScreen> {
             backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/kid_lose.png'),
-              InkWell(
-                  onTap: () {
-                    context.go('/kids');
-                  },
-                  child: Positioned(
-                      left: 500,
-                      right: 0,
-                      bottom: 100,
-                      child: Image.asset('assets/images/bear/main_button.png')))
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 20,
+                child: InkWell(
+                    onTap: () {
+                      context.go('/kids');
+                    },
+                    child: Image.asset('assets/images/bear/main_button.png')),
+              )
             ]),
           );
         });
@@ -435,28 +449,35 @@ class _BearScreenState extends State<BearScreen> {
               children: [
                 Container(
                   decoration: BoxDecoration(
+                    color: Colors.white,
                     border: Border.all(color: Colors.black54, width: 2),
-                    image: DecorationImage(
-                      image: NetworkImage(cell['letterImgUrl'] ??
-                          'assets/images/placeholder.png'),
-                      fit: BoxFit.cover,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 35),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(cell['letterImgUrl'] ??
+                              'assets/images/placeholder.png'),
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: 10,
+                  bottom: 0,
                   child: Text(cell['letter'],
-                      style: mapleText(40, FontWeight.bold, Colors.black)),
+                      style: mapleText(35, FontWeight.bold, Colors.black)),
                 ),
                 if (cell['isSelected'])
                   Container(
-                    width: 250,
-                    height: 250,
+                    width: 150,
+                    height: 150,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.red,
-                        width: 40,
+                        width: 25,
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -513,13 +534,12 @@ class _BearScreenState extends State<BearScreen> {
                 ),
                 Flexible(flex: 1, child: Container()),
                 Flexible(
-                  flex: 5,
+                  flex: 4,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
-                        // padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(70, 0, 0, 0),
                         child: InkWell(
                           onTap: () {
                             player.play(
@@ -529,7 +549,7 @@ class _BearScreenState extends State<BearScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(400, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(230, 0, 0, 0),
                         // padding: EdgeInsets.fromLTRB(360, 0, 0, 0),
                         child: InkWell(
                           onTap: () {
@@ -549,67 +569,57 @@ class _BearScreenState extends State<BearScreen> {
                         child: SizedBox(
                           child: Image.asset('assets/images/bear/guitar.png'),
                           // height: 400,
-                          height: 300,
+                          height: 240,
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 50, 0),
-                        child: InkWell(
-                          onTap: () {
-                            player.play(
-                                AssetSource('images/bear/audio/teacher.mp3'));
-                          },
-                          child: SizedBox(
-                            child:
-                                Image.asset('assets/images/bear/teacher.png'),
-                            // width: 350,
-                            width: 250,
-                          ),
+                      InkWell(
+                        onTap: () {
+                          player.play(
+                              AssetSource('images/bear/audio/teacher.mp3'));
+                        },
+                        child: SizedBox(
+                          child: Image.asset('assets/images/bear/teacher.png'),
+                          width: 250,
                         ),
                       ),
                     ],
                   ),
                 ),
+                Flexible(flex: 1, child: Container()),
               ],
             ),
             Positioned(
-              top: 480,
-              // top: 350,
-              left: 200,
+              top: 340,
+              left: 190,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/table.mp3'));
                 },
-                child: Image.asset('assets/images/bear/table.png', width: 650),
-                // child: Image.asset('assets/images/bear/table.png', width: 500),
+                child: Image.asset('assets/images/bear/table.png', width: 400),
               ),
             ),
             Positioned(
-              top: 410,
-              // top: 280,
-              left: 370,
+              top: 300,
+              left: 350,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/milk.mp3'));
                 },
                 child: SizedBox(
-                  // width: 130,
-                  width: 160,
+                  width: 90,
                   child: Image.asset('assets/images/bear/milk.png'),
                 ),
               ),
             ),
             Positioned(
-              top: 480,
-              left: 680,
-              // top: 320,
-              // left: 500,
+              top: 380,
+              left: 510,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/pencil.mp3'));
                 },
                 child: SizedBox(
-                  width: 150,
+                  width: 40,
                   child: Image.asset(
                     'assets/images/bear/pencil.png',
                   ),
@@ -617,33 +627,27 @@ class _BearScreenState extends State<BearScreen> {
               ),
             ),
             Positioned(
-              top: 560,
-              left: 490,
-              // top: 400,
-              // left: 350,
+              top: 390,
+              left: 380,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/notebook.mp3'));
                 },
                 child: SizedBox(
-                  width: 250,
-                  // width: 200,
+                  width: 140,
                   child: Image.asset('assets/images/bear/notebook.png'),
                 ),
               ),
             ),
             Positioned(
-              top: 540,
-              left: 270,
-              // top: 380,
-              // left: 200,
+              top: 360,
+              left: 240,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/hat.mp3'));
                 },
                 child: SizedBox(
-                  width: 200,
-                  // width: 170,
+                  width: 130,
                   child: Image.asset('assets/images/bear/hat.png'),
                 ),
               ),
@@ -659,107 +663,112 @@ class _BearScreenState extends State<BearScreen> {
     return FutureBuilder(
       future: storage.getRole(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data == 'KID') {}
-          return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/bear/bingo_bg.png"),
-                  fit: BoxFit.cover,
-                ),
+        // if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.data == 'KID') {}
+        return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/bear/bingo_bg.png"),
+                fit: BoxFit.cover,
               ),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: NavBar(),
-                body: Stack(children: [
-                  if (turn == 1)
-                    Positioned(
-                      bottom: 400,
-                      left: 100,
-                      child: Container(
-                        color: Colors.white,
-                        width: 300,
-                        height: 100,
+            ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: NavBar(),
+              body: Stack(children: [
+                if (turn == 1)
+                  Positioned(
+                    bottom: 300,
+                    left: 50,
+                    child: Stack(children: [
+                      Image.asset(
+                        'assets/images/bear/message_box_left.png',
+                        width: 250,
+                      ),
+                      Positioned(
+                        bottom: 50,
+                        left: 50,
                         child: Text(
                           '내 차례',
                           style: mapleText(50, FontWeight.bold, Colors.black),
                         ),
                       ),
-                    ),
-                  if (turn == 2)
-                    Positioned(
-                      bottom: 400,
-                      right: 100,
-                      // right: 50,
-                      child: Container(
-                        color: Colors.blue,
-                        width: 300,
-                        height: 100,
+                    ]),
+                  ),
+                if (turn == 2)
+                  Positioned(
+                    bottom: 300,
+                    right: 30,
+                    child: Stack(children: [
+                      Image.asset(
+                        'assets/images/bear/message_box_right.png',
+                        width: 250,
+                      ),
+                      Positioned(
+                        bottom: 53,
+                        left: 20,
                         child: Text(
                           '선생님 차례',
+                          style: mapleText(45, FontWeight.bold, Colors.black),
+                        ),
+                      ),
+                    ]),
+                  ),
+                Container(
+                    child: Row(
+                  children: [
+                    Flexible(
+                      child: Container(),
+                      flex: 3,
+                    ),
+                    Flexible(
+                      flex: 5,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 50, 0, 20),
+                        // padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                        child: bingoBoardData != null
+                            ? buildBingoGrid(bingoBoardData)
+                            : Container(color: Colors.yellow),
+                      ),
+                    ),
+                    Flexible(
+                      child: Container(),
+                      flex: 3,
+                      // flex: 3,
+                    )
+                  ],
+                )),
+                Positioned(
+                  left: 30,
+                  bottom: 0,
+                  child: Image.asset(
+                    'assets/images/bear/student.png',
+                    width: 230,
+                  ),
+                ),
+                Positioned(
+                  right: 30,
+                  bottom: 5,
+                  child: Image.asset(
+                    'assets/images/bear/teacher.png',
+                    width: 230,
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 30,
+                  child: currentLetter.isNotEmpty
+                      ? Text(
+                          '$currentLetter 단어 카드를 눌러봐',
                           style: mapleText(50, FontWeight.bold, Colors.black),
-                        ),
-                      ),
-                    ),
-                  Container(
-                      child: Row(
-                    children: [
-                      Flexible(
-                        child: Container(),
-                        // flex: 3,
-                        flex: 1,
-                      ),
-                      Flexible(
-                        flex: 2,
-                        // flex: 5,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
-                          // padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
-                          child: bingoBoardData != null
-                              ? buildBingoGrid(bingoBoardData)
-                              : Container(color: Colors.yellow),
-                        ),
-                      ),
-                      Flexible(
-                        child: Container(),
-                        flex: 1,
-                        // flex: 3,
-                      )
-                    ],
-                  )),
-                  Positioned(
-                    left: 30,
-                    bottom: 0,
-                    child: Image.asset(
-                      'assets/images/bear/student.png',
-                      width: 300,
-                      // width: 250,
-                    ),
-                  ),
-                  Positioned(
-                    right: 30,
-                    bottom: 5,
-                    child: Image.asset(
-                      'assets/images/bear/teacher.png',
-                      // width: 250,
-                      width: 300,
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 30,
-                    child: currentLetter.isNotEmpty
-                        ? Text(
-                            '$currentLetter 단어 카드를 눌러봐',
-                            style: mapleText(50, FontWeight.bold, Colors.black),
-                          )
-                        : SizedBox.shrink(),
-                  ),
-                ]),
-              ));
-        } else {
-          return CircularProgressIndicator();
-        }
+                        )
+                      : SizedBox.shrink(),
+                ),
+              ]),
+            ));
+        // } else {
+        //   return CircularProgressIndicator();
+        // }
       },
     );
   }

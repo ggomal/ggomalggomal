@@ -77,9 +77,8 @@ final router = GoRouter(
       builder: (context, state) {
         final data = state.extra as Map<String, dynamic>;
         final name = data['name'];
-        final kidId = data['id'];
-
-        return CreateBingo(name: name, kidId: kidId);
+        final memberId = data['memberId'];
+        return CreateBingo(name: name, memberId: memberId);
       },
     ),
     GoRoute(

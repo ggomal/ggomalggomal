@@ -18,9 +18,9 @@ import 'package:ggomal/constants.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateBingo extends StatefulWidget {
-  final String name;
-  final String kidId;
-  const CreateBingo({super.key, required this.name, required this.kidId,});
+  final String? name;
+  final int? memberId;
+  const CreateBingo({super.key, required this.name, required this.memberId,});
 
   @override
   State<CreateBingo> createState() => _CreateBingoModalState();
@@ -31,7 +31,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
   late final Stream broadcastStream;
   late StreamController streamController;
   bool isConnected = false;
-  String connectionStatus = '오프라인';
+  // String connectionStatus = '오프라인';
   Color textColor = Colors.transparent;
   List<List<Map<String, dynamic>>> bingoBoardData = [];
   bool showBingo = false;
@@ -65,11 +65,16 @@ class _CreateBingoModalState extends State<CreateBingo> {
   }
 
   void connectToWebSocket() async {
+    var selectKidId = widget.memberId;
     var headers = await SocketDio.getWebSocketHeadersAsync();
     channel = IOWebSocketChannel.connect(
       Uri.parse(SocketDio.getWebSocketUrl()),
       headers: headers,
     );
+    channel.sink.add(
+      '{"type" : "isOnlineKidId","kidId" : "$selectKidId"}',
+    );
+
 
     broadcastStream = channel.stream.asBroadcastStream();
 
@@ -77,8 +82,21 @@ class _CreateBingoModalState extends State<CreateBingo> {
       print('빙고 만드는페이지에서 들어오는 수신 찍어보기 $response');
       Map<String, dynamic> message = jsonDecode(response);
       switch (message['action']) {
+        case 'KID_ONLINE':
+          print('키즈 접속중인지 들어오는지 보기');
+
+          if (message['isOnline'] == true) {
+            setState(() {
+              isConnected = true;
+            });
+          } else if (message['isOnline'] == false) {
+            setState(() {
+              isConnected = false;
+            });
+          }
+          break;
         case 'JOIN_ROOM':
-          setState(() => connectionStatus = '온라인');
+          setState(() => isConnected = true);
           break;
         case 'EVALUATION':
           print('평가하라는 요청 들어오긴 들어와씀');
@@ -110,13 +128,16 @@ class _CreateBingoModalState extends State<CreateBingo> {
     }, onError: (error) {
       print('소켓 통신에 실패했습니다. $error');
     });
+
     channel.sink.add(
-      '{"type" : "joinRoom","kidId" : "4"}',
+      '{"type" : "joinRoom","kidId" : "$selectKidId"}',
     );
-    isConnected = true;
+
+
   }
 
   void TeacherWinModal() {
+    var selectKidId = widget.memberId;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -124,15 +145,16 @@ class _CreateBingoModalState extends State<CreateBingo> {
             backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/teacher_win.png'),
-              InkWell(
-                  onTap: () {
-                    context.go('/manager/kids');
-                  },
-                  child: Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 30,
-                      child: Image.asset('assets/images/bear/info_button.png')))
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 20,
+                child: InkWell(
+                    onTap: () {
+                      context.go('/manager/bingo/$selectKidId');
+                    },
+                    child: Image.asset('assets/images/bear/info_button.png')),
+              )
             ]),
           );
         });
@@ -146,15 +168,16 @@ class _CreateBingoModalState extends State<CreateBingo> {
             backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/teacher_lose.png'),
-              InkWell(
-                  onTap: () {
-                    context.go('/manager/kids');
-                  },
-                  child: Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 30,
-                      child: Image.asset('assets/images/bear/info_button.png')))
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 20,
+                child: InkWell(
+                    onTap: () {
+                      context.go('/manager/kids');
+                    },
+                    child: Image.asset('assets/images/bear/info_button.png')),
+              )
             ]),
           );
         });
@@ -355,7 +378,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                       child: Icon(
                         Icons.circle,
                         size: 18,
-                        color: connectionStatus == '온라인'
+                        color: isConnected == true
                             ? Colors.green
                             : Colors.grey,
                       ),
@@ -372,8 +395,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     ),
                     Flexible(
                       flex: 1,
-                      child: Text(
-                        connectionStatus.toString(),
+                      child: Text(isConnected == true ? '온라인': '오프라인',
                         style: baseText(
                           17,
                           FontWeight.normal,
@@ -646,32 +668,37 @@ class _CreateBingoModalState extends State<CreateBingo> {
               children: [
                 Container(
                   decoration: BoxDecoration(
+                    color: Colors.white,
                     border: Border.all(color: Colors.black54, width: 2),
-                    image: DecorationImage(
-                      image: NetworkImage(cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
-                      fit: BoxFit.cover,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 35),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(cell['letterImgUrl'] ??
+                              'assets/images/placeholder.png'),
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: 10,
+                  bottom: 0,
                   child: Text(
                       cell['letter'],
-                      style: mapleText(40, FontWeight.bold, Colors.black)
+                      style: mapleText(35, FontWeight.bold, Colors.black)
                   ),
                 ),
                 if (cell['isSelected'])
                   Container(
-                    width: 250,
-                    height: 250,
-                    // width: 150,
-                    // height: 150,
+                    width: 150,
+                    height: 150,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.red,
-                        width: 40,
-                        // width: 30,
+                        width: 25,
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -688,7 +715,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
     return FutureBuilder(
       future: storage.getRole(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        // if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data == 'KID') {
           }
           return Container(
@@ -733,8 +760,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     bottom: 0,
                     child: Image.asset(
                       'assets/images/bear/student.png',
-                      width: 300,
-                      // width: 250,
+                      width: 230,
                     ),
                   ),
                   Positioned(
@@ -742,15 +768,14 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     bottom: 5,
                     child: Image.asset(
                       'assets/images/bear/teacher.png',
-                      // width: 250,
-                      width: 300,
+                      width: 230,
                     ),
                   ),
                 ]),
               ));
-        } else {
-          return CircularProgressIndicator();
-        }
+        // } else {
+        //   return CircularProgressIndicator();
+        // }
       },
     );
   }

@@ -14,15 +14,19 @@ class WhaleRewardModal extends StatefulWidget {
 }
 
 class _WhaleRewardModalState extends State<WhaleRewardModal> {
-  final AudioPlayer player = AudioPlayer();
+
+  final AudioPlayer player1 = AudioPlayer();
+  final AudioPlayer player2 = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     if(widget.modalData['result'] == 'pass'){
-      player.play(AssetSource('audio/end.mp3'));
+      player1.play(AssetSource('audio/end.mp3'));
+      player2.play(AssetSource('audio/end_pass.mp3'));
     }else {
-      player.play(AssetSource('audio/whale/fail.mp3'));
+      player1.play(AssetSource('audio/whale/fail.mp3'));
+      player2.play(AssetSource('audio/end_fail.mp3'));
     }
   }
 

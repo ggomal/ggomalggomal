@@ -25,7 +25,7 @@ class _WhaleSeaState extends State<WhaleSea> {
   final AudioPlayer player = AudioPlayer();
   String filePath = '';
   List words = [true, true, true, true, true];
-  List<double> xList = [-0.6, -0.3, 0.0, 0.3, 0.6];
+  List<double> xList = [-0.6, -0.25, 0.1, 0.45, 0.8];
   bool isPass = true;
   bool isLoading = false;
   bool isMoving = false;
@@ -58,14 +58,13 @@ class _WhaleSeaState extends State<WhaleSea> {
   }
 
   void postAudio() async {
-    isLoading = true;
     File audioFile = File(filePath);
     if (await audioFile.exists()) {
       final response = await checkAudio(filePath);
       setState(() {
         isMoving = true;
         words = response['wordResult'];
-        // words = [true, true, false, true, false];
+        // words = [true, true, true, true, true];
         isPass = response['allResult'];
         isLoading = false;
         isSpeak = false;
@@ -79,6 +78,7 @@ class _WhaleSeaState extends State<WhaleSea> {
   }
 
   Future<void> record() async {
+    player.play(AssetSource('audio/record.mp3'));
     Directory tempDir = await getTemporaryDirectory();
     filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
     await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
@@ -89,11 +89,15 @@ class _WhaleSeaState extends State<WhaleSea> {
   }
 
   Future<void> stop() async {
-    await recorder.stopRecorder();
-    postAudio();
+    player.play(AssetSource('audio/record.mp3'));
     setState(() {
+      isLoading = true;
       isCount[recordCount] = false;
       recordCount++;
+    });
+    Future.delayed(Duration(milliseconds: 500)).then((value) async {
+      await recorder.stopRecorder();
+      postAudio();
     });
   }
 
@@ -132,10 +136,10 @@ class _WhaleSeaState extends State<WhaleSea> {
 
   final List<Map<String, dynamic>> _fishLocation = [
     {"idx": 0, "x": -0.6, "y": -0.45, "isVisible": true, "word": "a"},
-    {"idx": 1, "x": -0.3, "y": -0.45, "isVisible": true, "word": "e"},
-    {"idx": 2, "x": 0.0, "y": -0.45, "isVisible": true, "word": "i"},
-    {"idx": 3, "x": 0.3, "y": -0.45, "isVisible": true, "word": "o"},
-    {"idx": 4, "x": 0.6, "y": -0.45, "isVisible": true, "word": "u"},
+    {"idx": 1, "x": -0.25, "y": -0.45, "isVisible": true, "word": "e"},
+    {"idx": 2, "x": 0.1, "y": -0.45, "isVisible": true, "word": "i"},
+    {"idx": 3, "x": 0.45, "y": -0.45, "isVisible": true, "word": "o"},
+    {"idx": 4, "x": 0.8, "y": -0.45, "isVisible": true, "word": "u"},
   ];
 
   void move() {
@@ -174,7 +178,7 @@ class _WhaleSeaState extends State<WhaleSea> {
               else
                 {
                   setState(() {
-                    _alignment = Alignment(-0.8, -0.5);
+                    _alignment = Alignment(-0.9, -0.5);
                     for (int i = 0; i < 5; i++) {
                       _fishLocation[i]["x"] = xList[i];
                       _fishLocation[i]["isVisible"] = true;
@@ -259,10 +263,9 @@ class _WhaleSeaState extends State<WhaleSea> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: isCount
-                  .map((e) => Image.asset(
-                      'assets/images/whale/starfish.png',
+                  .map((e) => Image.asset('assets/images/whale/starfish.png',
                       width: width * 0.05,
-                  color: e ? null : Colors.grey.withOpacity(0.5)))
+                      color: e ? null : Colors.grey.withOpacity(0.5)))
                   .toList(),
             ),
           ),
@@ -333,10 +336,10 @@ class _WhaleSeaState extends State<WhaleSea> {
                       Text(
                         isMoving
                             ? "물고기를 먹는 중이에요."
-                            : recorder.isRecording
-                                ? "종료 버튼을 눌러주세요."
-                                : isLoading
-                                    ? "AI 발음 정밀 분석  중입니다."
+                            : isLoading
+                                ? "AI 발음 정밀 분석  중입니다."
+                                : recorder.isRecording
+                                    ? "종료 버튼을 눌러주세요."
                                     : "버튼을 눌러 말해보세요.",
                         style: mapleText(
                             24, FontWeight.w500, Colors.grey.shade700),

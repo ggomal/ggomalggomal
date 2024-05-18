@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ggomal/constants.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class WhaleGameModal extends StatefulWidget {
   final Map<String, dynamic> modalData;
@@ -12,6 +12,14 @@ class WhaleGameModal extends StatefulWidget {
 }
 
 class _WhaleGameModalState extends State<WhaleGameModal> {
+  final AudioPlayer player = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    player.play(AssetSource('audio/whale/round_end.mp3'));
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> modalData = widget.modalData;

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,17 +39,16 @@ class _FrogTownState extends State<FrogTown> {
 
   @override
   void dispose() async {
-    super.dispose();
     await vision.closeTesseractModel();
     await vision.closeYoloModel();
+    super.dispose(); // 이 부분을 수정
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: NavBar(),
-      body:
-      Stack(
+      body: Stack(
         children: [
           Positioned(
             // bottom: 0,
@@ -123,8 +121,6 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
                 GameContinueDialog2(continuePage: '/kids/frog', count: 2, onRestart: (){_restartGame();},),
           );
         });
-
-
       }
     });
   }
@@ -138,6 +134,7 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
       startDetection();  // 감지 재시작
     });
   }
+
   //
   late CameraController controller;
   late List<Map<String, dynamic>> yoloResults;
@@ -145,8 +142,6 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
   bool isLoaded = false;
   bool isDetecting = false;
   late GifController _gifController;
-
-
 
   @override
   void initState() {
@@ -173,20 +168,17 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
       loadYoloModel().then((value) async {
         setState(() {
           isLoaded = true;
-          // isDetecting = false; <------------여기
           yoloResults = [];
         });
-        // await startDetection();
       });
     });
-
   }
 
   @override
-  void dispose() async {
-    super.dispose();
+  void dispose() {
     controller.dispose();
     player.stop();
+    super.dispose(); // 이 부분을 수정
   }
 
   @override
@@ -254,17 +246,25 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
                 await startDetection();
               },
               child: Container(
-                decoration: BoxDecoration(
-                    color: Color(0xFFFE5757),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 2)
-                ),
+                // decoration: BoxDecoration(
+                //     color: Color(0xFFFE5757),
+                //     borderRadius: BorderRadius.circular(10),
+                //     border: Border.all(color: Colors.black, width: 2)
+                // ),
                 child: Center(
-                  child: Text("냠냠", style: TextStyle(
-                      fontFamily: 'Maplestory',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30
-                  ),),
+                  child: Column(
+                    children: [
+                      Gif(
+                        width: 600,
+                        controller: controller2,
+                        duration: const Duration(seconds: 20),
+                        autostart: Autostart.once,
+                        placeholder: (context) =>
+                        const Center(child: CircularProgressIndicator()),
+                        image: const AssetImage('assets/images/frog/frog_eat.gif'),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -322,7 +322,7 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
                   Positioned(
                       top: size.height * 0.6, left: size.width * 0.3,
                       child: Image.asset(
-                        "assets/images/whale/start_button.png",
+                        "assets/images/frog/start_button.png",
                         width: 300,
                       ))
                 ],
@@ -330,8 +330,6 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
             ),
           ),
         ),
-
-
       ],
     );
   }
@@ -402,6 +400,4 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
       yoloResults.clear();
     });
   }
-
 }
-

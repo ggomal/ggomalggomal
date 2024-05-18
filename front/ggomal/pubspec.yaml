@@ -68,6 +68,10 @@ dependencies:
   camera: ^0.10.6
   flutter_speed_dial: ^6.2.0
 
+  flutter_animate: ^4.5.0
+  image: ^4.1.7
+  gif: ^2.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -106,6 +110,7 @@ flutter:
     - assets/audio/bear/
     - assets/audio/whale/
     - assets/audio/chick/
+    - assets/audio/frog/
   # To add assets to your aplication, add an assets section, like this:
 
 

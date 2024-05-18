@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gif/gif.dart';
 import '../services/frog_dio.dart';
 import '../utils/game_bosang_dialog.dart';
 import '../utils/game_dialog2.dart';
@@ -75,22 +78,25 @@ class YoloVideo extends StatefulWidget {
   State<YoloVideo> createState() => _YoloVideoState();
 }
 
-class _YoloVideoState extends State<YoloVideo> {
+class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
+  late final GifController controller1, controller2, controller3;
+  final AudioPlayer player = AudioPlayer();
+  final AudioPlayer player_frog = AudioPlayer();
   // 개구리 게임
   late int _fishCount = 0;
 
   Random random = Random();
   final List<Map<String, dynamic>> _fishLocation = [
-    {"x": -0.7, "y": -0.7, "isVisible": true, "width" : 50},
-    {"x": -0.4, "y": -0.2, "isVisible": true, "width" : 55},
-    {"x": -0.3, "y": 0.2, "isVisible": true, "width" : 60},
-    {"x": -0.2, "y": -0.4, "isVisible": true, "width" : 70},
-    {"x": -0.1, "y": -0.6, "isVisible": true, "width" : 65},
-    {"x": 0.1, "y": -0.5, "isVisible": true, "width" : 69},
-    {"x": 0.4, "y": 0.2, "isVisible": true, "width" : 65},
-    {"x": 0.5, "y": -0.4, "isVisible": true, "width" : 55},
-    {"x": -0.6, "y": 0.3, "isVisible": true, "width" : 53},
-    {"x": 0.7, "y": -0.5, "isVisible": true, "width" : 72},
+    {"x": -0.7, "y": -0.7, "isVisible": true, "width" : 80},
+    {"x": -0.4, "y": -0.2, "isVisible": true, "width" : 95},
+    {"x": -0.3, "y": 0.2, "isVisible": true, "width" : 100},
+    {"x": -0.2, "y": -0.4, "isVisible": true, "width" : 120},
+    {"x": -0.1, "y": -0.6, "isVisible": true, "width" : 95},
+    {"x": 0.1, "y": -0.5, "isVisible": true, "width" : 105},
+    {"x": 0.4, "y": 0.2, "isVisible": true, "width" : 95},
+    {"x": 0.5, "y": -0.4, "isVisible": true, "width" : 110},
+    {"x": -0.6, "y": 0.3, "isVisible": true, "width" : 105},
+    {"x": 0.7, "y": -0.5, "isVisible": true, "width" : 102},
   ];
 
   List<int> _availableIndexes = [0,1,2,3,4,5,6,7,8,9]; // 사용 가능한 인덱스 리스트
@@ -102,6 +108,9 @@ class _YoloVideoState extends State<YoloVideo> {
       _fishCount += 1;
       _fishLocation[index]['isVisible'] = false;
       _availableIndexes.remove(index); // 인덱스 사용 후 제거
+
+      player_frog.setVolume(1.0);
+      player_frog.play(AssetSource('audio/frog/frog_eating.mp3'));
 
       if(_fishCount == 10){
         frogReword();
@@ -135,12 +144,20 @@ class _YoloVideoState extends State<YoloVideo> {
   CameraImage? cameraImage;
   bool isLoaded = false;
   bool isDetecting = false;
+  late GifController _gifController;
+
 
 
   @override
   void initState() {
     super.initState();
+    controller1 = GifController(vsync: this);
+    controller2 = GifController(vsync: this);
+    controller3 = GifController(vsync: this);
     init();
+    player.setVolume(0.1);
+    player.setReleaseMode(ReleaseMode.loop);
+    player.play(AssetSource('audio/frog/frog_game.mp3'));
   }
 
   init() async {
@@ -169,6 +186,7 @@ class _YoloVideoState extends State<YoloVideo> {
   void dispose() async {
     super.dispose();
     controller.dispose();
+    player.stop();
   }
 
   @override
@@ -192,26 +210,42 @@ class _YoloVideoState extends State<YoloVideo> {
         ),
         //...displayBoxesAroundRecognizedObjects(size),
         Positioned(
-          bottom: 75,
-          width: 250,
+          top : 220,
+          right : 780,
+          // left: 0,
+          // bottom: 75,
+          // width: 250,
           child: Container(
-            height: 60,
-            width: 80,
+            // height: 60,
+            // width: 80,
             child: isDetecting
                 ? GestureDetector(
               onTap: () {},
               child: Container(
-                decoration: BoxDecoration(
-                    color: Color(0xFFFE5757),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 2)
-                ),
+                // decoration: BoxDecoration(
+                //     color: Color(0xFFFE5757),
+                //     borderRadius: BorderRadius.circular(10),
+                //     border: Border.all(color: Colors.black, width: 2)
+                // ),
                 child: Center(
-                  child: Text("혀를 내밀어봐요 !", style: TextStyle(
-                      fontFamily: 'Maplestory',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30
-                  ),),
+                  child: Column(
+                    children: [
+                      Gif(
+                        width: 600,
+                        controller: controller2,
+                        duration: const Duration(seconds: 20),
+                        autostart: Autostart.once,
+                        placeholder: (context) =>
+                        const Center(child: CircularProgressIndicator()),
+                        image: const AssetImage('assets/images/frog/frog_tongue_new.gif'),
+                      ),
+                      // Text("혀를 내밀어봐요 !", style: TextStyle(
+                      //     fontFamily: 'Maplestory',
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 30
+                      // ))
+                    ],
+                  ),
                 ),
               ),
             )
@@ -247,7 +281,7 @@ class _YoloVideoState extends State<YoloVideo> {
             child: GestureDetector(
               onTap: () => _eatItem(index),
               child: Image.asset(
-                  "assets/images/frog/flyfly.png",
+                  "assets/images/frog/strawberry_ss.png",
                   width: fish['width'] / 1.0
               ),
             ),
@@ -263,13 +297,14 @@ class _YoloVideoState extends State<YoloVideo> {
             child: PercentBar({
               "count": _fishCount,
               "barColor": Color(0xFFFF835C),
-              "imgUrl": "assets/images/frog/flyfly.png"
+              "imgUrl": "assets/images/frog/strawberry_ss.png"
             }),
           ),
         ),
         _isStart
             ? SizedBox.shrink()
             : Container(
+          height: size.height * 0.1,
           color: Colors.black.withOpacity(0.6),
           child: Center(
             child: GestureDetector(
@@ -279,9 +314,18 @@ class _YoloVideoState extends State<YoloVideo> {
                   _isStart = true;
                 });
               },
-              child: Image.asset(
-                "assets/images/whale/start_button.png",
-                width: 200,
+              child: Stack(
+                children: [
+                  Positioned(child: Image.asset(
+                    "assets/images/frog/frog_info.png",
+                  )),
+                  Positioned(
+                      top: size.height * 0.6, left: size.width * 0.3,
+                      child: Image.asset(
+                        "assets/images/whale/start_button.png",
+                        width: 300,
+                      ))
+                ],
               ),
             ),
           ),

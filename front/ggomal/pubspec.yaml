@@ -111,6 +111,7 @@ flutter:
     - assets/audio/whale/
     - assets/audio/chick/
     - assets/audio/frog/
+    - assets/audio/intro/
   # To add assets to your aplication, add an assets section, like this:
 
 

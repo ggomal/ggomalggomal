@@ -3,19 +3,20 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ggomal/services/socket.dart';
-import 'package:ggomal/widgets/kid_bingo.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'package:ggomal/login_storage.dart';
 import 'package:ggomal/constants.dart';
-import 'package:ggomal/services/chick_dio.dart';
+import 'package:ggomal/services/bingo_dio.dart';
+import 'package:go_router/go_router.dart';
 
 class BearScreen extends StatefulWidget {
   const BearScreen({super.key});
@@ -34,7 +35,7 @@ class KidBingoModal extends StatefulWidget {
 }
 
 class _KidBingoModalState extends State<KidBingoModal> {
-  late String currentFilePath;
+  String? currentFilePath;
   int recordCount = 0;
   final recorder = FlutterSoundRecorder();
   String filePath = '';
@@ -54,41 +55,22 @@ class _KidBingoModalState extends State<KidBingoModal> {
     await recorder.openRecorder();
   }
 
-  void postAudio() async {
-    File audioFile = File(filePath);
-    if (await audioFile.exists()) {
-      String m4a = filePath.replaceAll('.aac', '.m4a');
-      await audioFile.rename(m4a);
-      final response = await checkAudio(1,
-          "${widget.selectData['letter']} ${widget.selectData['wordId']}", m4a);
-      if (response['result'] || recordCount == 3) {
-        Navigator.pop(context, true);
-      }
-    } else {
-      print("파일이 존재하지 않습니다.");
-    }
-  }
-
   Future<void> record() async {
     Directory tempDir = await getTemporaryDirectory();
-    filePath = '${tempDir.path}/chick_audio_$recordCount.aac';
-
-    await recorder.startRecorder(toFile: filePath);
-
-    setState(() {
-      currentFilePath = filePath;
-    });
+    currentFilePath = '${tempDir.path}/audio_$recordCount.wav';
+    await recorder.startRecorder(
+        toFile: currentFilePath, codec: Codec.pcm16WAV);
+    print('녹음 시작: $currentFilePath');
+    setState(() {});
   }
 
   Future<void> stop() async {
     await recorder.stopRecorder();
-    postAudio();
     setState(() {
       recordCount++;
     });
     print('녹음한 횟수 $recordCount');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -115,24 +97,35 @@ class _KidBingoModalState extends State<KidBingoModal> {
                     Flexible(
                         flex: 4,
                         child: SizedBox(
-                          height: 230,
-                          child: Center(
-                              child: Image(
-                            image: NetworkImage(widget.selectData['img']),
-                          )),
+                          height: 300,
+                          // height: 170,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                            // padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            child: Center(
+                                child: Image(
+                              image: NetworkImage(widget.selectData['img']),
+                            )),
+                          ),
                         )),
                     Flexible(
                       flex: 4,
                       child: Center(
-                          child: Text("${speechData['letter']}",
-                              style: mapleText(
-                                  120, FontWeight.w700, Colors.black))),
+                          child: Padding(
+                        // padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Text("${speechData['letter']}",
+                            style:
+                                mapleText(180, FontWeight.w700, Colors.black)),
+                                // mapleText(100, FontWeight.w700, Colors.black)),
+                      )),
                     ),
                     Flexible(flex: 1, child: Container()),
                   ]),
                 ),
                 Text("단어를 듣고 따라 말해봅시다~!",
-                    style: mapleText(23, FontWeight.w300, Colors.black54)),
+                    style: mapleText(50, FontWeight.w300, Colors.black54)),
+                    // style: mapleText(30, FontWeight.w300, Colors.black54)),
                 ElevatedButton(
                   onPressed: () async {
                     if (recorder.isRecording) {
@@ -143,14 +136,14 @@ class _KidBingoModalState extends State<KidBingoModal> {
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 40,
+                      vertical: 25,
+                      horizontal: 50,
                     ),
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
                   ),
                   child: Text(recorder.isRecording ? '끝내기' : '말하기',
-                      style: mapleText(20, FontWeight.w700, Colors.black)),
+                      style: mapleText(40, FontWeight.w700, Colors.black)),
                 ),
               ],
             ),
@@ -174,6 +167,8 @@ class _BearScreenState extends State<BearScreen> {
   late String currentFilePath;
   final LoginStorage storage = LoginStorage();
   String currentLetter = '';
+  int gameNum = 0;
+  int turn = 1;
 
   @override
   void initState() {
@@ -199,6 +194,7 @@ class _BearScreenState extends State<BearScreen> {
         Map<String, dynamic> message = jsonDecode(response);
         switch (message['action']) {
           case 'SET_BINGO_BOARD':
+            gameNum = message['gameNum'];
             var boardData = message['bingoBoard']['board'] as List;
             List<List<Map<String, dynamic>>> formattedData =
                 boardData.map((row) {
@@ -217,6 +213,7 @@ class _BearScreenState extends State<BearScreen> {
             subscription?.cancel();
             subscription = null;
             showBingo = true;
+            player.play(AssetSource('audio/bear/start_bingo.mp3'));
             break;
           case 'FIND_LETTER':
             print('빙고판 데이터 출력 $bingoBoardData');
@@ -231,7 +228,9 @@ class _BearScreenState extends State<BearScreen> {
               player.play(UrlSource(Uri.encodeFull(foundItem['soundUrl'])));
               StreamSubscription? completionSubscription;
               completionSubscription = player.onPlayerComplete.listen((event) {
-                player.play(AssetSource('audio/find_letter.mp3')).then((_) {
+                player
+                    .play(AssetSource('audio/bear/find_letter.mp3'))
+                    .then((_) {
                   completionSubscription?.cancel();
                 });
               });
@@ -241,10 +240,27 @@ class _BearScreenState extends State<BearScreen> {
             break;
 
           case 'REQ_VOICE':
+            sendLastAudio(message['letter']);
+            break;
+          // if (turn == 1) {
+          //   setState(() {
+          //     turn = 2;
+          //   });
+          // } else if (turn == 2) {
+          //   setState(() {
+          //     turn == 1;
+          //   });
+          // }
+
+          case 'SAY_AGAIN':
+            player.play(AssetSource('audio/bear/say_again.mp3'));
+            break;
 
           case 'MARKING_BINGO':
             print('마킹빙고 응답확인');
-            // Navigator.pop(context);
+            print('순서 확인 $turn');
+            Navigator.pop(context);
+
             String markedLetter = message['letter'];
             setState(() {
               for (var row in bingoBoardData) {
@@ -255,6 +271,24 @@ class _BearScreenState extends State<BearScreen> {
                 }
               }
             });
+
+            if (turn == 1) {
+              turn = 2;
+            } else if (turn == 2) {
+              turn = 1;
+            }
+            print('다음 순서 확인 $turn');
+            break;
+
+          case 'GAME_OVER':
+            if (message['winner'] == 'KID') {
+              KidWinModal();
+            } else if (message['winner'] == 'TEACHER') {
+              KidLoseModal();
+            } else {
+              print('빙고 끝났는데 이긴 사람 이상함 ㅠㅠ');
+            }
+            break;
         }
       }, onDone: () {
         print('연결 종료 ');
@@ -267,10 +301,10 @@ class _BearScreenState extends State<BearScreen> {
   }
 
   void BingoSelect(Map<String, dynamic> thing) async {
+    player.play(UrlSource(Uri.encodeFull(thing['soundUrl'])));
     showDialog(
       context: context,
       builder: (BuildContext context) => KidBingoModal({
-        "gameNum": 1,
         "wordId": "1",
         "pronunciation": thing['pronunciation'],
         "letter": thing['letter'],
@@ -292,14 +326,44 @@ class _BearScreenState extends State<BearScreen> {
     }
   }
 
-  Future<void> record() async {
-    Directory tempDir = await getTemporaryDirectory();
-    String filePath = '${tempDir.path}/audio_$recordCount.aac';
-    await recorder.startRecorder(toFile: filePath);
-    setState(() {
-      currentFilePath = filePath;
-    });
-    print('녹음하기');
+  void KidWinModal() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Stack(children: [
+              Image.asset('assets/images/bear/kid_win.png'),
+              InkWell(
+                  onTap: () {
+                    context.go('/kids');
+                  },
+                  child: Image.asset('assets/images/bear/main_button.png'))
+            ]),
+          );
+        });
+  }
+
+  void KidLoseModal() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Stack(children: [
+              Image.asset('assets/images/bear/kid_lose.png'),
+              InkWell(
+                  onTap: () {
+                    context.go('/kids');
+                  },
+                  child: Positioned(
+                      left: 500,
+                      right: 0,
+                      bottom: 100,
+                      child: Image.asset('assets/images/bear/main_button.png')))
+            ]),
+          );
+        });
   }
 
   Future initRecorder() async {
@@ -314,20 +378,29 @@ class _BearScreenState extends State<BearScreen> {
 
   Future<void> stop() async {
     await recorder.stopRecorder();
-    setState(() {
-      recordCount++;
-    });
+    if (currentFilePath != null) {
+      setState(() {
+        recordCount++;
+      });
+    }
     print('녹음종료됨');
   }
 
-  Future<void> sendLastAudio() async {
-    print(currentFilePath);
+  Future<void> sendLastAudio(String word) async {
+    if (currentFilePath == null) {
+      print('녹음 파일이 아직 준비되지 않았습니다.');
+      return;
+    }
+
+    var foundItem = bingoBoardData.expand((e) => e).firstWhere(
+          (item) => item['letter'] == word,
+          orElse: () => {},
+        );
+    print('지금 녹음 파일 경로 $currentFilePath');
     if (currentFilePath.isNotEmpty) {
-      var request = http.MultipartRequest('POST',
-          Uri.parse('https://k10e206.p.ssafy.io/api/v1/bear/evaluation'));
-      request.files
-          .add(await http.MultipartFile.fromPath('files', currentFilePath));
-      var response = await request.send();
+      final response = await sendBingoAudio(currentFilePath, word,
+          foundItem['wordId'], recordCount.toString(), gameNum);
+      print('녹음 데이터 보내고 들어오는 응답 확인하는중 $response');
       if (response.statusCode == 200) {
         print('녹음 전송됨');
       } else {
@@ -373,17 +446,17 @@ class _BearScreenState extends State<BearScreen> {
                 Positioned(
                   bottom: 10,
                   child: Text(cell['letter'],
-                      style: mapleText(30, FontWeight.normal, Colors.black)),
+                      style: mapleText(40, FontWeight.bold, Colors.black)),
                 ),
                 if (cell['isSelected'])
                   Container(
-                    width: 150,
-                    height: 150,
+                    width: 250,
+                    height: 250,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.red,
-                        width: 25,
+                        width: 40,
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -397,6 +470,7 @@ class _BearScreenState extends State<BearScreen> {
   @override
   void dispose() {
     super.dispose();
+    channel.sink.close();
   }
 
   Widget BearWidget() {
@@ -414,8 +488,9 @@ class _BearScreenState extends State<BearScreen> {
           children: [
             Column(
               children: [
+                Flexible(flex: 1, child: Container()),
                 Flexible(
-                  flex: 2,
+                  flex: 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -436,13 +511,15 @@ class _BearScreenState extends State<BearScreen> {
                     ],
                   ),
                 ),
+                Flexible(flex: 1, child: Container()),
                 Flexible(
-                  flex: 3,
+                  flex: 5,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+                        // padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: InkWell(
                           onTap: () {
                             player.play(
@@ -452,13 +529,16 @@ class _BearScreenState extends State<BearScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(280, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(400, 0, 0, 0),
+                        // padding: EdgeInsets.fromLTRB(360, 0, 0, 0),
                         child: InkWell(
                           onTap: () {
                             player.play(
                                 AssetSource('images/bear/audio/chair.mp3'));
                           },
-                          child: Image.asset('assets/images/bear/chair2.png'),
+                          child: Image.asset(
+                            'assets/images/bear/chair2.png',
+                          ),
                         ),
                       ),
                       InkWell(
@@ -468,17 +548,23 @@ class _BearScreenState extends State<BearScreen> {
                         },
                         child: SizedBox(
                           child: Image.asset('assets/images/bear/guitar.png'),
-                          width: 150,
+                          // height: 400,
+                          height: 300,
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          player.play(
-                              AssetSource('images/bear/audio/teacher.mp3'));
-                        },
-                        child: SizedBox(
-                          child: Image.asset('assets/images/bear/teacher.png'),
-                          width: 260,
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 50, 0),
+                        child: InkWell(
+                          onTap: () {
+                            player.play(
+                                AssetSource('images/bear/audio/teacher.mp3'));
+                          },
+                          child: SizedBox(
+                            child:
+                                Image.asset('assets/images/bear/teacher.png'),
+                            // width: 350,
+                            width: 250,
+                          ),
                         ),
                       ),
                     ],
@@ -487,63 +573,77 @@ class _BearScreenState extends State<BearScreen> {
               ],
             ),
             Positioned(
-              top: 320,
-              left: 160,
+              top: 480,
+              // top: 350,
+              left: 200,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/table.mp3'));
                 },
-                child: Image.asset('assets/images/bear/table.png', width: 530),
+                child: Image.asset('assets/images/bear/table.png', width: 650),
+                // child: Image.asset('assets/images/bear/table.png', width: 500),
               ),
             ),
             Positioned(
-              top: 270,
-              left: 360,
+              top: 410,
+              // top: 280,
+              left: 370,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/milk.mp3'));
                 },
                 child: SizedBox(
-                  width: 130,
+                  // width: 130,
+                  width: 160,
                   child: Image.asset('assets/images/bear/milk.png'),
                 ),
               ),
             ),
             Positioned(
-              top: 360,
-              left: 560,
+              top: 480,
+              left: 680,
+              // top: 320,
+              // left: 500,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/pencil.mp3'));
                 },
                 child: SizedBox(
-                  width: 70,
-                  child: Image.asset('assets/images/bear/pencil.png'),
+                  width: 150,
+                  child: Image.asset(
+                    'assets/images/bear/pencil.png',
+                  ),
                 ),
               ),
             ),
             Positioned(
-              top: 390,
-              left: 380,
+              top: 560,
+              left: 490,
+              // top: 400,
+              // left: 350,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/notebook.mp3'));
                 },
                 child: SizedBox(
-                  width: 200,
+                  width: 250,
+                  // width: 200,
                   child: Image.asset('assets/images/bear/notebook.png'),
                 ),
               ),
             ),
             Positioned(
-              top: 350,
-              left: 210,
+              top: 540,
+              left: 270,
+              // top: 380,
+              // left: 200,
               child: InkWell(
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/hat.mp3'));
                 },
                 child: SizedBox(
-                  width: 180,
+                  width: 200,
+                  // width: 170,
                   child: Image.asset('assets/images/bear/hat.png'),
                 ),
               ),
@@ -572,17 +672,49 @@ class _BearScreenState extends State<BearScreen> {
                 backgroundColor: Colors.transparent,
                 appBar: NavBar(),
                 body: Stack(children: [
+                  if (turn == 1)
+                    Positioned(
+                      bottom: 400,
+                      left: 100,
+                      child: Container(
+                        color: Colors.white,
+                        width: 300,
+                        height: 100,
+                        child: Text(
+                          '내 차례',
+                          style: mapleText(50, FontWeight.bold, Colors.black),
+                        ),
+                      ),
+                    ),
+                  if (turn == 2)
+                    Positioned(
+                      bottom: 400,
+                      right: 100,
+                      // right: 50,
+                      child: Container(
+                        color: Colors.blue,
+                        width: 300,
+                        height: 100,
+                        child: Text(
+                          '선생님 차례',
+                          style: mapleText(50, FontWeight.bold, Colors.black),
+                        ),
+                      ),
+                    ),
                   Container(
                       child: Row(
                     children: [
                       Flexible(
                         child: Container(),
-                        flex: 3,
+                        // flex: 3,
+                        flex: 1,
                       ),
                       Flexible(
-                        flex: 5,
+                        flex: 2,
+                        // flex: 5,
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                          padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
+                          // padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
                           child: bingoBoardData != null
                               ? buildBingoGrid(bingoBoardData)
                               : Container(color: Colors.yellow),
@@ -590,7 +722,8 @@ class _BearScreenState extends State<BearScreen> {
                       ),
                       Flexible(
                         child: Container(),
-                        flex: 3,
+                        flex: 1,
+                        // flex: 3,
                       )
                     ],
                   )),
@@ -599,7 +732,8 @@ class _BearScreenState extends State<BearScreen> {
                     bottom: 0,
                     child: Image.asset(
                       'assets/images/bear/student.png',
-                      width: 250,
+                      width: 300,
+                      // width: 250,
                     ),
                   ),
                   Positioned(
@@ -607,7 +741,8 @@ class _BearScreenState extends State<BearScreen> {
                     bottom: 5,
                     child: Image.asset(
                       'assets/images/bear/teacher.png',
-                      width: 250,
+                      // width: 250,
+                      width: 300,
                     ),
                   ),
                   Positioned(

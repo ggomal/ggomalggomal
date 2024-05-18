@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ggomal/utils/navbar.dart';
 import 'package:ggomal/widgets/pizza_plate.dart';
 
-class ChickPizzaScreen extends StatelessWidget {
+class ChickPizzaScreen extends StatefulWidget {
   const ChickPizzaScreen({super.key});
+
+  @override
+  State<ChickPizzaScreen> createState() => _ChickPizzaScreenState();
+}
+
+class _ChickPizzaScreenState extends State<ChickPizzaScreen> {
+  final AudioPlayer player = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    player.play(AssetSource('audio/chick/pizza_start.mp3'));
+  }
 
   @override
   Widget build(BuildContext context) {

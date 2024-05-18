@@ -39,7 +39,7 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
             width: width,
             padding: const EdgeInsets.all(80),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
                   child: Row(children: [
@@ -47,24 +47,32 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                     Flexible(
                         flex: 4,
                         child: SizedBox(
-                          height: 160,
-                          child: Center(
-                              child: Image(
-                            image: NetworkImage(widget.selectData['img']),
-                          )),
+                          height: 230,
+                          // height: 200,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                            child: Center(
+                                child: Image(
+                              image: NetworkImage(widget.selectData['img']),
+                            )),
+                          ),
                         )),
                     Flexible(
                       flex: 4,
-                      child: Center(
-                          child: Text("${speechData['letter']}",
-                              style: mapleText(
-                                  100, FontWeight.w700, Colors.black))),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                        child: Center(
+                            child: Text("${speechData['letter']}",
+                                style: mapleText(150, FontWeight.w700, Colors.black))),
+                                // style: mapleText(110, FontWeight.w700, Colors.black))),
+                      ),
                     ),
                     Flexible(flex: 1, child: Container()),
                   ]),
                 ),
                 Text("아이의 발음을 듣고 버튼을 눌러주세요",
-                    style: mapleText(23, FontWeight.w300, Colors.black54)),
+                    style: mapleText(40, FontWeight.w300, Colors.black54)),
+                    // style: mapleText(30, FontWeight.w300, Colors.black54)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -82,11 +90,13 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                           },
                           child: Image.asset(
                             'assets/images/manager/pass_button.png',
-                            height: 80,
+                            height: 100,
+                            // height: 50,
                           ),
                         ),
                         Text("통과",
-                            style: mapleText(30, FontWeight.w200, Colors.black))
+                            style: mapleText(50, FontWeight.w200, Colors.black))
+                            // style: mapleText(30, FontWeight.w200, Colors.black))
                       ],
                     ),
                     SizedBox(
@@ -96,6 +106,11 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                       children: [
                         InkWell(
                           onTap: () {
+                            var message = json.encode({
+                              "type": "sayAgain",
+                            });
+                            print('다시하기 버튼 누르면 나오는 메시지 $message');
+                            widget.channel.sink.add(message);
                             setState(() {
                               recordCount += 1;
                             });
@@ -103,11 +118,13 @@ class _ManagerBingoModalState extends State<ManagerBingoModal> {
                           },
                           child: Image.asset(
                             'assets/images/manager/retry_button.png',
-                            height: 80,
+                            height: 100,
+                            // height: 50,
                           ),
                         ),
                         Text("다시하기",
-                            style: mapleText(30, FontWeight.w200, Colors.black))
+                            style: mapleText(50, FontWeight.w200, Colors.black))
+                            // style: mapleText(30, FontWeight.w200, Colors.black))
                       ],
                     ),
                   ],

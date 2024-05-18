@@ -1,18 +1,20 @@
-
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../const/color.dart';
+import '../model/Schedule.dart';
 
 class Calendar extends StatelessWidget {
   final DateTime focusedDay;
   final OnDaySelected onDaySelected;
   final bool Function(DateTime day) selectedDayPredicate;
+  final Map<DateTime, List<Schedule>> schedules;
 
   const Calendar({
     required this.focusedDay,
     required this.onDaySelected,
     required this.selectedDayPredicate,
+    required this.schedules,
     super.key,
   });
 
@@ -31,8 +33,11 @@ class Calendar extends StatelessWidget {
       fontWeight: FontWeight.w700,
     );
 
+    List<Schedule> _getEventsForDay(DateTime day) {
+      return schedules[day] ?? [];
+    }
+
     return TableCalendar(
-      locale: 'ko_KR',
       focusedDay: focusedDay,
       firstDay: DateTime(1800),
       lastDay: DateTime(3000),
@@ -44,6 +49,7 @@ class Calendar extends StatelessWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
+      eventLoader: _getEventsForDay,
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) {
           return Container(
@@ -55,6 +61,32 @@ class Calendar extends StatelessWidget {
               style: defaultTextStyle,
             ),
           );
+        },
+        markerBuilder: (context, date, events) {
+          if (events.isNotEmpty) {
+            return Positioned(
+              right: 1,
+              bottom: 1,
+              child: Container(
+                width: 16.0,
+                height: 16.0,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFF6C33), // 마커 색상을 변경하려면 여기를 수정하세요.
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    '${events.length}',
+                    style: TextStyle().copyWith(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+          return null;
         },
       ),
       calendarStyle: CalendarStyle(

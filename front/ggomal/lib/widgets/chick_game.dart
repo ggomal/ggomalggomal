@@ -20,35 +20,43 @@ class _ChickGameModalState extends State<ChickGameModal> {
     double height = screenSize.height * 0.7;
 
     return Dialog(
+      backgroundColor: Colors.transparent,
       child: Stack(
         children: [
-          Image.asset("assets/images/chick/chick_modal.png",
+          Image.asset("assets/images/modal_frame.png",
               width: width, height: height, fit: BoxFit.fill),
           Container(
             height: height,
             width: width,
-            padding: const EdgeInsets.fromLTRB(80, 90, 80, 0),
+
+            padding: const EdgeInsets.fromLTRB(100,100,100,5),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(modalData['title'], style: mapleText(50, FontWeight.w700, Colors.black)),
                 Text(modalData['content'],
                     style: mapleText(28, FontWeight.w500, Colors.black)),
                 Image.asset(
                   "assets/images/chick/modal_${modalData['game']}.png",
-                  height: 200,
+                  height: height * 0.3,
                 ),
                 ElevatedButton(
+
                   onPressed: () {context.go('/kids/chick/${modalData['game']}');},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 40,
+                    ),
                   ),
-                  child: Text("시작", style: mapleText(20, FontWeight.w700, Colors.black)),
+                  child: Text("시작", style: mapleText(24, FontWeight.w700, Colors.black)),
                 )
               ],
             ),
           ),
+
         ],
       ),
     );

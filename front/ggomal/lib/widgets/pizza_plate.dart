@@ -24,24 +24,24 @@ class _PizzaPlateState extends State<PizzaPlate> {
   ];
 
   List<Map<String, dynamic>> toppings = [
-    {'img': 0, 'top': 150.0, 'left': 150.0, 'isVisible': true},
-    {'img': 0, 'top': 270.0, 'left': 270.0, 'isVisible': true},
-    {'img': 0, 'top': 210.0, 'left': 340.0, 'isVisible': true},
-    {'img': 0, 'top': 130.0, 'left': 220.0, 'isVisible': true},
-    {'img': 0, 'top': 190.0, 'left': 110.0, 'isVisible': true},
-    {'img': 0, 'top': 310.0, 'left': 180.0, 'isVisible': true},
-    {'img': 0, 'top': 200.0, 'left': 420.0, 'isVisible': true},
-    {'img': 0, 'top': 330.0, 'left': 350.0, 'isVisible': true},
-    {'img': 0, 'top': 250.0, 'left': 200.0, 'isVisible': true},
-    {'img': 0, 'top': 185.0, 'left': 260.0, 'isVisible': true},
-    {'img': 0, 'top': 335.0, 'left': 280.0, 'isVisible': true},
-    {'img': 0, 'top': 305.0, 'left': 420.0, 'isVisible': true},
-    {'img': 0, 'top': 130.0, 'left': 300.0, 'isVisible': true},
-    {'img': 0, 'top': 265.0, 'left': 345.0, 'isVisible': true},
-    {'img': 0, 'top': 255.0, 'left': 120.0, 'isVisible': true},
-    {'img': 0, 'top': 140.0, 'left': 385.0, 'isVisible': true},
-    {'img': 0, 'top': 260.0, 'left': 440.0, 'isVisible': true},
-    {'img': 0, 'top': 200.0, 'left': 200.0, 'isVisible': true},
+    {'img': 0, 'top': 100.0, 'left': 110.0, 'isVisible': true},
+    {'img': 0, 'top': 200.0, 'left': 230.0, 'isVisible': true},
+    {'img': 0, 'top': 110.0, 'left': 305.0, 'isVisible': true},
+    {'img': 0, 'top': 80.0, 'left': 160.0, 'isVisible': true},
+    {'img': 0, 'top': 140.0, 'left': 80.0, 'isVisible': true},
+    {'img': 0, 'top': 220.0, 'left': 150.0, 'isVisible': true},
+    {'img': 0, 'top': 160.0, 'left': 310.0, 'isVisible': true},
+    {'img': 0, 'top': 235.0, 'left': 195.0, 'isVisible': true},
+    {'img': 0, 'top': 120.0, 'left': 170.0, 'isVisible': true},
+    {'img': 0, 'top': 145.0, 'left': 215.0, 'isVisible': true},
+    {'img': 0, 'top': 210.0, 'left': 105.0, 'isVisible': true},
+    {'img': 0, 'top': 215.0, 'left': 280.0, 'isVisible': true},
+    {'img': 0, 'top': 90.0, 'left': 260.0, 'isVisible': true},
+    {'img': 0, 'top': 180.0, 'left': 70.0, 'isVisible': true},
+    {'img': 0, 'top': 180.0, 'left': 170.0, 'isVisible': true},
+    {'img': 0, 'top': 100.0, 'left': 210.0, 'isVisible': true},
+    {'img': 0, 'top': 150.0, 'left': 120.0, 'isVisible': true},
+    {'img': 0, 'top': 160.0, 'left': 260.0, 'isVisible': true},
   ];
 
   void handleTopping(Map<String, dynamic> thing) {
@@ -52,7 +52,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
         "game": "pizza",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "넣어주세요"
+        "ending": "넣어요"
       }),
     ).then((value) => {
           if (value)
@@ -65,12 +65,14 @@ class _PizzaPlateState extends State<PizzaPlate> {
               }),
               if (toppingIndex == 18)
                 {
-                  chickReword(2, 2),
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        GameContinueDialog(continuePage:'/chick', count: 2),
-                  )
+                  Future.delayed(Duration(milliseconds: 1000)).then((value) {
+                    chickReward(2, 2);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => GameContinueDialog(
+                          continuePage: '/chick/pizza', count: 2),
+                    );
+                  })
                 }
             }
         });
@@ -100,7 +102,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
                         left: e['left'] as double,
                         child: Image.asset(
                           "assets/images/chick/pizza_thing_${e['img']}.png",
-                          width:  width * 0.03,
+                          width: width * 0.03,
                         ),
                       )
                     : SizedBox.shrink(),
@@ -117,35 +119,33 @@ class _PizzaPlateState extends State<PizzaPlate> {
                   height: height * 0.65,
                   'assets/images/chick/pizza_plate.png',
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 45.0,
-                    horizontal: 40.0,
-                  ),
+                Container(
+                  width: width * 0.3,
+                  height: height * 0.65,
+                  padding: const EdgeInsets.only(top: 60),
                   child: Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: pizzaThingList
                         .map(
                           (e) => GestureDetector(
                             onTap: () {
                               handleTopping(e);
                             },
-                            child: Container(
+                            child: SizedBox(
+                              width: width * 0.12,
                               height: height * 0.18,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                                vertical: 20.0,
-                              ),
                               child: Column(
                                 children: [
                                   Image.asset(
-                                    height: height * 0.1,
+                                    height: height * 0.08,
                                     width: width * 0.1,
                                     'assets/images/chick/pizza_thing_${e['img']}.png',
                                   ),
                                   Text(
                                     '${e['name']}',
                                     style: mapleText(
-                                        28.0, FontWeight.w500, Colors.black),
+                                        24.0, FontWeight.w500, Colors.black),
                                   ),
                                 ],
                               ),

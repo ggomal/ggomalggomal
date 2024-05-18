@@ -82,7 +82,7 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
             ),
             GestureDetector(
               onTap: () {
-                context.go('/manager/kids');
+                context.go('/manager');
               },
               child: Container(
                 margin: EdgeInsets.only(left: 100, bottom: 20),
@@ -102,32 +102,30 @@ class _KidsManageScreenState extends State<KidsManageScreen> {
               ),
             ),
             Center(
-              child: Expanded(
-                child: FutureBuilder<List<dynamic>>(
-                  future: _kidListFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Text('학생 정보 로딩 실패');
-                    } else {
-                      return SingleChildScrollView(
-                        padding: const EdgeInsets.only(bottom: 100),
+              child: FutureBuilder<List>(
+                future: _kidListFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('학생 정보 로딩 실패');
+                  } else {
+                    return
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 50),
                         child: Wrap(
                           spacing: 40,
                           runSpacing: 20,
                           children: [
                             enrollButton(),
-                            ...List.generate(
-                              snapshot.data!.length,
-                              (index) => KidCard(snapshot.data![index]),
-                            ),
+                            ...snapshot.data!.map(
+                              (e) => KidCard(e),
+                            ).toList(),
                           ],
                         ),
                       );
-                    }
-                  },
-                ),
+                  }
+                },
               ),
             ),
           ],

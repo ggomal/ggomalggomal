@@ -15,8 +15,8 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
   int count = 0;
   List<Map<String, dynamic>> thingList = [
     {"name": "이불", "img": 1, "isVisible": true},
-    {"name": "돌", "img": 2, "isVisible": true},
-    {"name": "물", "img": 3, "isVisible": true},
+    {"name": "모자", "img": 2, "isVisible": true},
+    {"name": "잠옷", "img": 3, "isVisible": true},
     {"name": "안경", "img": 4, "isVisible": true},
   ];
 
@@ -28,7 +28,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
         "game": "clean",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "정리해주세요"
+        "ending": "정리해요"
       }),
     ).then((value) => {
           if (value)
@@ -37,12 +37,15 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                 thing["isVisible"] = false;
                 count += 1;
                 if (count == 4) {
-                  chickReword(1, 2);
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        GameContinueDialog(continuePage: '/chick', count: 2),
-                  );
+                  Future.delayed(Duration(milliseconds: 1000)).then((value) {
+                    chickReward(1, 2);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          GameContinueDialog(
+                              continuePage: '/chick/clean', count: 2),
+                    );
+                  });
                 }
               })
             }
@@ -65,7 +68,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
           Container(
             height: height * 0.6,
             width: double.infinity,
-            padding: const EdgeInsets.only(left: 100.0),
+            padding: const EdgeInsets.only(left: 70.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -77,14 +80,10 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(11, 0, 11, 0),
-                                  child: Image.asset(
-                                    width: width * 0.14,
-                                    height: height * 0.18,
-                                    'assets/images/chick/clean_thing_${e["img"]}.png',
-                                  ),
+                                Image.asset(
+                                  width: width * 0.151,
+                                  height: height * 0.18,
+                                  'assets/images/chick/clean_thing_${e["img"]}.png',
                                 ),
                                 SizedBox(
                                     height: 50,
@@ -95,7 +94,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                             ),
                           )
                         : SizedBox(
-                            width: width * 0.14,
+                            width: width * 0.151,
                             height: height * 0.18,
                           ),
                   )

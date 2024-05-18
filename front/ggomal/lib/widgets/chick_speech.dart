@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:ggomal/constants.dart';
-import 'package:ggomal/services/chick_dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:ggomal/constants.dart';
+import 'package:ggomal/services/chick_dio.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 
 class ChickSpeechModal extends StatefulWidget {
   final Map<String, dynamic> speechData;
@@ -19,9 +22,13 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   late String currentFilePath;
   int recordCount = 0;
   final recorder = FlutterSoundRecorder();
+  final AudioPlayer player = AudioPlayer();
+
   String filePath = '';
   List words = [];
   bool isPass = true;
+  bool isLoading = false;
+  bool isSpeak = true;
 
   @override
   void initState() {
@@ -44,19 +51,21 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   void postAudio() async {
     File audioFile = File(filePath);
     if (await audioFile.exists()) {
-      // String m4a = filePath.replaceAll('.aac', '.m4a');
-      // await audioFile.rename(m4a);
       final response = await checkAudio(
           widget.speechData['gameNum'],
           "${widget.speechData['name']} ${widget.speechData['ending']}",
           filePath);
-      print(response['overResult']);
-      if (response['overResult'] || recordCount == 3) {
+      if (response['overResult'] || recordCount >= 2) {
+        player.play(AssetSource('audio/chick/pass.mp3'));
         Navigator.pop(context, true);
       } else {
+        player.play(AssetSource('audio/chick/fail.mp3'));
         setState(() {
           words = response['words'];
           isPass = response['overResult'];
+          isLoading = false;
+          isSpeak = false;
+          recordCount++;
         });
       }
     } else {
@@ -69,6 +78,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
     await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
     setState(() {
+      isSpeak = true;
       currentFilePath = filePath;
     });
   }
@@ -77,27 +87,46 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     await recorder.stopRecorder();
     postAudio();
     setState(() {
-      recordCount++;
+      isLoading = true;
     });
   }
 
   List<TextSpan> _buildTextSpans(text) {
     List<TextSpan> textSpans = [];
-    for (int i = 0; i < text.length; i++) {
-      Color textColor = words[i] ? Colors.black : Colors.red;
-      textSpans.add(
-        TextSpan(
-          text: text[i],
-          style: mapleText(48, FontWeight.w700, textColor),
-        ),
-      );
-      if (i == widget.speechData['name'].length - 1) {
+    if (isSpeak) {
+      for (int i = 0; i < text.length; i++) {
         textSpans.add(
           TextSpan(
-            text: ' ',
+            text: text[i],
+            style: mapleText(48, FontWeight.w700, Colors.grey.shade300),
+          ),
+        );
+        if (i == widget.speechData['name'].length - 1) {
+          textSpans.add(
+            TextSpan(
+              text: ' ',
+              style: mapleText(48, FontWeight.w700, Colors.grey.shade300),
+            ),
+          );
+        }
+      }
+    } else {
+      for (int i = 0; i < text.length; i++) {
+        Color textColor = words[i] ? Colors.black : Colors.red;
+        textSpans.add(
+          TextSpan(
+            text: text[i],
             style: mapleText(48, FontWeight.w700, textColor),
           ),
         );
+        if (i == widget.speechData['name'].length - 1) {
+          textSpans.add(
+            TextSpan(
+              text: ' ',
+              style: mapleText(48, FontWeight.w700, textColor),
+            ),
+          );
+        }
       }
     }
     return textSpans;
@@ -111,40 +140,36 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     double height = screenSize.height * 0.7;
 
     return Dialog(
+      backgroundColor: Colors.transparent,
       child: Stack(
         children: [
-          Image.asset("assets/images/chick/chick_modal.png",
+          Image.asset("assets/images/modal_frame.png",
               width: width, height: height, fit: BoxFit.fill),
           Container(
             height: height,
             width: width,
-            padding: const EdgeInsets.all(80),
+            padding: const EdgeInsets.symmetric(
+              vertical: 60,
+              horizontal: 100,
+            ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   child: Row(children: [
                     Flexible(
                         flex: 1,
-                        child: SizedBox(
-                          height: 250,
-                          child: Center(
+                        child: Container(
+                          height: height * 0.4,
+                            padding: const EdgeInsets.only(left : 20),
                             child: Image.asset(
                                 "assets/images/chick/${speechData['game']}_thing_${speechData['img']}.png"),
-                          ),
                         )),
                     Flexible(
                       flex: 2,
                       child: Center(
                         child: Column(
                           children: [
-                            SizedBox(
-                                height: 80,
-                                child: (recordCount > 0 && !isPass
-                                    ? Text("다시 한번 말해볼까?",
-                                        style: mapleText(
-                                            30, FontWeight.w700, Colors.black))
-                                    : Text(""))),
                             RichText(
                               text: TextSpan(
                                 children: _buildTextSpans(
@@ -153,32 +178,48 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                             ),
                             Text("$recordCount / 3",
                                 style: mapleText(
-                                    30, FontWeight.w700, Colors.black)),
+                                    40, FontWeight.w700, Colors.black)),
                           ],
                         ),
                       ),
                     ),
                   ]),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (recorder.isRecording) {
-                      await stop();
-                    } else {
-                      await record();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 40,
-                    ),
-                    backgroundColor: Color(0xFFFFFAAC),
-                    foregroundColor: Colors.white,
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: isLoading ? Color(0xFFC3C3C3) : Color(0xFFFFC107),
+                    shape: BoxShape.circle,
                   ),
-                  child: Text(recorder.isRecording ? '끝내기' : '말하기',
-                      style: mapleText(20, FontWeight.w700, Colors.black)),
+                  child: IconButton(
+                      onPressed: () async {
+                        if (recorder.isRecording) {
+                          await stop();
+                        } else {
+                          isLoading ? null : await record();
+                        }
+                      },
+                      icon:
+                      isLoading
+                          ? LoadingAnimationWidget.fourRotatingDots(
+                        color: Colors.white,
+                        size: 60,
+                      ) : Icon(
+                        recorder.isRecording
+                            ? Icons.stop_rounded : Icons.mic,
+                        color: Colors.white,
+                        size: 60,
+                      )),
                 ),
+                Text(
+                  recorder.isRecording
+                      ? "종료 버튼을 눌러주세요."
+                      : isLoading
+                          ? "AI 발음 정밀 분석  중입니다."
+                          : "버튼을 눌러 말해보세요.",
+                  style: mapleText(24, FontWeight.w500, Colors.grey),
+                )
               ],
             ),
           ),

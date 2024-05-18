@@ -12,6 +12,7 @@ Future<Dio> useDio() async{
   // 로그인 실행시 토큰
   String? loginJwt = await _storage.getJwt();
 
+
   final options = BaseOptions(
     baseUrl: 'https://k10e206.p.ssafy.io/api/v1',
     headers: {'Authorization': 'Bearer $loginJwt'},

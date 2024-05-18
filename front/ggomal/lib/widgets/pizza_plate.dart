@@ -58,7 +58,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
           if (value)
             {
               setState(() {
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 6; i++) {
                   toppings[toppingIndex]['img'] = thing['img'];
                   toppingIndex += 1;
                 }
@@ -66,7 +66,7 @@ class _PizzaPlateState extends State<PizzaPlate> {
               if (toppingIndex == 18)
                 {
                   Future.delayed(Duration(milliseconds: 1000)).then((value) {
-                    chickReward(2, 2);
+                    chickReward(1, 2);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) => GameContinueDialog(

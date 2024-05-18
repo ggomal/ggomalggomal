@@ -20,6 +20,12 @@ class _ChickPizzaScreenState extends State<ChickPizzaScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    player.stop();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(

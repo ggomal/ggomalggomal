@@ -8,7 +8,6 @@ import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-
 class ChickSpeechModal extends StatefulWidget {
   final Map<String, dynamic> speechData;
 
@@ -29,6 +28,8 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   bool isPass = true;
   bool isLoading = false;
   bool isSpeak = true;
+  bool isEnd = false;
+  bool isRecording = false;
 
   @override
   void initState() {
@@ -37,6 +38,13 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     words = List.generate(
         "${widget.speechData['name']}${widget.speechData['ending']}".length,
         (index) => true);
+  }
+
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    player.stop();
+    super.dispose();
   }
 
   Future initRecorder() async {
@@ -55,35 +63,39 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
           widget.speechData['gameNum'],
           "${widget.speechData['name']} ${widget.speechData['ending']}",
           filePath);
-      setState(() {
-        words = response['words'];
-        isPass = response['overResult'];
-        isLoading = false;
-        isSpeak = false;
-      });
 
-      if (response['overResult'] || recordCount >= 2) {
+      if (mounted) {
+        setState(() {
+          words = response['words'];
+          isPass = response['overResult'];
+          isLoading = false;
+          isSpeak = false;
+          recordCount++;
+        });
+      }
+      if (response['overResult'] || recordCount >= 3) {
+        setState(() {
+          isEnd = true;
+        });
         if (response['overResult']) {
-
-        player.play(AssetSource('audio/chick/pass.mp3'));
-        }else{
+          player.play(AssetSource('audio/chick/pass.mp3'));
+        } else {
           player.play(AssetSource('audio/chick/good.mp3'));
         }
         Future.delayed(Duration(milliseconds: 1000)).then((value) {
-          player.play(AssetSource('audio/chick/speech_pass.mp3'));
+          if (mounted) {
+            player.play(AssetSource('audio/chick/speech_pass.mp3'));
           Future.delayed(Duration(milliseconds: 300)).then((value) {
-            Navigator.pop(context, true);
-          });
-        });
+              Navigator.pop(context, true);
 
-        } else {
+          });
+          }
+        });
+      } else {
         player.play(AssetSource('audio/chick/fail.mp3'));
         setState(() {
           words = response['words'];
-          // isPass = response['overResult'];
-          // isLoading = false;
-          // isSpeak = false;
-          recordCount++;
+          isRecording = false;
         });
       }
     } else {
@@ -92,21 +104,30 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   }
 
   Future<void> record() async {
-    player.play(AssetSource('audio/record.mp3'));
-    Directory tempDir = await getTemporaryDirectory();
-    filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
-    await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
-    setState(() {
-      isSpeak = true;
-      currentFilePath = filePath;
-    });
+    if (!isRecording) {
+      isRecording = true;
+      player.play(AssetSource('audio/record.mp3'));
+      Directory tempDir = await getTemporaryDirectory();
+      filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
+      await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
+      if (mounted) {
+        setState(() {
+          isSpeak = true;
+          currentFilePath = filePath;
+        });
+      }
+    } else {
+      return;
+    }
   }
 
   Future<void> stop() async {
     player.play(AssetSource('audio/record.mp3'));
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     Future.delayed(Duration(milliseconds: 500)).then((value) async {
       await recorder.stopRecorder();
       postAudio();
@@ -183,9 +204,9 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                         flex: 1,
                         child: Container(
                           height: height * 0.4,
-                            padding: const EdgeInsets.only(left : 20),
-                            child: Image.asset(
-                                "assets/images/chick/${speechData['game']}_thing_${speechData['img']}.png"),
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Image.asset(
+                              "assets/images/chick/${speechData['game']}_thing_${speechData['img']}.png"),
                         )),
                     Flexible(
                       flex: 2,
@@ -211,7 +232,9 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                   margin: const EdgeInsets.only(bottom: 10),
                   height: 80,
                   decoration: BoxDecoration(
-                    color: isLoading ? Color(0xFFC3C3C3) : Color(0xFFFFC107),
+                    color: isLoading || isEnd
+                        ? Color(0xFFC3C3C3)
+                        : Color(0xFFFFC107),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
@@ -219,26 +242,27 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
                         if (recorder.isRecording) {
                           await stop();
                         } else {
-                          isLoading ? null : await record();
+                          isLoading || isEnd ? null : await record();
                         }
                       },
-                      icon:
-                      isLoading
+                      icon: isLoading
                           ? LoadingAnimationWidget.fourRotatingDots(
-                        color: Colors.white,
-                        size: 60,
-                      ) : Icon(
-                        recorder.isRecording
-                            ? Icons.stop_rounded : Icons.mic,
-                        color: Colors.white,
-                        size: 60,
-                      )),
+                              color: Colors.white,
+                              size: 60,
+                            )
+                          : Icon(
+                              recorder.isRecording
+                                  ? Icons.stop_rounded
+                                  : Icons.mic,
+                              color: Colors.white,
+                              size: 60,
+                            )),
                 ),
                 Text(
-                  recorder.isRecording
-                      ? "종료 버튼을 눌러주세요."
-                      : isLoading
-                          ? "AI 발음 정밀 분석  중입니다."
+                  isLoading
+                      ? "AI 발음 정밀 분석  중입니다."
+                      : recorder.isRecording
+                          ? "종료 버튼을 눌러주세요."
                           : "버튼을 눌러 말해보세요.",
                   style: mapleText(24, FontWeight.w500, Colors.grey),
                 )

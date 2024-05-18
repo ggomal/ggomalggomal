@@ -56,7 +56,7 @@ class _NoticeState extends State<Notice> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("${widget.notice['teacherName']} 선생님이 남긴 말", style: baseText(16, FontWeight.w900)),
+                Text("${widget.notice['teacherName']} 선생님이 남긴 말", style: baseText(14, FontWeight.w900)),
                 Text("${widget.notice['content']}", style: baseText(14, FontWeight.normal)),
               ],
             ),

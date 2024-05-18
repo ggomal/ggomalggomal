@@ -38,7 +38,7 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                 count += 1;
                 if (count == 4) {
                   Future.delayed(Duration(milliseconds: 1000)).then((value) {
-                    chickReward(1, 2);
+                    chickReward(2, 2);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) =>

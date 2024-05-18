@@ -55,16 +55,34 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
           widget.speechData['gameNum'],
           "${widget.speechData['name']} ${widget.speechData['ending']}",
           filePath);
+      setState(() {
+        words = response['words'];
+        isPass = response['overResult'];
+        isLoading = false;
+        isSpeak = false;
+      });
+
       if (response['overResult'] || recordCount >= 2) {
+        if (response['overResult']) {
+
         player.play(AssetSource('audio/chick/pass.mp3'));
-        Navigator.pop(context, true);
-      } else {
+        }else{
+          player.play(AssetSource('audio/chick/good.mp3'));
+        }
+        Future.delayed(Duration(milliseconds: 1000)).then((value) {
+          player.play(AssetSource('audio/chick/speech_pass.mp3'));
+          Future.delayed(Duration(milliseconds: 300)).then((value) {
+            Navigator.pop(context, true);
+          });
+        });
+
+        } else {
         player.play(AssetSource('audio/chick/fail.mp3'));
         setState(() {
           words = response['words'];
-          isPass = response['overResult'];
-          isLoading = false;
-          isSpeak = false;
+          // isPass = response['overResult'];
+          // isLoading = false;
+          // isSpeak = false;
           recordCount++;
         });
       }
@@ -74,6 +92,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   }
 
   Future<void> record() async {
+    player.play(AssetSource('audio/record.mp3'));
     Directory tempDir = await getTemporaryDirectory();
     filePath = '${tempDir.path}/chick_audio_$recordCount.wav';
     await recorder.startRecorder(toFile: filePath, codec: Codec.pcm16WAV);
@@ -84,10 +103,13 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
   }
 
   Future<void> stop() async {
-    await recorder.stopRecorder();
-    postAudio();
+    player.play(AssetSource('audio/record.mp3'));
     setState(() {
       isLoading = true;
+    });
+    Future.delayed(Duration(milliseconds: 500)).then((value) async {
+      await recorder.stopRecorder();
+      postAudio();
     });
   }
 

@@ -18,11 +18,14 @@ class GameContinueDialog extends StatefulWidget {
 }
 
 class _GameContinueDialogState extends State<GameContinueDialog> {
-  final AudioPlayer player = AudioPlayer();
+  final AudioPlayer player1 = AudioPlayer();
+  final AudioPlayer player2 = AudioPlayer();
+
   @override
   void initState() {
     super.initState();
-    player.play(AssetSource('audio/end.mp3'));
+    player1.play(AssetSource('audio/end.mp3'));
+    player2.play(AssetSource('audio/end_pass.mp3'));
   }
 
   @override

@@ -128,11 +128,12 @@ class _KidInfoState extends State<KidInfo> {
                 ElevatedButton(
                   onPressed: () {
                     final name = snapshot.data!["name"];
-                    final kidId = snapshot.data!["id"];
+                    final kidId = snapshot.data!["kidId"];
+                    final memberId = snapshot.data!["memberId"];
 
                     GoRouter.of(context).go(
-                        '/manager/bingo/$kidId',
-                        extra: {'name': name, 'id': kidId}
+                        '/manager/bingo/$memberId',
+                        extra: {'name': name, 'memberId': memberId}
                     );
                   },
                   child: Text("아이와 게임하기"),

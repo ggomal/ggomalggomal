@@ -79,6 +79,9 @@ class _KidBingoModalState extends State<KidBingoModal> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
+    final AudioPlayer player2 = AudioPlayer();
+    player2.setVolume(0.2);
+
 
     return Dialog(
       child: Stack(
@@ -118,7 +121,7 @@ class _KidBingoModalState extends State<KidBingoModal> {
                         child: Text("${speechData['letter']}",
                             style:
                                 mapleText(180, FontWeight.w700, Colors.black)),
-                                // mapleText(100, FontWeight.w700, Colors.black)),
+                        // mapleText(100, FontWeight.w700, Colors.black)),
                       )),
                     ),
                     Flexible(flex: 1, child: Container()),
@@ -126,26 +129,29 @@ class _KidBingoModalState extends State<KidBingoModal> {
                 ),
                 Text("단어를 듣고 따라 말해봅시다~!",
                     style: mapleText(50, FontWeight.w300, Colors.black54)),
-                    // style: mapleText(30, FontWeight.w300, Colors.black54)),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (recorder.isRecording) {
-                      await stop();
-                    } else {
-                      await record();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 25,
-                      horizontal: 50,
-                    ),
-                    backgroundColor: Color(0xFFFFFAAC),
-                    foregroundColor: Colors.white,
+                Container(
+                  width: 100,
+                  height: 100,
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFC107),
+                    shape: BoxShape.circle,
                   ),
-                  child: Text(recorder.isRecording ? '끝내기' : '말하기',
-                      style: mapleText(40, FontWeight.w700, Colors.black)),
+                  child: IconButton(
+                      onPressed: () async {
+                        player2.play(
+                            AssetSource('audio/record.mp3'));
+                        if (recorder.isRecording) {
+                          await stop();
+                        } else {
+                          await record();
+                        }
+                      },
+                      icon: Icon(
+                          recorder.isRecording ? Icons.stop_rounded : Icons.mic), color: Colors.white, iconSize : 50,),
                 ),
+                Text(recorder.isRecording ?'말하기':'끝내기', style: mapleText(40, FontWeight.normal, Colors.grey),),
               ],
             ),
           ),
@@ -157,6 +163,8 @@ class _KidBingoModalState extends State<KidBingoModal> {
 
 class _BearScreenState extends State<BearScreen> {
   final AudioPlayer player = AudioPlayer();
+  final AudioPlayer player1 = AudioPlayer();
+
   late final WebSocketChannel channel;
   bool isConnected = false;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -176,9 +184,6 @@ class _BearScreenState extends State<BearScreen> {
     super.initState();
     initRecorder();
     player.play(AssetSource('images/bear/audio/bear_welcome.mp3'));
-    player.setVolume(0.1);
-    player.setReleaseMode(ReleaseMode.loop);
-    player.play(AssetSource('audio/frog/frog_game.mp3'));
     connectToWebSocket();
   }
 
@@ -279,12 +284,19 @@ class _BearScreenState extends State<BearScreen> {
           case 'GAME_OVER':
             if (message['winner'] == 'KID') {
               KidWinModal();
+              player.setVolume(0.1);
+              player.play(AssetSource('audio/end.mp3'));
+              player1.play(AssetSource('audio/end_pass.mp3'));
             } else if (message['winner'] == 'TEACHER') {
               KidLoseModal();
+              player.play(AssetSource('audio/end_fail.mp3'));
             } else {
               print('빙고 끝났는데 이긴 사람 이상함 ㅠㅠ');
             }
             break;
+
+          case 'KID_ONLINE':
+            print('애기 온라인 응답');
         }
       }, onDone: () {
         print('연결 종료 ');
@@ -330,11 +342,16 @@ class _BearScreenState extends State<BearScreen> {
             backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/kid_win.png'),
-              InkWell(
-                  onTap: () {
-                    context.go('/kids');
-                  },
-                  child: Image.asset('assets/images/bear/main_button.png'))
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 20,
+                child: InkWell(
+                    onTap: () {
+                      context.go('/kids');
+                    },
+                    child: Image.asset('assets/images/bear/main_button.png')),
+              )
             ]),
           );
         });
@@ -348,15 +365,16 @@ class _BearScreenState extends State<BearScreen> {
             backgroundColor: Colors.transparent,
             child: Stack(children: [
               Image.asset('assets/images/bear/kid_lose.png'),
-              InkWell(
-                  onTap: () {
-                    context.go('/kids');
-                  },
-                  child: Positioned(
-                      left: 500,
-                      right: 0,
-                      bottom: 100,
-                      child: Image.asset('assets/images/bear/main_button.png')))
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 20,
+                child: InkWell(
+                    onTap: () {
+                      context.go('/kids');
+                    },
+                    child: Image.asset('assets/images/bear/main_button.png')),
+              )
             ]),
           );
         });
@@ -439,7 +457,8 @@ class _BearScreenState extends State<BearScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(cell['letterImgUrl'] ?? 'assets/images/placeholder.png'),
+                          image: NetworkImage(cell['letterImgUrl'] ??
+                              'assets/images/placeholder.png'),
                         ),
                       ),
                     ),
@@ -559,8 +578,7 @@ class _BearScreenState extends State<BearScreen> {
                               AssetSource('images/bear/audio/teacher.mp3'));
                         },
                         child: SizedBox(
-                          child:
-                              Image.asset('assets/images/bear/teacher.png'),
+                          child: Image.asset('assets/images/bear/teacher.png'),
                           width: 250,
                         ),
                       ),
@@ -645,108 +663,112 @@ class _BearScreenState extends State<BearScreen> {
     return FutureBuilder(
       future: storage.getRole(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data == 'KID') {}
-          return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/bear/bingo_bg.png"),
-                  fit: BoxFit.cover,
-                ),
+        // if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.data == 'KID') {}
+        return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/bear/bingo_bg.png"),
+                fit: BoxFit.cover,
               ),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: NavBar(),
-                body: Stack(children: [
-                  if (turn == 1)
-                    Positioned(
-                      bottom: 300,
-                      left: 50,
-                      child: Stack(
-                        children: [
-                          Image.asset('assets/images/bear/message_box_left.png', width: 250,),
-                          Positioned(
-                            bottom : 50,
-                            left : 50,
-                            child: Text(
-                            '내 차례',
-                            style: mapleText(50, FontWeight.bold, Colors.black),
-                                                    ),
-                          ),]
+            ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: NavBar(),
+              body: Stack(children: [
+                if (turn == 1)
+                  Positioned(
+                    bottom: 300,
+                    left: 50,
+                    child: Stack(children: [
+                      Image.asset(
+                        'assets/images/bear/message_box_left.png',
+                        width: 250,
                       ),
-                    ),
-                  if (turn == 2)
-                    Positioned(
-                      bottom: 300,
-                      right: 30,
-                      child: Stack(
-                          children: [
-                            Image.asset('assets/images/bear/message_box_right.png', width: 250,),
-                            Positioned(
-                              bottom : 53,
-                              left : 20,
-                              child: Text(
-                                '선생님 차례',
-                                style: mapleText(45, FontWeight.bold, Colors.black),
-                              ),
-                            ),]
-                      ),
-                    ),
-                  Container(
-                      child: Row(
-                    children: [
-                      Flexible(
-                        child: Container(),
-                        flex: 3,
-                      ),
-                      Flexible(
-                        flex: 5,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, 50, 0, 20),
-                          // padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
-                          child: bingoBoardData != null
-                              ? buildBingoGrid(bingoBoardData)
-                              : Container(color: Colors.yellow),
+                      Positioned(
+                        bottom: 50,
+                        left: 50,
+                        child: Text(
+                          '내 차례',
+                          style: mapleText(50, FontWeight.bold, Colors.black),
                         ),
                       ),
-                      Flexible(
-                        child: Container(),
-                        flex: 3,
-                        // flex: 3,
-                      )
-                    ],
-                  )),
-                  Positioned(
-                    left: 30,
-                    bottom: 0,
-                    child: Image.asset(
-                      'assets/images/bear/student.png',
-                      width: 230,
-                    ),
+                    ]),
                   ),
+                if (turn == 2)
                   Positioned(
+                    bottom: 300,
                     right: 30,
-                    bottom: 5,
-                    child: Image.asset(
-                      'assets/images/bear/teacher.png',
-                      width: 230,
+                    child: Stack(children: [
+                      Image.asset(
+                        'assets/images/bear/message_box_right.png',
+                        width: 250,
+                      ),
+                      Positioned(
+                        bottom: 53,
+                        left: 20,
+                        child: Text(
+                          '선생님 차례',
+                          style: mapleText(45, FontWeight.bold, Colors.black),
+                        ),
+                      ),
+                    ]),
+                  ),
+                Container(
+                    child: Row(
+                  children: [
+                    Flexible(
+                      child: Container(),
+                      flex: 3,
                     ),
+                    Flexible(
+                      flex: 5,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 50, 0, 20),
+                        // padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                        child: bingoBoardData != null
+                            ? buildBingoGrid(bingoBoardData)
+                            : Container(color: Colors.yellow),
+                      ),
+                    ),
+                    Flexible(
+                      child: Container(),
+                      flex: 3,
+                      // flex: 3,
+                    )
+                  ],
+                )),
+                Positioned(
+                  left: 30,
+                  bottom: 0,
+                  child: Image.asset(
+                    'assets/images/bear/student.png',
+                    width: 230,
                   ),
-                  Positioned(
-                    top: 0,
-                    right: 30,
-                    child: currentLetter.isNotEmpty
-                        ? Text(
-                            '$currentLetter 단어 카드를 눌러봐',
-                            style: mapleText(50, FontWeight.bold, Colors.black),
-                          )
-                        : SizedBox.shrink(),
+                ),
+                Positioned(
+                  right: 30,
+                  bottom: 5,
+                  child: Image.asset(
+                    'assets/images/bear/teacher.png',
+                    width: 230,
                   ),
-                ]),
-              ));
-        } else {
-          return CircularProgressIndicator();
-        }
+                ),
+                Positioned(
+                  top: 0,
+                  right: 30,
+                  child: currentLetter.isNotEmpty
+                      ? Text(
+                          '$currentLetter 단어 카드를 눌러봐',
+                          style: mapleText(50, FontWeight.bold, Colors.black),
+                        )
+                      : SizedBox.shrink(),
+                ),
+              ]),
+            ));
+        // } else {
+        //   return CircularProgressIndicator();
+        // }
       },
     );
   }

@@ -83,11 +83,11 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
         fillColor: Colors.white,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.brown, width: 3),
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(20),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.brown, width: 3),
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(20),
         ),
         border: InputBorder.none,
         hintText: text,
@@ -117,8 +117,11 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   // crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Image.asset(
-                      'assets/images/logo.png',
+                    SizedBox(
+                      height: height * 0.6,
+                      child: Image.asset(
+                        'assets/images/logo.png', width: width * 0.55,
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -133,16 +136,17 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                               Row(
                                 children: [
                                   SizedBox(
-                                      width: 120,
+                                      width: 110,
                                       child: Text("아이디",
                                           style: mapleText(28, FontWeight.w700,
                                               Colors.brown))),
                                   SizedBox(
                                     width: width * 0.3,
-                                    height: 70,
+                                    height: 60,
                                     child: TextField(
                                       controller: idController,
                                       decoration: inputStyle("아이디를 입력해주세요."),
+                                      style: mapleText(20, FontWeight.w500, Colors.black),
                                     ),
                                   ),
                                 ],
@@ -151,17 +155,18 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                               Row(
                                 children: [
                                   SizedBox(
-                                      width: 120,
+                                      width: 110,
                                       child: Text("비밀번호",
                                           style: mapleText(28, FontWeight.w700,
                                               Colors.brown))),
                                   SizedBox(
                                     width: width * 0.3,
-                                    height: 70,
+                                    height: 60,
                                     child: TextField(
                                       controller: passwordController,
                                       decoration: inputStyle("비밀번호를 입력해주세요."),
                                       obscureText: true,
+                                      style: mapleText(20, FontWeight.w500, Colors.black),
                                     ),
                                   ),
                                 ],
@@ -176,7 +181,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                           },
                           child: Image.asset(
                             'assets/images/login_button.png',
-                            height: 150,
+                            height: 130,
                           ),
                         )
                       ],
@@ -202,9 +207,9 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                     // )
                     loginError
                         ? Text("로그인에 실패했습니다. 다시 시도해주세요",
-                            style: mapleText(20, FontWeight.bold, Colors.red))
+                        style: mapleText(20, FontWeight.bold, Colors.red))
                         : Text("",
-                            style: mapleText(20, FontWeight.bold, Colors.red)),
+                        style: mapleText(20, FontWeight.bold, Colors.red)),
                   ],
                 ),
               ),
@@ -232,7 +237,8 @@ class ParticleOptionsData {
 
   const ParticleOptionsData({required this.baseColor});
 
-  ParticleOptions get particleOptions => ParticleOptions(
+  ParticleOptions get particleOptions =>
+      ParticleOptions(
         baseColor: baseColor,
         spawnOpacity: 0.0,
         opacityChangeRate: 0.25,

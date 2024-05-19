@@ -92,7 +92,8 @@ class GameDialog extends StatelessWidget {
                         builder: (context, constraints) {
                           return Container(
                             margin: EdgeInsets.symmetric(
-                                vertical: constraints.maxHeight * 0.1
+                              vertical: constraints.maxHeight * 0.1,
+                              horizontal: 10,
                             ),
                             child: Container(child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

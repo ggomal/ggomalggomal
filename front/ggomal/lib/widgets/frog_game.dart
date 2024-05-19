@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:ggomal/constants.dart';
 import 'package:gif/gif.dart';
 import '../services/frog_dio.dart';
 import '../utils/game_bosang_dialog.dart';
@@ -364,14 +365,14 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
                       children: [
                         Positioned(
                             child: Image.asset(
-                          "assets/images/frog/frog_info.png",
+                          "assets/images/frog/frog_info.png", width: size.width * 0.7,
                         )),
                         Positioned(
-                            top: size.height * 0.6,
-                            left: size.width * 0.3,
+                            top: size.height * 0.5,
+                            left: size.width * 0.25,
                             child: Image.asset(
                               "assets/images/frog/start_button.png",
-                              width: 300,
+                              width: size.width * 0.2,
                             ))
                       ],
                     ),

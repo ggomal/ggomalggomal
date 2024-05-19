@@ -167,6 +167,7 @@ class _KidBingoModalState extends State<KidBingoModal> {
 class _BearScreenState extends State<BearScreen> {
   final AudioPlayer player = AudioPlayer();
   final AudioPlayer player1 = AudioPlayer();
+  final AudioPlayer player2 = AudioPlayer();
 
   late final WebSocketChannel channel;
   bool isConnected = false;
@@ -318,7 +319,7 @@ class _BearScreenState extends State<BearScreen> {
   }
 
   void BingoSelect(Map<String, dynamic> thing) async {
-    player.play(UrlSource(Uri.encodeFull(thing['soundUrl'])));
+    player2.play(UrlSource(Uri.encodeFull(thing['soundUrl'])));
     showDialog(
       context: context,
       builder: (BuildContext context) => KidBingoModal({

@@ -107,7 +107,7 @@ class _GameContinueDialogState extends State<GameContinueDialog> {
                     child: ElevatedButton(
                       onPressed: (){
                         player.play(AssetSource('audio/touch.mp3'));
-                        context.go("/kids");
+                        context.go("/kids/chick");
                       },
                       child: Padding(
                         padding: EdgeInsets.symmetric(

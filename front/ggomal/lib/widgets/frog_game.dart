@@ -89,8 +89,8 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
     // {"x": -0.3, "y": 0.2, "isVisible": true, "width": 100},
     // {"x": 0.1, "y": -0.5, "isVisible": true, "width": 105},
     // {"x": 0.4, "y": 0.2, "isVisible": true, "width": 95},
-    {"x": -0.7, "y": -0.7, "isVisible": true, "width": 80},
     // {"x": -0.6, "y": 0.3, "isVisible": true, "width": 105},
+    {"x": -0.7, "y": -0.7, "isVisible": true, "width": 80},
     {"x": -0.4, "y": -0.4, "isVisible": true, "width": 120},
     {"x": -0.1, "y": -0.6, "isVisible": true, "width": 95},
     {"x": 0.4, "y": -0.4, "isVisible": true, "width": 110},
@@ -103,11 +103,11 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
     2,
     3,
     4,
-    5,
-    6,
-    7,
-    8,
-    9
+    // 5,
+    // 6,
+    // 7,
+    // 8,
+    // 9
   ]; // 사용 가능한 인덱스 리스트
 
   bool _isStart = false;

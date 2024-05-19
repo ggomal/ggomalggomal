@@ -18,6 +18,7 @@ class GameContinueDialog extends StatefulWidget {
 }
 
 class _GameContinueDialogState extends State<GameContinueDialog> {
+  final AudioPlayer player = AudioPlayer();
   final AudioPlayer player1 = AudioPlayer();
   final AudioPlayer player2 = AudioPlayer();
 
@@ -105,6 +106,7 @@ class _GameContinueDialogState extends State<GameContinueDialog> {
                   Container(
                     child: ElevatedButton(
                       onPressed: (){
+                        player.play(AssetSource('audio/touch.mp3'));
                         context.go("/kids");
                       },
                       child: Padding(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/constants.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class ChickGameModal extends StatefulWidget {
   final Map<String, dynamic> modalData;
@@ -18,6 +19,7 @@ class _ChickGameModalState extends State<ChickGameModal> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
+    final AudioPlayer player = AudioPlayer();
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -28,12 +30,12 @@ class _ChickGameModalState extends State<ChickGameModal> {
           Container(
             height: height,
             width: width,
-
-            padding: const EdgeInsets.fromLTRB(100,100,100,5),
+            padding: const EdgeInsets.fromLTRB(100, 100, 100, 5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(modalData['title'], style: mapleText(50, FontWeight.w700, Colors.black)),
+                Text(modalData['title'],
+                    style: mapleText(50, FontWeight.w700, Colors.black)),
                 Text(modalData['content'],
                     style: mapleText(28, FontWeight.w500, Colors.black)),
                 Image.asset(
@@ -41,8 +43,10 @@ class _ChickGameModalState extends State<ChickGameModal> {
                   height: height * 0.3,
                 ),
                 ElevatedButton(
-
-                  onPressed: () {context.go('/kids/chick/${modalData['game']}');},
+                  onPressed: () {
+                    context.go('/kids/chick/${modalData['game']}');
+                    player.play(AssetSource('audio/touch.mp3'));
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFFAAC),
                     foregroundColor: Colors.white,
@@ -51,12 +55,12 @@ class _ChickGameModalState extends State<ChickGameModal> {
                       horizontal: 40,
                     ),
                   ),
-                  child: Text("시작", style: mapleText(24, FontWeight.w700, Colors.black)),
+                  child: Text("시작",
+                      style: mapleText(24, FontWeight.w700, Colors.black)),
                 )
               ],
             ),
           ),
-
         ],
       ),
     );

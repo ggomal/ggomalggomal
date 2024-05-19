@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:audioplayers/audioplayers.dart';
 class GameStopDialog extends StatelessWidget {
   final String continuePage;
 
@@ -13,6 +13,7 @@ class GameStopDialog extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
+    final AudioPlayer player = AudioPlayer();
     return Dialog(
       child: Container(
         width: width,
@@ -32,6 +33,7 @@ class GameStopDialog extends StatelessWidget {
                 Container(
                   child: ElevatedButton(
                     onPressed: (){
+                      player.play(AssetSource('audio/touch.mp3'));
                       context.go(continuePage);
                     },
                     child: Padding(
@@ -59,6 +61,7 @@ class GameStopDialog extends StatelessWidget {
                 Container(
                   child: ElevatedButton(
                     onPressed: (){
+                      player.play(AssetSource('audio/touch.mp3'));
                       context.go("/kids");
                     },
                     child: Padding(

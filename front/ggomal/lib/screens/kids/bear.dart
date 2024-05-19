@@ -81,7 +81,6 @@ class _KidBingoModalState extends State<KidBingoModal> {
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
     final AudioPlayer player2 = AudioPlayer();
-    player2.setVolume(0.2);
 
     return Dialog(
       child: Stack(
@@ -352,6 +351,7 @@ class _BearScreenState extends State<BearScreen> {
                 bottom: -20,
                 child: InkWell(
                     onTap: () {
+                      player.play(AssetSource('audio/touch.mp3'));
                       context.go('/kids');
                     },
                     child: Image.asset('assets/images/bear/main_button.png')),
@@ -375,6 +375,7 @@ class _BearScreenState extends State<BearScreen> {
                 bottom: -20,
                 child: InkWell(
                     onTap: () {
+                      player.play(AssetSource('audio/touch.mp3'));
                       context.go('/kids');
                     },
                     child: Image.asset('assets/images/bear/main_button.png')),
@@ -441,6 +442,7 @@ class _BearScreenState extends State<BearScreen> {
         var cell = flatList[index];
         return InkWell(
             onTap: () {
+              player.play(AssetSource('audio/touch.mp3'));
               BingoSelect(cell);
               sendWebSocketMessage(cell);
               setState(() {

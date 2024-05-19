@@ -3,6 +3,7 @@ import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
 import 'package:ggomal/widgets/chick_game.dart';
 import 'package:ggomal/utils/navbar.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class ChickScreen extends StatefulWidget {
   const ChickScreen({super.key});
@@ -13,6 +14,7 @@ class ChickScreen extends StatefulWidget {
 
 class _ChickScreenState extends State<ChickScreen> {
   late Future<List> _chickFuture;
+  final AudioPlayer player = AudioPlayer();
 
   List<Map<String, dynamic>> gameInfoList = [
     {
@@ -114,6 +116,7 @@ class _ChickScreenState extends State<ChickScreen> {
                                 (index) => snapshot.data![index]['acquired'] && gameInfoList[index]['game'] != 'null'
                                     ? InkWell(
                                         onTap: () {
+                                          player.play(AssetSource('audio/touch.mp3'));
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext context) =>

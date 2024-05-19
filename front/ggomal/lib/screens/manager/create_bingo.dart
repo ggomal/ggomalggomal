@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ggomal/widgets/manager_bingo.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ggomal/services/socket.dart';
@@ -20,7 +21,12 @@ import 'package:go_router/go_router.dart';
 class CreateBingo extends StatefulWidget {
   final String? name;
   final int? memberId;
-  const CreateBingo({super.key, required this.name, required this.memberId,});
+
+  const CreateBingo({
+    super.key,
+    required this.name,
+    required this.memberId,
+  });
 
   @override
   State<CreateBingo> createState() => _CreateBingoModalState();
@@ -31,6 +37,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
   late final Stream broadcastStream;
   late StreamController streamController;
   bool isConnected = false;
+
   // String connectionStatus = '오프라인';
   Color textColor = Colors.transparent;
   List<List<Map<String, dynamic>>> bingoBoardData = [];
@@ -74,7 +81,6 @@ class _CreateBingoModalState extends State<CreateBingo> {
     channel.sink.add(
       '{"type" : "isOnlineKidId","kidId" : "$selectKidId"}',
     );
-
 
     broadcastStream = channel.stream.asBroadcastStream();
 
@@ -122,7 +128,6 @@ class _CreateBingoModalState extends State<CreateBingo> {
             print('빙고 끝났는데 이긴 사람 이상함 ㅠㅠ');
           }
       }
-
     }, onDone: () {
       print('연결 종료 ');
     }, onError: (error) {
@@ -132,8 +137,6 @@ class _CreateBingoModalState extends State<CreateBingo> {
     channel.sink.add(
       '{"type" : "joinRoom","kidId" : "$selectKidId"}',
     );
-
-
   }
 
   void TeacherWinModal() {
@@ -183,7 +186,6 @@ class _CreateBingoModalState extends State<CreateBingo> {
         });
   }
 
-
   void setBingoBoard() {
     int syllableCount = 1;
     bool finalityFlag = true;
@@ -206,7 +208,6 @@ class _CreateBingoModalState extends State<CreateBingo> {
     } else if (_selectedFinality == '받침 없는 단어') {
       finalityFlag = false;
     }
-
 
     print('빙고 보내는 데이터 $_selectedInitials, $syllableCount, $finalityFlag');
     broadcastStream.listen((response) {
@@ -291,8 +292,8 @@ class _CreateBingoModalState extends State<CreateBingo> {
     print('선택된 레터: $letter');
     var foundItem = bingoBoardData.expand((e) => e).firstWhere(
           (item) => item['letter'] == letter,
-      orElse: () => {},
-    );
+          orElse: () => {},
+        );
     print('찾은 아이템: $foundItem');
     if (foundItem.isNotEmpty) {
       showDialog(
@@ -326,12 +327,15 @@ class _CreateBingoModalState extends State<CreateBingo> {
   void ManagerSelect(Map<String, dynamic> thing) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => ManagerBingoModal({
-        "id":thing['id'],
-        "pronunciation": thing['pronunciation'],
-        "letter": thing['letter'],
-        "img": thing['letterImgUrl'],
-      }, channel: channel,),
+      builder: (BuildContext context) => ManagerBingoModal(
+        {
+          "id": thing['id'],
+          "pronunciation": thing['pronunciation'],
+          "letter": thing['letter'],
+          "img": thing['letterImgUrl'],
+        },
+        channel: channel,
+      ),
     );
   }
 
@@ -342,91 +346,161 @@ class _CreateBingoModalState extends State<CreateBingo> {
 
   Widget CreateBingoWidget() {
     return Stack(
-      children: [Container(
-        width: 400,
-        height: 650,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(color: Colors.grey),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(40, 40, 0, 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '아이 현황',
-                  style: baseText(25, FontWeight.w900),
+      children: [
+        Container(
+          width: 400,
+          height: 650,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: Offset(2, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 40, 0, 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '아이 현황',
+                    style: baseText(25, FontWeight.w900),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Icon(
-                        Icons.circle,
-                        size: 18,
-                        color: isConnected == true
-                            ? Colors.green
-                            : Colors.grey,
+              Padding(
+                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Icon(
+                          Icons.circle,
+                          size: 18,
+                          color:
+                              isConnected == true ? Colors.green : Colors.grey,
+                        ),
                       ),
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
+                      Flexible(
+                        flex: 2,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            '${widget.name}',
+                            style: baseText(20.0, FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 1,
                         child: Text(
-                          '${widget.name}',
-                          style: baseText(20.0, FontWeight.bold),
+                          isConnected == true ? '온라인' : '오프라인',
+                          style: baseText(
+                            17,
+                            FontWeight.normal,
+                          ),
                         ),
-                      ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 50, 0, 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '단어 묶음 선택',
+                    style: baseText(25, FontWeight.w900),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 0, 5),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '음절',
+                    style: baseText(20, FontWeight.normal),
+                  ),
+                ),
+              ),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    Flexible(
-                      flex: 1,
-                      child: Text(isConnected == true ? '온라인': '오프라인',
-                        style: baseText(
-                          17,
-                          FontWeight.normal,
+                    child: DropdownButton<String>(
+                      value: _selectedWords,
+                      isExpanded: true,
+                      style: TextStyle(
+                        fontFamily: 'NanumS',
+                        fontSize: 20,
+                        color: Color(0xFF767676),
+                      ),
+                      underline: SizedBox.shrink(),
+                      icon: Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(
+                          Icons.arrow_drop_down,
+                          size: 40,
+                          color: Colors.grey,
                         ),
                       ),
-                    )
-                  ],
+                      items:
+                          words.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 30),
+                            child: Text(
+                              value,
+                              style: TextStyle(
+                                color: value == _selectedWords
+                                    ? Colors.black
+                                    : null,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedWords = newValue;
+                        });
+                      },
+                      itemHeight: null,
+                      dropdownColor: Colors.white,
+                      menuMaxHeight: 160,
+                    ),
+                  )),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 10, 0, 5),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '초성',
+                    style: baseText(20, FontWeight.normal),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(40, 50, 0, 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '단어 묶음 선택',
-                  style: baseText(25, FontWeight.w900),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(40, 0, 0, 5),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '음절',
-                  style: baseText(20, FontWeight.normal),
-                ),
-              ),
-            ),
-            Padding(
+              Padding(
                 padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                 child: Container(
                   decoration: BoxDecoration(
@@ -434,7 +508,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: DropdownButton<String>(
-                    value: _selectedWords,
+                    value: _selectedInitials,
                     isExpanded: true,
                     style: TextStyle(
                       fontFamily: 'NanumS',
@@ -444,14 +518,11 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     underline: SizedBox.shrink(),
                     icon: Padding(
                       padding: EdgeInsets.only(right: 10),
-                      child: Icon(
-                        Icons.arrow_drop_down,
-                        size: 40,
-                        color: Colors.grey,
-                      ),
+                      child: Icon(Icons.arrow_drop_down,
+                          size: 40, color: Colors.grey),
                     ),
                     items:
-                    words.map<DropdownMenuItem<String>>((String value) {
+                        initials.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Padding(
@@ -459,7 +530,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                           child: Text(
                             value,
                             style: TextStyle(
-                              color: value == _selectedWords
+                              color: value == _selectedInitials
                                   ? Colors.black
                                   : null,
                               fontWeight: FontWeight.bold,
@@ -470,172 +541,113 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     }).toList(),
                     onChanged: (String? newValue) {
                       setState(() {
-                        _selectedWords = newValue;
+                        _selectedInitials = newValue;
                       });
                     },
                     itemHeight: null,
                     dropdownColor: Colors.white,
                     menuMaxHeight: 160,
                   ),
-                )),
-            Padding(
-              padding: EdgeInsets.fromLTRB(40, 10, 0, 5),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '초성',
-                  style: baseText(20, FontWeight.normal),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(20),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 10, 0, 5),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '종성 유무',
+                    style: baseText(20, FontWeight.normal),
+                  ),
                 ),
-                child: DropdownButton<String>(
-                  value: _selectedInitials,
-                  isExpanded: true,
-                  style: TextStyle(
-                    fontFamily: 'NanumS',
-                    fontSize: 20,
-                    color: Color(0xFF767676),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  underline: SizedBox.shrink(),
-                  icon: Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Icon(Icons.arrow_drop_down,
-                        size: 40, color: Colors.grey),
-                  ),
-                  items:
-                  initials.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 30),
-                        child: Text(
-                          value,
-                          style: TextStyle(
-                            color: value == _selectedInitials
-                                ? Colors.black
-                                : null,
-                            fontWeight: FontWeight.bold,
+                  child: DropdownButton<String>(
+                    value: _selectedFinality,
+                    isExpanded: true,
+                    style: TextStyle(
+                      fontFamily: 'NanumS',
+                      fontSize: 20,
+                      color: Color(0xFF767676),
+                    ),
+                    underline: SizedBox.shrink(),
+                    icon: Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(Icons.arrow_drop_down,
+                          size: 40, color: Colors.grey),
+                    ),
+                    items:
+                        finality.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 30),
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              color: value == _selectedFinality
+                                  ? Colors.black
+                                  : null,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedInitials = newValue;
-                    });
-                  },
-                  itemHeight: null,
-                  dropdownColor: Colors.white,
-                  menuMaxHeight: 160,
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedFinality = newValue;
+                      });
+                    },
+                    itemHeight: null,
+                    dropdownColor: Colors.white,
+                    menuMaxHeight: 160,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(40, 10, 0, 5),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '종성 유무',
-                  style: baseText(20, FontWeight.normal),
-                ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                child: Text('아이가 접속하지 않았습니다',
+                    style: TextStyle(
+                      color: textColor,
+                      fontFamily: 'NanumS',
+                      fontSize: 18,
+                    )),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: DropdownButton<String>(
-                  value: _selectedFinality,
-                  isExpanded: true,
-                  style: TextStyle(
-                    fontFamily: 'NanumS',
-                    fontSize: 20,
-                    color: Color(0xFF767676),
-                  ),
-                  underline: SizedBox.shrink(),
-                  icon: Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Icon(Icons.arrow_drop_down,
-                        size: 40, color: Colors.grey),
-                  ),
-                  items:
-                  finality.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 30),
-                        child: Text(
-                          value,
-                          style: TextStyle(
-                            color: value == _selectedFinality
-                                ? Colors.black
-                                : null,
-                            fontWeight: FontWeight.bold,
-                          ),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFFFAA8D),
+                      foregroundColor: Color(0xffFF5B20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedFinality = newValue;
-                    });
-                  },
-                  itemHeight: null,
-                  dropdownColor: Colors.white,
-                  menuMaxHeight: 160,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
-              child: Text('아이가 접속하지 않았습니다',
-                  style: TextStyle(
-                    color: textColor,
-                    fontFamily: 'NanumS',
-                    fontSize: 18,
-                  )),
-            ),
-            Padding(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFFAA8D),
-                    foregroundColor: Color(0xffFF5B20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
                       ),
                     ),
-                  ),
-                  onPressed: () {
-                    setBingoBoard();
-                  },
-                  child: Text(
-                    '시작하기',
-                    style: baseText(20, FontWeight.bold),
-                  ),
-                ))
-          ],
+                    onPressed: () {
+                      setBingoBoard();
+                    },
+                    child: Text(
+                      '시작하기',
+                      style: baseText(20, FontWeight.bold),
+                    ),
+                  ))
+            ],
+          ),
         ),
-      ),
         Positioned(
           top: 15,
           right: 15,
           child: GestureDetector(
             onTap: () {
-              Navigator.of(context).pop();
+              context.go('/manager/kids');
             },
             child: Image.asset(
               'assets/images/manager/close_button.png',
@@ -685,10 +697,8 @@ class _CreateBingoModalState extends State<CreateBingo> {
                 ),
                 Positioned(
                   bottom: 0,
-                  child: Text(
-                      cell['letter'],
-                      style: mapleText(35, FontWeight.bold, Colors.black)
-                  ),
+                  child: Text(cell['letter'],
+                      style: mapleText(35, FontWeight.bold, Colors.black)),
                 ),
                 if (cell['isSelected'])
                   Container(
@@ -704,8 +714,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                     ),
                   ),
               ],
-            )
-        );
+            ));
       },
     );
   }
@@ -716,63 +725,58 @@ class _CreateBingoModalState extends State<CreateBingo> {
       future: storage.getRole(),
       builder: (context, snapshot) {
         // if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data == 'KID') {
-          }
-          return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/bear/bingo_bg.png"),
-                  fit: BoxFit.cover,
-                ),
+        if (snapshot.data == 'KID') {}
+        return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/bear/bingo_bg.png"),
+                fit: BoxFit.cover,
               ),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: NavBarTeacher(),
-                body: Stack(children: [
-                  Container(
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Container(),
-                            flex: 1,
-                            // flex: 3,
-                          ),
-                          Flexible(
-                            flex: 2,
-                            // flex: 5,
-                            child: Padding(
-                              // padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
-                              padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
-                              child: bingoBoardData != null
-                                  ? buildBingoGrid(bingoBoardData)
-                                  : Container(color: Colors.yellow),
-                            ),
-                          ),
-                          Flexible(
-                            child: Container(),
-                            flex: 1,
-                            // flex: 3,
-                          )
-                        ],
-                      )),
-                  Positioned(
-                    left: 30,
-                    bottom: 0,
-                    child: Image.asset(
-                      'assets/images/bear/student.png',
-                      width: 230,
+            ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: NavBarTeacher(),
+              body: Stack(children: [
+                Container(
+                    child: Row(
+                  children: [
+                    Flexible(
+                      child: Container(),
+                      flex: 3,
                     ),
-                  ),
-                  Positioned(
-                    right: 30,
-                    bottom: 5,
-                    child: Image.asset(
-                      'assets/images/bear/teacher.png',
-                      width: 230,
+                    Flexible(
+                      flex: 5,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                        child: bingoBoardData != null
+                            ? buildBingoGrid(bingoBoardData)
+                            : Container(color: Colors.yellow),
+                      ),
                     ),
+                    Flexible(
+                      child: Container(),
+                      flex: 3,
+                    )
+                  ],
+                )),
+                Positioned(
+                  left: 30,
+                  bottom: 0,
+                  child: Image.asset(
+                    'assets/images/bear/student.png',
+                    width: 230,
                   ),
-                ]),
-              ));
+                ),
+                Positioned(
+                  right: 30,
+                  bottom: 5,
+                  child: Image.asset(
+                    'assets/images/bear/teacher.png',
+                    width: 230,
+                  ),
+                ),
+              ]),
+            ));
         // } else {
         //   return CircularProgressIndicator();
         // }
@@ -784,12 +788,12 @@ class _CreateBingoModalState extends State<CreateBingo> {
   Widget build(BuildContext context) {
     return Container(
         child: Scaffold(
-          backgroundColor: Colors.grey,
-          body: Stack(children: [
-            if (showBingo) BingoWidget(),
-            if (!showBingo) CreateBingoWidget(),
-          ],
-        ))
-    );
+            backgroundColor: Color(0xffE4E4E4),
+            body: Stack(
+              children: [
+                if (showBingo) BingoWidget(),
+                if (!showBingo) Align(alignment: Alignment.center,child: CreateBingoWidget()),
+              ],
+            )));
   }
 }

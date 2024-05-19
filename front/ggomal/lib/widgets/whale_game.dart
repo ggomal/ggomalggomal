@@ -50,7 +50,7 @@ class _WhaleGameModalState extends State<WhaleGameModal> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset("assets/images/whale/green_fish.png", height: 60,),
-                    Text(" ${modalData['totalCount']} / 10",style: mapleText(50, FontWeight.w700, Colors.black))
+                    Text(" ${modalData['totalCount']} / 6",style: mapleText(50, FontWeight.w700, Colors.black))
                   ],
                 ),
                 ElevatedButton(

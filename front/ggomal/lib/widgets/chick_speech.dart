@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
@@ -47,12 +48,19 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
     super.dispose();
   }
 
+  Future<bool> checkPermission() async => await Permission.microphone.isGranted;
+
+  Future<void> requestPermission() async =>
+      await Permission.microphone.request();
+
   Future initRecorder() async {
+    await requestPermission();
     var status = await Permission.speech.status;
     if (!status.isGranted) {
       print('권한 허용안됨');
       throw '마이크 권한이 허용되지 않았습니다';
     }
+    setState((){});
     await recorder.openRecorder();
   }
 
@@ -154,7 +162,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
       }
     } else {
       for (int i = 0; i < text.length; i++) {
-        Color textColor = words[i] ? Colors.black : Colors.red;
+        Color textColor = isPass? Colors.green : words[i] ? Colors.black : Colors.red;
         textSpans.add(
           TextSpan(
             text: text[i],

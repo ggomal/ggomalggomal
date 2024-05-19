@@ -48,7 +48,7 @@ class _WhaleSeaState extends State<WhaleSea> {
       await Permission.microphone.request();
 
   Future initRecorder() async {
-    requestPermission();
+    await requestPermission();
     var status = await Permission.speech.status;
     if (!status.isGranted) {
       print('권한 허용안됨');

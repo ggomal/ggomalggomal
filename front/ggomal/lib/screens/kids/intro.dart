@@ -63,7 +63,7 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   void dispose() {
-    player.dispose(); // 오디오 플레이어 정리
+    player.dispose();
     super.dispose();
   }
 
@@ -76,7 +76,7 @@ class _IntroPageState extends State<IntroPage> {
     return Scaffold(
       body: Stack(
         children: [
-          MainScreen(), // 메인 스크린을 백그라운드에 표시합니다.
+          MainScreen(),
           PageView.builder(
             controller: _pageController,
             itemCount: _descriptions.length,
@@ -84,7 +84,7 @@ class _IntroPageState extends State<IntroPage> {
               setState(() {
                 _currentPage = index;
               });
-              _playAudio(index); // 페이지 변경 시 오디오 재생
+              _playAudio(index);
             },
             itemBuilder: (context, index) {
               return Container(
@@ -101,38 +101,35 @@ class _IntroPageState extends State<IntroPage> {
           ),
           Positioned(
             bottom: screenSize.height * 0.4,
-            left: screenSize.width * 0.9,
+            right: screenSize.width * 0.02,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (_currentPage < _descriptions.length - 1)
                   GestureDetector(
                     onTap: () {
+                      player.play(AssetSource('audio/touch.mp3'));
                       _nextPage();
                     },
-                    child: Image.asset(
-                      'assets/images/intro/next_button.png',
-                      height: 150,
-                    ),
+                    child: Icon(Icons.navigate_next_rounded, color: Colors.white, size: 100,)
                   ),
                 if (_currentPage == _descriptions.length - 1)
                   GestureDetector(
                     onTap: () {
+                      player.play(AssetSource('audio/touch.mp3'));
                       context.go('/kids');
                     },
-                    child: Image.asset(
-                      'assets/images/intro/next_button.png',
-                      height: 150,
-                    ),
+                      child: Icon(Icons.navigate_next_rounded, color: Colors.white, size: 100,)
                   )
               ],
             ),
           ),
           Positioned(
             bottom: screenSize.height * 0.1,
-            left: screenSize.width * 0.9,
+            right: screenSize.width * 0.02,
             child: GestureDetector(
               onTap: () {
+                player.play(AssetSource('audio/touch.mp3'));
                 context.go('/kids');
               },
               child: Text(

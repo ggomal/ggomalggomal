@@ -228,7 +228,9 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
             // width: 80,
             child: isDetecting
                 ? GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+
+                    },
                     child: Container(
                       // decoration: BoxDecoration(
                       //     color: Color(0xFFFE5757),
@@ -352,6 +354,7 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
                 child: Center(
                   child: GestureDetector(
                     onTap: () async {
+                      player.play(AssetSource('audio/touch.mp3'));
                       await startDetection();
                       setState(() {
                         _isStart = true;

@@ -6,6 +6,7 @@ import 'package:ggomal/constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 import 'package:ggomal/login_storage.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
     ParticleOptionsData(baseColor: Colors.yellow),
     ParticleOptionsData(baseColor: Colors.pink),
   ];
+  final AudioPlayer player = AudioPlayer();
 
   Future<void> loginUser() async {
     try {
@@ -167,10 +169,12 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                           ),
                         ),
                         GestureDetector(
-                          onTap: loginUser,
+                          onTap: () {
+                            loginUser();
+                            player.play(AssetSource('audio/touch.mp3'));
+                          },
                           child: Image.asset(
                             'assets/images/login_button.png',
-
                             height: 150,
                           ),
                         )

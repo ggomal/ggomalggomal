@@ -3,15 +3,18 @@ import 'package:go_router/go_router.dart';
 import 'package:ggomal/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:ggomal/screens/kids/main.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
   const NavBar({super.key});
+
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
+
     Get.put(CoinController());
     TextStyle baseText(double size, FontWeight weight) {
       return TextStyle(
@@ -22,6 +25,8 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
+    final AudioPlayer player = AudioPlayer();
+
     return AppBar(
       backgroundColor: Color(0xffFFFEF1),
       toolbarHeight: preferredSize.height,
@@ -30,6 +35,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
       leading: GestureDetector(
         onTap: () {
           context.go('/kids');
+          player.play(AssetSource('audio/touch.mp3'));
         },
         child: Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 0, 0),

@@ -26,4 +26,10 @@ class LoginStorage {
   Future<String?> getName() async {
     return await _storage.read(key: 'name');
   }
+
+  Future<void> logout() async {
+    await _storage.delete(key: 'jwt');
+    await _storage.delete(key: 'role');
+    await _storage.delete(key: 'name');
+  }
 }

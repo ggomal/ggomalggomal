@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../states/furniture_state.dart';
 
@@ -19,6 +20,8 @@ class _FurnitureDialogState extends State<FurnitureDialog> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
+    final AudioPlayer player = AudioPlayer();
+
     return Dialog(
       child: Container(
         width: width,
@@ -69,6 +72,7 @@ class _FurnitureDialogState extends State<FurnitureDialog> {
                     Container(
                       child: ElevatedButton(
                         onPressed: () {
+                          player.play(AssetSource('audio/touch.mp3'));
                           Provider.of<FurnitureState>(context, listen: false)
                               .unlockItem(index, furnitureId);
                           Navigator.pop(context);
@@ -96,6 +100,7 @@ class _FurnitureDialogState extends State<FurnitureDialog> {
                     Container(
                       child: ElevatedButton(
                         onPressed: () {
+                          player.play(AssetSource('audio/touch.mp3'));
                           Navigator.pop(context);
                         },
                         child: Padding(
@@ -134,6 +139,7 @@ class _FurnitureDialogState extends State<FurnitureDialog> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.8;
     double height = screenSize.height * 0.8;
+    final AudioPlayer player = AudioPlayer();
     return Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
@@ -160,6 +166,7 @@ class _FurnitureDialogState extends State<FurnitureDialog> {
                             iconSize: height * 0.1,
                             icon: Icon(Icons.close, color: Colors.white),
                             onPressed: () {
+                              player.play(AssetSource('audio/touch.mp3'));
                               Navigator.of(context).pop();
                             },
                           )))),
@@ -184,6 +191,7 @@ class _FurnitureDialogState extends State<FurnitureDialog> {
                           // if (!item['isVisible']) return Container();
                           return InkWell(
                             onTap: () {
+                              player.play(AssetSource('audio/touch.mp3'));
                               showDialog(
                                   context: context,
                                   builder: (builder) {

@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:ggomal/widgets/frog_game.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ggomal/utils/navbar.dart';
-
+import 'package:audioplayers/audioplayers.dart';
 import '../../utils/game_bosang_dialog.dart';
 import '../../utils/game_dialog.dart';
 
@@ -14,6 +14,8 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double dynamicWidth = MediaQuery.of(context).size.width * 0.23;
+
+    final AudioPlayer player = AudioPlayer();
 
     return Container(
       decoration: BoxDecoration(
@@ -38,6 +40,7 @@ class MainScreen extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           context.go('/kids/chick');
+                          player.play(AssetSource('audio/touch.mp3'));
                         },
                         child: SizedBox(
                           child: Image.asset('assets/images/chick_house.png'),
@@ -46,6 +49,7 @@ class MainScreen extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
+                          player.play(AssetSource('audio/touch.mp3'));
                           showDialog(
                               context: context,
                               builder: (builder) {
@@ -72,6 +76,7 @@ class MainScreen extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
+                          player.play(AssetSource('audio/touch.mp3'));
                           showDialog(
                               context: context,
                               builder: (builder) {
@@ -90,6 +95,7 @@ class MainScreen extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
+                          player.play(AssetSource('audio/touch.mp3'));
                           showDialog(
                               context: context,
                               builder: (builder) {
@@ -114,6 +120,7 @@ class MainScreen extends StatelessWidget {
             Center(
               child: InkWell(
                 onTap: () {
+                  player.play(AssetSource('audio/touch.mp3'));
                   context.go('/kids/home');
                 },
                 child: SizedBox(

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:ggomal/services/dio.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:ggomal/login_storage.dart';
 import '../../get_storage.dart';
 import '../../utils/notification_dialog.dart';
 import '../../widgets/kid_report.dart';
@@ -20,13 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final player = AudioPlayer();
   List<Map<String, dynamic>> _items = [];
 
+
   final List<Map<String, dynamic>> refer_items = [
-    {"furnitureId": 0 ,"asset": 'assets/images/home/sofa.png',"asset2": 'assets/images/home/sofa2.png', "audio": 'images/home/audio/sofa.mp3', "x": -0.45, "y": -0.43, "width": 650, "isVisible": false, "name" : "소파", "size" : 250, "count" : 2},
-    {"furnitureId": 0 ,"asset": 'assets/images/home/tv.png', "asset2": 'assets/images/home/tv2.png', "audio": 'images/home/audio/tv.mp3', "x": -0.99, "y": -0.2, "width": 370, "isVisible": false, "name" : "텔레비전", "size" : 130, "count" : 3},
-    {"furnitureId": 0 ,"asset": 'assets/images/home/table.png', "asset2": 'assets/images/home/table2.png',"audio": 'images/home/audio/table.mp3', "x": -0.45, "y": 0.4, "width": 650, "isVisible": false, "name" : "식탁", "size" : 250, "count" : 4},
-    {"furnitureId": 0 ,"asset": 'assets/images/home/chair.png', "asset2": 'assets/images/home/chair2.png',"audio": 'images/home/audio/chair.mp3', "x": 0.5, "y": -0.1, "width": 350, "isVisible": false, "name" : "의자", "size" : 120, "count" : 5},
-    {"furnitureId": 0 ,"asset": 'assets/images/home/window.png', "asset2": 'assets/images/home/window2.png',"audio": 'images/home/audio/window.mp3', "x": 0.5, "y": -0.9, "width": 300, "isVisible": false, "name" : "창문", "size" : 130, "count" : 6},
-    {"furnitureId": 0 ,"asset": 'assets/images/home/photo.png', "asset2": 'assets/images/home/photo2.png',"audio": 'images/home/audio/photo.mp3', "x": -0.9, "y": -0.9, "width": 200, "isVisible": false, "name" : "액자", "size" : 80, "count" : 7},
+    {"furnitureId": 0 ,"asset": 'assets/images/home/sofa.png',"asset2": 'assets/images/home/sofa2.png', "audio": 'images/home/audio/sofa.mp3', "x": -0.45, "y": -0.43, "width": 600, "isVisible": false, "name" : "소파", "size" : 250, "count" : 2},
+    {"furnitureId": 0 ,"asset": 'assets/images/home/tv.png', "asset2": 'assets/images/home/tv2.png', "audio": 'images/home/audio/tv.mp3', "x": -0.99, "y": -0.2, "width": 330, "isVisible": false, "name" : "텔레비전", "size" : 130, "count" : 3},
+    {"furnitureId": 0 ,"asset": 'assets/images/home/table.png', "asset2": 'assets/images/home/table2.png',"audio": 'images/home/audio/table.mp3', "x": -0.5, "y": 0.4, "width": 630, "isVisible": false, "name" : "식탁", "size" : 250, "count" : 4},
+    {"furnitureId": 0 ,"asset": 'assets/images/home/chair.png', "asset2": 'assets/images/home/chair2.png',"audio": 'images/home/audio/chair.mp3', "x": 0.5, "y": -0.1, "width": 300, "isVisible": false, "name" : "의자", "size" : 120, "count" : 5},
+    {"furnitureId": 0 ,"asset": 'assets/images/home/window.png', "asset2": 'assets/images/home/window2.png',"audio": 'images/home/audio/window.mp3', "x": 0.5, "y": -0.9, "width": 250, "isVisible": false, "name" : "창문", "size" : 130, "count" : 6},
+    {"furnitureId": 0 ,"asset": 'assets/images/home/photo.png', "asset2": 'assets/images/home/photo2.png',"audio": 'images/home/audio/photo.mp3', "x": -0.9, "y": -0.9, "width": 180, "isVisible": false, "name" : "액자", "size" : 80, "count" : 7},
   ];
 
   Future<void> fetchFurniture() async {
@@ -152,6 +153,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
+    final AudioPlayer player = AudioPlayer();
     return Dialog(
       child: Container(
         width: width,
@@ -202,6 +204,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
                     Container(
                       child: ElevatedButton(
                         onPressed: () async{
+                          player.play(AssetSource('audio/touch.mp3'));
                           print("=================");
                           print(index + 1);
                           await buyFurniture(index + 1);
@@ -231,6 +234,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
                     Container(
                       child: ElevatedButton(
                         onPressed: () {
+                          player.play(AssetSource('audio/touch.mp3'));
                           Navigator.pop(context);
                         },
                         child: Padding(
@@ -280,6 +284,8 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.8;
     double height = screenSize.height * 0.8;
+    final AudioPlayer player = AudioPlayer();
+    final LoginStorage loginStorage = LoginStorage();
 
     return AppBar(
       backgroundColor: Color(0xffFFFEF1),
@@ -291,6 +297,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
           children: [
             GestureDetector(
               onTap: () {
+                player.play(AssetSource('audio/touch.mp3'));
                 context.go('/kids');
               },
               child:
@@ -301,6 +308,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
             ),
             GestureDetector(
               onTap: () {
+                player.play(AssetSource('audio/touch.mp3'));
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -330,6 +338,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
                                                   iconSize: height * 0.1,
                                                   icon: Icon(Icons.close, color: Colors.white),
                                                   onPressed: () {
+                                                    player.play(AssetSource('audio/touch.mp3'));
                                                     Navigator.of(context).pop();
                                                   },
                                                 )))),
@@ -352,6 +361,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
                                             // if (!item['isVisible']) return Container();
                                             return InkWell(
                                               onTap: () {
+                                                player.play(AssetSource('audio/touch.mp3'));
                                                 showDialog(
                                                     context: context,
                                                     builder: (builder) {
@@ -414,6 +424,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
         GestureDetector(
           onTap: (
               ){
+            player.play(AssetSource('audio/touch.mp3'));
             showDialog(
                 context: context,
                 builder: (context) => NotificationDialog()
@@ -434,6 +445,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
         GestureDetector(
           onTap: (
               ){
+            player.play(AssetSource('audio/touch.mp3'));
             showDialog(
               context: context,
               builder: (BuildContext context) => Dialog(
@@ -473,6 +485,18 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
                 );
               }),
             ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            loginStorage.logout();
+            player.play(AssetSource('audio/touch.mp3'));
+            context.go('/');
+          },
+          child:
+          Padding(
+            padding: EdgeInsets.fromLTRB(13, 2, 20, 2),
+            child: Image.asset('assets/images/logout_button.png', fit: BoxFit.contain),
           ),
         ),
       ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
 import 'package:ggomal/services/dio.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../models/kids_checklist_modal.dart';
 
@@ -75,6 +76,7 @@ class _NotificationDialogState extends State<NotificationDialog> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.5;
     double height = screenSize.height * 0.8;
+    final AudioPlayer player = AudioPlayer();
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -102,7 +104,10 @@ class _NotificationDialogState extends State<NotificationDialog> {
                               size: 50,
                             ),
                             color: Colors.black,
-                            onPressed: () => _changeDate(false),
+                            onPressed: () {
+                              player.play(AssetSource('audio/touch.mp3'));
+                                  _changeDate(false);
+                            }
                           ))),
                   Flexible(
                       flex: 3,
@@ -129,7 +134,10 @@ class _NotificationDialogState extends State<NotificationDialog> {
                                 size: 50,
                               ),
                               color: Colors.black,
-                              onPressed: () => _changeDate(true),
+                              onPressed: () {
+                                player.play(AssetSource('audio/touch.mp3'));
+                                    _changeDate(true);
+                              }
                             )),
                         Container(
                             alignment: Alignment.bottomLeft,
@@ -139,7 +147,8 @@ class _NotificationDialogState extends State<NotificationDialog> {
                                 size: 70,
                               ),
                               color: Colors.black,
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: () {player.play(AssetSource('audio/touch.mp3'));
+                                Navigator.of(context).pop();}
                             ))
                       ],
                     ),

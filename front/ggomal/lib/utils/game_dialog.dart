@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GameDialog extends StatelessWidget {
   final String gameTitle;
@@ -21,6 +22,7 @@ class GameDialog extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width * 0.6;
     double height = screenSize.height * 0.7;
+    final AudioPlayer player = AudioPlayer();
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -71,6 +73,7 @@ class GameDialog extends StatelessWidget {
                           iconSize: height * 0.1,
                           icon: Icon(Icons.close, color: Colors.white),
                           onPressed: () {
+                            player.play(AssetSource('audio/touch.mp3'));
                             Navigator.of(context).pop();
                           },
                         )
@@ -121,6 +124,7 @@ class GameDialog extends StatelessWidget {
                                                   print("===============");
                                                   print("게임모달창 이동!!!");
                                                   print("===============");
+                                                  player.play(AssetSource('audio/touch.mp3'));
                                                   context.go(gamePath);
                                                 },
                                                 child: Padding(

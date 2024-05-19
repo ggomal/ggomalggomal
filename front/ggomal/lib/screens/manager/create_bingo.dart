@@ -154,7 +154,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                 bottom: 20,
                 child: InkWell(
                     onTap: () {
-                      context.go('/manager/kid/$selectKidId');
+                      context.go('/manager/kids/$selectKidId');
                     },
                     child: Image.asset('assets/images/bear/info_button.png')),
               )
@@ -178,7 +178,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                 bottom: 20,
                 child: InkWell(
                     onTap: () {
-                      context.go('/manager/kid/$selectKidId');
+                      context.go('/manager/kids/$selectKidId');
                     },
                     child: Image.asset('assets/images/bear/info_button.png')),
               )

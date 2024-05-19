@@ -47,12 +47,13 @@ class _PizzaPlateState extends State<PizzaPlate> {
   void handleTopping(Map<String, dynamic> thing) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) => ChickSpeechModal({
         "gameNum": 1,
         "game": "pizza",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "넣어요"
+        "ending": "올려줘"
       }),
     ).then((value) => {
           if (value)

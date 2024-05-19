@@ -85,10 +85,9 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
         Future.delayed(Duration(milliseconds: 1000)).then((value) {
           if (mounted) {
             player.play(AssetSource('audio/chick/speech_pass.mp3'));
-          Future.delayed(Duration(milliseconds: 300)).then((value) {
+            Future.delayed(Duration(milliseconds: 300)).then((value) {
               Navigator.pop(context, true);
-
-          });
+            });
           }
         });
       } else {
@@ -269,6 +268,19 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
               ],
             ),
           ),
+          Positioned(
+            top: 5,
+            right: 5,
+            child: IconButton(
+              icon: Icon(Icons.cancel),
+              iconSize: 50,
+              onPressed: () {
+                isLoading || recorder.isRecording
+                    ? null
+                    : Navigator.pop(context, false);
+              },
+            ),
+          )
         ],
       ),
     );

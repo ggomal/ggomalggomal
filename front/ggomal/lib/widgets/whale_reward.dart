@@ -23,9 +23,11 @@ class _WhaleRewardModalState extends State<WhaleRewardModal> {
     super.initState();
     if(widget.modalData['result'] == 'pass'){
       player1.play(AssetSource('audio/end.mp3'));
+      player2.setVolume(0.3);
       player2.play(AssetSource('audio/end_pass.mp3'));
     }else {
       player1.play(AssetSource('audio/whale/fail.mp3'));
+      player2.setVolume(0.3);
       player2.play(AssetSource('audio/end_fail.mp3'));
     }
   }
@@ -65,7 +67,7 @@ class _WhaleRewardModalState extends State<WhaleRewardModal> {
                 child: Text(
                   "마을가기",
                   style: TextStyle(
-                      fontSize: 35,
+                      fontSize: 30,
                       fontFamily: 'Maplestory',
                       fontWeight: FontWeight.bold,
                       color: Colors.black),

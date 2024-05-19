@@ -69,11 +69,13 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
       }
     } catch (e) {
       print('에러: $e');
+      setState(() {
+        loginError = true;
+      });
     }
   }
 
   InputDecoration inputStyle(String text) {
-
     return InputDecoration(
         filled: true,
         fillColor: Colors.white,
@@ -92,7 +94,6 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
     double width = screenSize(context).width;
     double height = screenSize(context).height;
     return Scaffold(
@@ -170,7 +171,6 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                           onTap: loginUser,
                           child: Image.asset(
                             'assets/images/login_button.png',
-
                             height: 150,
                           ),
                         )
@@ -195,11 +195,11 @@ class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
                     //
                     //   ],
                     // )
-                    if (loginError) // 로그인 실패 메시지 조건부 표시
-                      Text(
-                        "로그인에 실패했습니다. 다시 시도해주세요",
-                        style: mapleText(50, FontWeight.bold, Colors.red)
-                      ),
+                    loginError
+                        ? Text("로그인에 실패했습니다. 다시 시도해주세요",
+                            style: mapleText(20, FontWeight.bold, Colors.red))
+                        : Text("",
+                            style: mapleText(20, FontWeight.bold, Colors.red)),
                   ],
                 ),
               ),

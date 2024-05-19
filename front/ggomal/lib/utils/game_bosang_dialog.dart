@@ -25,6 +25,7 @@ class _GameContinueDialogState extends State<GameContinueDialog> {
   void initState() {
     super.initState();
     player1.play(AssetSource('audio/end.mp3'));
+    player2.setVolume(0.3);
     player2.play(AssetSource('audio/end_pass.mp3'));
   }
 

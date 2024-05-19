@@ -23,12 +23,13 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
   void handleCleanThing(Map<String, dynamic> thing) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) => ChickSpeechModal({
         "gameNum": 2,
         "game": "clean",
         "name": thing['name'],
         "img": thing['img'],
-        "ending": "정리해요"
+        "ending": "정리할래"
       }),
     ).then((value) => {
           if (value)

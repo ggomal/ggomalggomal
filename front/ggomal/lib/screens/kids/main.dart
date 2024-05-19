@@ -55,7 +55,7 @@ class MainScreen extends StatelessWidget {
                               builder: (builder) {
                                 return GameDialog(
                                   gameTitle : '곰돌이 게임',
-                                  gameDescription: '선생님과 빙고 게임을 즐겨요! 원하는 단어를 말하고, 먼저 빙고를 완성하는 사람이 승리합니다!',
+                                  gameDescription: '선생님과 빙고 게임을 즐겨요! \n\n원하는 단어를 말하고, 먼저 빙고를 완성하는 사람이 승리합니다!',
                                   gameImage: 'assets/images/bear/bear_game_modal.png',
                                   gamePath: '/kids/bear',
                                 );
@@ -77,16 +77,17 @@ class MainScreen extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           player.play(AssetSource('audio/touch.mp3'));
-                          showDialog(
-                              context: context,
-                              builder: (builder) {
-                                return GameDialog(
-                                  gameTitle : '개구리 게임',
-                                  gameDescription: '혀를 길게 내밀면 개구리가 파리를 먹어요! 개구리의 신호에 맞춰서 혀를 내밀어 봅시다 !',
-                                  gameImage: 'assets/images/frog/mini_frog.png',
-                                  gamePath: '/kids/frog',
-                                );
-                              });
+                          // showDialog(
+                          //     context: context,
+                          //     builder: (builder) {
+                          //       return GameDialog(
+                          //         gameTitle : '개구리 게임',
+                          //         gameDescription: '혀를 길게 내밀면 개구리가 파리를 먹어요! \n\n개구리의 신호에 맞춰서 혀를 내밀어 봅시다 !',
+                          //         gameImage: 'assets/images/frog/mini_frog.png',
+                          //         gamePath: '/kids/frog',
+                          //       );
+                          //     });
+                          context.go('/kids/frog');
                         },
                         child: SizedBox(
                           child: Image.asset('assets/images/frog_house.png'),
@@ -101,7 +102,7 @@ class MainScreen extends StatelessWidget {
                               builder: (builder) {
                                 return GameDialog(
                                   gameTitle : '고래 게임',
-                                  gameDescription: '음성을 통해 고래를 이동시켜요. 고래가 배부를 수 있도록 모든 먹이를 먹어주세요!',
+                                  gameDescription: '목소리를 통해 고래를 이동시켜요. \n\n고래가 배부를 수 있도록 물고기를 먹어주세요!',
                                   gameImage: 'assets/images/whale/whale_game_modal.png',
                                   gamePath: '/kids/whale',
                                 );

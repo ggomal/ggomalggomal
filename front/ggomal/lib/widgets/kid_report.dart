@@ -37,7 +37,7 @@ class _KidReportState extends State<KidReport> {
   // ['ㅍ,ㅁ,ㅇ', 'ㄷ,ㅌ,ㄴ', 'ㄱ,ㅋ,ㅈ,ㅊ', 'ㅅ', 'ㄹ']
   Future<void> loadReportData() async {
     reportData = await getStatistics(widget.kidId as String);
-
+    print(reportData);
     wordMeanData = wordList
         .map((e) => MeanData(e, reportData['wordAccuracyMean'][e]))
         .toList();
@@ -57,10 +57,13 @@ class _KidReportState extends State<KidReport> {
           .toList()
     ];
     setState(() {
-      [wordData, whaleData, chickData].map((data) =>
-          data = data.length < 5 ? data : data.sublist(wordData.length - 5));
+      wordData = wordData.length < 5 ? wordData : wordData.sublist(wordData.length - 5);
+      whaleData = whaleData.length < 5 ? whaleData : whaleData.sublist(whaleData.length - 5);
+      chickData = chickData.length < 5 ? chickData : chickData.sublist(chickData.length - 5);
+
       mostUsedWord = reportData['mostUsedWord'];
-      while (mostUsedWord.length < 3){
+
+      if (mostUsedWord.length < 3){
         mostUsedWord.add({"word": "경찰차", "count": 0});
         mostUsedWord.add({"word": "가방", "count": 0});
         mostUsedWord.add({"word": "가로등", "count": 0});
@@ -123,6 +126,11 @@ class _KidReportState extends State<KidReport> {
                         onChanged: (String? value) {
                           setState(() {
                             selectedWord = value;
+                            wordData = [
+                              ...reportData['wordAccuracy'][value]
+                                  .map((e) => TimeData(e['date'], e['accuracyMean']))
+                                  .toList()
+                            ];
                           });
                         },
                         style: nanumText(14, FontWeight.w700, Colors.black),
@@ -134,7 +142,7 @@ class _KidReportState extends State<KidReport> {
                   ),
                   Column(
                     children: [
-                      Text('단어 정확도(일자별)',
+                      Text('일자별 단어 정확도',
                           style: nanumText(24, FontWeight.w900, Colors.black)),
                       SizedBox(
                         width: double.infinity,
@@ -156,14 +164,14 @@ class _KidReportState extends State<KidReport> {
             graphBox(
               Column(
                 children: [
-                  Text('단어 정확도(평균)',
+                  Text('단어 정확도 평균 ',
                       style: nanumText(24, FontWeight.w900, Colors.black)),
                   SizedBox(
                     width: double.infinity,
                     height: 220,
                     child: SfCartesianChart(
                         primaryXAxis: CategoryAxis(),
-                        primaryYAxis: NumericAxis(minimum: 0, maximum: 5),
+                        primaryYAxis: NumericAxis(minimum: 0, maximum: 100),
                         series: <CartesianSeries<MeanData, String>>[
                           ColumnSeries<MeanData, String>(
                               dataSource: wordMeanData,
@@ -178,7 +186,7 @@ class _KidReportState extends State<KidReport> {
             graphBox(
               Column(
                 children: [
-                  Text('발성 연습(고래 게임)',
+                  Text('고래 게임 모음 연습',
                       style: nanumText(24, FontWeight.w900, Colors.black)),
                   SizedBox(
                     width: double.infinity,

@@ -437,6 +437,7 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
             showDialog(
               context: context,
               builder: (BuildContext context) => Dialog(
+                backgroundColor: Colors.transparent,
                 child:  SizedBox(
                   width: 1000, height: 600,
                   child: Stack(
@@ -461,30 +462,17 @@ class NavBarHome extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        GestureDetector(
-          onTap: (
-              ){
-            showDialog(
-                context: context,
-                builder: (context){
-                  return Dialog(
-                    child: Text('이건 보상 클릭'),
-                  );
-                }
-            );
-          },
-          child: Container(
-            child: Row(
-              children: [
-                Image.asset('assets/images/reward.png'),
-                GetX<CoinController>(builder: (controller) {
-                  return Text(
-                    'x ${controller.coinCount.value}',
-                    style: baseText(30.0, FontWeight.w800),
-                  );
-                }),
-              ],
-            ),
+        Container(
+          child: Row(
+            children: [
+              Image.asset('assets/images/reward.png'),
+              GetX<CoinController>(builder: (controller) {
+                return Text(
+                  'x ${controller.coinCount.value}',
+                  style: baseText(30.0, FontWeight.w800),
+                );
+              }),
+            ],
           ),
         ),
       ],

@@ -22,12 +22,12 @@ class _PercentBarState extends State<PercentBar> {
         LinearPercentIndicator(
           width: MediaQuery.of(context).size.width / 2 - 300,
           lineHeight: 40.0,
-          percent: (widget.percentData['count'] < 10 ? widget.percentData['count']: 10) / 10,
+          percent: (widget.percentData['count'] < widget.percentData['endCount'] ? widget.percentData['count']: widget.percentData['endCount']) / widget.percentData['endCount'],
           animation: true,
           animationDuration: 500,
           animateFromLastPercent: true,
           center: Text(
-            "${widget.percentData['count'] < 10 ? widget.percentData['count']: 10 } / 10",
+            "${widget.percentData['count'] < widget.percentData['endCount'] ? widget.percentData['count']: widget.percentData['endCount'] } / ${widget.percentData['endCount']}",
             style: TextStyle(
               fontFamily: 'Maplestory',
               fontSize: 24.0,

@@ -145,7 +145,7 @@ class _WhaleSeaState extends State<WhaleSea> {
   void move() {
     if (_alignment.x >= 0.9) {
       _timer.cancel();
-      if (_totalFishCount >= 10) {
+      if (_totalFishCount >= 6) {
         endTime = DateTime.now().millisecondsSinceEpoch;
         whaleReward(2);
         Future.delayed(Duration(milliseconds: 500)).then((value) {
@@ -249,6 +249,7 @@ class _WhaleSeaState extends State<WhaleSea> {
             height: 80,
             padding: const EdgeInsets.all(20),
             child: PercentBar({
+              "endCount" : 6,
               "count": _totalFishCount,
               "barColor": Color(0xFFFF835C),
               "imgUrl": "assets/images/whale/green_fish.png"

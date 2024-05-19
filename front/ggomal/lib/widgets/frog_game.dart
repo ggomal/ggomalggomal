@@ -85,15 +85,15 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
 
   Random random = Random();
   final List<Map<String, dynamic>> _fishLocation = [
+    // {"x": -0.4, "y": -0.2, "isVisible": true, "width": 95},
+    // {"x": -0.3, "y": 0.2, "isVisible": true, "width": 100},
+    // {"x": 0.1, "y": -0.5, "isVisible": true, "width": 105},
+    // {"x": 0.4, "y": 0.2, "isVisible": true, "width": 95},
     {"x": -0.7, "y": -0.7, "isVisible": true, "width": 80},
-    {"x": -0.4, "y": -0.2, "isVisible": true, "width": 95},
-    {"x": -0.3, "y": 0.2, "isVisible": true, "width": 100},
-    {"x": -0.2, "y": -0.4, "isVisible": true, "width": 120},
+    // {"x": -0.6, "y": 0.3, "isVisible": true, "width": 105},
+    {"x": -0.4, "y": -0.4, "isVisible": true, "width": 120},
     {"x": -0.1, "y": -0.6, "isVisible": true, "width": 95},
-    {"x": 0.1, "y": -0.5, "isVisible": true, "width": 105},
-    {"x": 0.4, "y": 0.2, "isVisible": true, "width": 95},
-    {"x": 0.5, "y": -0.4, "isVisible": true, "width": 110},
-    {"x": -0.6, "y": 0.3, "isVisible": true, "width": 105},
+    {"x": 0.4, "y": -0.4, "isVisible": true, "width": 110},
     {"x": 0.7, "y": -0.5, "isVisible": true, "width": 102},
   ];
 
@@ -122,7 +122,7 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
       player_frog.play(AssetSource('audio/frog/frog_eating.mp3'));
       // player_gif.play(AssetSource('audio/frog/frog_taste.mp3'));
 
-      if (_fishCount == 10) {
+      if (_fishCount == 5) {
         frogReword();
         Future.delayed(Duration(milliseconds: 500)).then((value) {
           stopDetection();
@@ -337,6 +337,7 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
             height: 80,
             padding: const EdgeInsets.all(20),
             child: PercentBar({
+              "endCount" : 5,
               "count": _fishCount,
               "barColor": Color(0xFFFF835C),
               "imgUrl": "assets/images/frog/strawberry_ss.png"

@@ -206,6 +206,7 @@ class _BearScreenState extends State<BearScreen> {
         Map<String, dynamic> message = jsonDecode(response);
         switch (message['action']) {
           case 'SET_BINGO_BOARD':
+
             gameNum = message['gameNum'];
             var boardData = message['bingoBoard']['board'] as List;
             List<List<Map<String, dynamic>>> formattedData =
@@ -225,7 +226,8 @@ class _BearScreenState extends State<BearScreen> {
             subscription?.cancel();
             subscription = null;
             showBingo = true;
-            player.play(AssetSource('audio/bear/start_bingo.mp3'));
+            player1.play(AssetSource('audio/bear/start_bingo.mp3'));
+            player.play(AssetSource('audio/bear/bingo_card.mp3'));
             break;
           case 'FIND_LETTER':
             print('빙고판 데이터 출력 $bingoBoardData');
@@ -286,13 +288,17 @@ class _BearScreenState extends State<BearScreen> {
 
           case 'GAME_OVER':
             if (message['winner'] == 'KID') {
-              KidWinModal();
-              player1.setVolume(0.1);
-              player.play(AssetSource('audio/end.mp3'));
-              player1.play(AssetSource('audio/end_pass.mp3'));
+              Future.delayed(Duration(seconds: 1), () {
+                KidWinModal();
+                player1.setVolume(0.1);
+                player.play(AssetSource('audio/end.mp3'));
+                player1.play(AssetSource('audio/end_pass.mp3'));
+              });
             } else if (message['winner'] == 'TEACHER') {
-              KidLoseModal();
-              player.play(AssetSource('audio/end_fail.mp3'));
+              Future.delayed(Duration(seconds: 1), () {
+                KidLoseModal();
+                player.play(AssetSource('audio/end_fail.mp3'));
+              });
             } else {
               print('빙고 끝났는데 이긴 사람 이상함 ㅠㅠ');
             }

@@ -154,7 +154,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                 bottom: 20,
                 child: InkWell(
                     onTap: () {
-                      context.go('/manager/bingo/$selectKidId');
+                      context.go('/manager/kid/$selectKidId');
                     },
                     child: Image.asset('assets/images/bear/info_button.png')),
               )
@@ -164,6 +164,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
   }
 
   void TeacherLoseModal() {
+    var selectKidId = widget.memberId;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -177,7 +178,7 @@ class _CreateBingoModalState extends State<CreateBingo> {
                 bottom: 20,
                 child: InkWell(
                     onTap: () {
-                      context.go('/manager/kids');
+                      context.go('/manager/kid/$selectKidId');
                     },
                     child: Image.asset('assets/images/bear/info_button.png')),
               )

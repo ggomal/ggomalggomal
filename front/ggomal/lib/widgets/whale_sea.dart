@@ -249,7 +249,7 @@ class _WhaleSeaState extends State<WhaleSea> {
             height: 80,
             padding: const EdgeInsets.all(20),
             child: PercentBar({
-              "endCount" : 6,
+              "endCount": 6,
               "count": _totalFishCount,
               "barColor": Color(0xFFFF835C),
               "imgUrl": "assets/images/whale/green_fish.png"
@@ -292,10 +292,29 @@ class _WhaleSeaState extends State<WhaleSea> {
                                   36, FontWeight.w700, Colors.black))),
                       SizedBox(
                         height: height * 0.1,
-                        child: RichText(
-                          text: TextSpan(
-                            children: _buildTextSpans("아에이오우"),
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                player
+                                    .play(AssetSource('audio/whale/aeiou.mp3'));
+                              },
+                              icon: Icon(
+                                Icons.volume_up_rounded,
+                                size: 40,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                children: _buildTextSpans("아에이오우"),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(

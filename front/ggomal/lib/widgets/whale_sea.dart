@@ -303,7 +303,7 @@ class _WhaleSeaState extends State<WhaleSea> {
                               icon: Icon(
                                 Icons.volume_up_rounded,
                                 size: 40,
-                                color: Colors.black,
+                                color: Colors.grey.shade600,
                               ),
                             ),
                             SizedBox(

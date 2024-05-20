@@ -60,7 +60,7 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
       print('권한 허용안됨');
       throw '마이크 권한이 허용되지 않았습니다';
     }
-    setState((){});
+    setState(() {});
     await recorder.openRecorder();
   }
 
@@ -162,7 +162,11 @@ class _ChickSpeechModalState extends State<ChickSpeechModal> {
       }
     } else {
       for (int i = 0; i < text.length; i++) {
-        Color textColor = isPass? Colors.green : words[i] ? Colors.black : Colors.red;
+        Color textColor = isPass
+            ? Colors.green
+            : words[i]
+                ? Colors.black
+                : Colors.red;
         textSpans.add(
           TextSpan(
             text: text[i],

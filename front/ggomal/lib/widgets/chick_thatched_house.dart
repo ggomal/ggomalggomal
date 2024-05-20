@@ -3,6 +3,8 @@ import 'package:ggomal/constants.dart';
 import 'package:ggomal/services/chick_dio.dart';
 import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/chick_speech.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 
 class ChickThatchedHouse extends StatefulWidget {
   const ChickThatchedHouse({super.key});
@@ -12,6 +14,7 @@ class ChickThatchedHouse extends StatefulWidget {
 }
 
 class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
+  final AudioPlayer player = AudioPlayer();
   int count = 0;
   List<Map<String, dynamic>> thingList = [
     {"name": "이불", "img": 1, "isVisible": true},
@@ -77,7 +80,11 @@ class _ChickThatchedHouseState extends State<ChickThatchedHouse> {
                   .map(
                     (e) => e["isVisible"]
                         ? GestureDetector(
-                            onTap: () => handleCleanThing(e),
+                            onTap: () {
+                              handleCleanThing(e);
+                              player.play(AssetSource(
+                                'audio/chick/clean_${e['img']}.mp3'));
+                            },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [

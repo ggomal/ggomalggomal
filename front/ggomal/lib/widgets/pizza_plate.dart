@@ -3,6 +3,7 @@ import 'package:ggomal/services/chick_dio.dart';
 import 'package:ggomal/utils/game_bosang_dialog.dart';
 import 'package:ggomal/widgets/chick_speech.dart';
 import 'package:ggomal/constants.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class PizzaPlate extends StatefulWidget {
   const PizzaPlate({super.key});
@@ -12,6 +13,7 @@ class PizzaPlate extends StatefulWidget {
 }
 
 class _PizzaPlateState extends State<PizzaPlate> {
+  final AudioPlayer player = AudioPlayer();
   int toppingIndex = 0;
 
   List<Map<String, dynamic>> pizzaThingList = [
@@ -132,6 +134,8 @@ class _PizzaPlateState extends State<PizzaPlate> {
                           (e) => GestureDetector(
                             onTap: () {
                               handleTopping(e);
+                              player.play(AssetSource(
+                                  'audio/chick/pizza_${e['img']}.mp3'));
                             },
                             child: SizedBox(
                               width: width * 0.12,

@@ -256,11 +256,11 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
                                   width: 600,
                                   controller: controller2,
                                   duration: const Duration(seconds: 20),
-                                  autostart: Autostart.once,
+                                  autostart: Autostart.loop,
                                   placeholder: (context) => const Center(
                                       child: CircularProgressIndicator()),
                                   image: const AssetImage(
-                                      'assets/images/frog/frog_tongue_new.gif'),
+                                      'assets/images/frog/tonge_new_this.gif'),
                                 )),
                               ],
                             )
@@ -300,7 +300,7 @@ class _YoloVideoState extends State<YoloVideo> with TickerProviderStateMixin {
                                   placeholder: (context) => const Center(
                                       child: CircularProgressIndicator()),
                                   image: const AssetImage(
-                                      'assets/images/frog/frog_eat.gif'),
+                                      'assets/images/frog/tongue_eat_this.gif'),
                                 ))
                               ],
                             )

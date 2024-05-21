@@ -18,8 +18,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreen extends State<LoginScreen> with TickerProviderStateMixin {
   final Dio dio = Dio();
   final LoginStorage loginStorage = LoginStorage();
-  final TextEditingController idController = TextEditingController(text: "teacher206");
-  final TextEditingController passwordController = TextEditingController(text: "M20200131");
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   bool loginError = false;
   final List<ParticleOptionsData> particleOptionsList = [
     ParticleOptionsData(baseColor: Colors.cyan),

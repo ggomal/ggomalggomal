@@ -64,7 +64,6 @@ class _WhaleSeaState extends State<WhaleSea> {
       setState(() {
         isMoving = true;
         words = response['wordResult'];
-        // words = [true, true, true, true, true];
         isPass = response['allResult'];
         isLoading = false;
         isSpeak = false;

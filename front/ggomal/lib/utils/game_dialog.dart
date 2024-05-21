@@ -95,7 +95,9 @@ class GameDialog extends StatelessWidget {
                               vertical: constraints.maxHeight * 0.1,
                               horizontal: 10,
                             ),
-                            child: Container(child: Row(
+                            child: Container(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Flexible(flex : 5, child : Container(child : Image.asset(gameImage))),

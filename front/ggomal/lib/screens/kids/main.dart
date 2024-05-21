@@ -38,6 +38,8 @@ class MainScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           context.go('/kids/chick');
                           player.play(AssetSource('audio/touch.mp3'));
@@ -48,6 +50,8 @@ class MainScreen extends StatelessWidget {
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           player.play(AssetSource('audio/touch.mp3'));
                           showDialog(
@@ -75,6 +79,8 @@ class MainScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           player.play(AssetSource('audio/touch.mp3'));
                           // showDialog(
@@ -95,6 +101,8 @@ class MainScreen extends StatelessWidget {
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           player.play(AssetSource('audio/touch.mp3'));
                           showDialog(
@@ -120,6 +128,8 @@ class MainScreen extends StatelessWidget {
             ),
             Center(
               child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
                 onTap: () {
                   player.play(AssetSource('audio/touch.mp3'));
                   context.go('/kids/home');

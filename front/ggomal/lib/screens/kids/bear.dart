@@ -357,6 +357,8 @@ class _BearScreenState extends State<BearScreen> {
                 right: 0,
                 bottom: -20,
                 child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     onTap: () {
                       player.play(AssetSource('audio/touch.mp3'));
                       context.go('/kids');
@@ -381,6 +383,8 @@ class _BearScreenState extends State<BearScreen> {
                 right: 0,
                 bottom: -20,
                 child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     onTap: () {
                       player.play(AssetSource('audio/touch.mp3'));
                       context.go('/kids');
@@ -448,6 +452,8 @@ class _BearScreenState extends State<BearScreen> {
       itemBuilder: (context, index) {
         var cell = flatList[index];
         return InkWell(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
             onTap: () {
               player.play(AssetSource('audio/touch.mp3'));
               BingoSelect(cell);
@@ -529,6 +535,8 @@ class _BearScreenState extends State<BearScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           player.play(
                               AssetSource('images/bear/audio/window.mp3'));
@@ -536,6 +544,8 @@ class _BearScreenState extends State<BearScreen> {
                         child: Image.asset('assets/images/bear/window.png'),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           player.play(
                               AssetSource('images/bear/audio/mirror.mp3'));
@@ -554,6 +564,8 @@ class _BearScreenState extends State<BearScreen> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(70, 0, 0, 0),
                         child: InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           onTap: () {
                             player.play(
                                 AssetSource('images/bear/audio/chair.mp3'));
@@ -565,6 +577,8 @@ class _BearScreenState extends State<BearScreen> {
                         padding: EdgeInsets.fromLTRB(230, 0, 0, 0),
                         // padding: EdgeInsets.fromLTRB(360, 0, 0, 0),
                         child: InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           onTap: () {
                             player.play(
                                 AssetSource('images/bear/audio/chair.mp3'));
@@ -575,6 +589,8 @@ class _BearScreenState extends State<BearScreen> {
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           player.play(
                               AssetSource('images/bear/audio/guitar.mp3'));
@@ -586,6 +602,8 @@ class _BearScreenState extends State<BearScreen> {
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () {
                           player.play(
                               AssetSource('images/bear/audio/teacher.mp3'));
@@ -605,6 +623,8 @@ class _BearScreenState extends State<BearScreen> {
               top: 340,
               left: 190,
               child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/table.mp3'));
                 },
@@ -615,6 +635,8 @@ class _BearScreenState extends State<BearScreen> {
               top: 300,
               left: 350,
               child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/milk.mp3'));
                 },
@@ -628,6 +650,8 @@ class _BearScreenState extends State<BearScreen> {
               top: 380,
               left: 510,
               child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/pencil.mp3'));
                 },
@@ -643,6 +667,8 @@ class _BearScreenState extends State<BearScreen> {
               top: 390,
               left: 380,
               child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/notebook.mp3'));
                 },
@@ -656,6 +682,8 @@ class _BearScreenState extends State<BearScreen> {
               top: 360,
               left: 240,
               child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
                 onTap: () {
                   player.play(AssetSource('images/bear/audio/hat.mp3'));
                 },

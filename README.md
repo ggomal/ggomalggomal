@@ -229,9 +229,9 @@ Netty를 기반으로 비동기적으로 동작하는 서버를 구성합니다.
 <br>
 
 # 6. 현업 전문가 피드백
-<img src="./assets/7/일광.png" width="250" height="139"/>
-<img src="./assets/7/이든.jpeg" width="250" />
-<img src="./assets/7/부가대.jpeg" width="250" />
+<img src="./assets/7/center1.png" width="250" height="139"/>
+<img src="./assets/7/center2.png" width="250" />
+<img src="./assets/7/univ.png" width="250" />
 
 <br>
 
